@@ -22,172 +22,164 @@ class OqueFoiDado extends StatefulWidget {
 }
 
 class _OqueFoiDadoState extends State<OqueFoiDado> {
-  final TextEditingController _conteudoMinistradoController =
-      TextEditingController();
-  final TextEditingController _observacoesController = TextEditingController();
-  String? turmaId;
+  final _conteudoController = TextEditingController();
+  final _observacoesController = TextEditingController();
+
   final ValueNotifier<String?> turmaSelecionada = ValueNotifier<String?>(null);
-  DateTime? dataSelecionada;
+
+  String? turmaId;
   String? disciplinaId;
+  DateTime? dataSelecionada;
   bool isLoading = false;
 
-  final ConteudoPresencaService _conteudoPresencaService =
-      ConteudoPresencaService();
+  final ConteudoPresencaService _service = ConteudoPresencaService();
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getTurma() {
-    return FirebaseFirestore.instance.collection('turmas').snapshots();
-  }
+  Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() =>
+      FirebaseFirestore.instance.collection('disciplinas').snapshots();
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() {
-    return FirebaseFirestore.instance.collection('disciplinas').snapshots();
-  }
-
-  Future<void> salvarconteudo() async {
+  Future<void> salvarConteudo() async {
     if (turmaId == null ||
         disciplinaId == null ||
         dataSelecionada == null ||
-        _conteudoMinistradoController.text.isEmpty) {
+        _conteudoController.text.isEmpty) {
       snackBarPersonalizado(
         context: context,
-        mensagem: 'Preencha todos os campos',
+        mensagem: 'Preencha todos os campos obrigatórios',
         cor: Colors.redAccent,
       );
       return;
     }
 
-    final novoVinculo = ConteudoPresenca(
+    final conteudo = ConteudoPresenca(
       id: '',
       classId: turmaId!,
-      conteudo: _conteudoMinistradoController.text,
+      conteudo: _conteudoController.text,
       data: dataSelecionada!,
       observacoes: _observacoesController.text,
     );
 
     try {
-      await _conteudoPresencaService.cadastrarPresencaConteudoProfessor(
-        conteudoPresenca: novoVinculo,
+      setState(() => isLoading = true);
+
+      await _service.cadastrarPresencaConteudoProfessor(
+        conteudoPresenca: conteudo,
         turmaId: turmaId!,
       );
-      if (mounted) {
-        snackBarPersonalizado(
-          context: context,
-          mensagem: 'Conteúdo ministrado salvo com sucesso!',
-          cor: Colors.green,
-        );
-      }
 
-      // Limpar campos
-      _conteudoMinistradoController.clear();
+      if (!mounted) return;
+
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Conteúdo salvo com sucesso!',
+        cor: Colors.green,
+      );
+
+      _conteudoController.clear();
       _observacoesController.clear();
-
-      // Limpar seleções do provider
-      if (mounted) {
-        context.read<SelectedProvider>().limparDrop('disciplina');
-      }
+      context.read<SelectedProvider>().limparDrop('disciplina');
     } catch (e) {
-      if (mounted) {
-        snackBarPersonalizado(
-          context: context,
-          mensagem: 'Erro ao salvar o conteúdo: $e',
-          cor: Colors.redAccent,
-        );
-      }
+      snackBarPersonalizado(
+        context: context,
+        mensagem: 'Erro ao salvar conteúdo',
+        cor: Colors.redAccent,
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Conteúdo dado'),
+      appBar: const CustomAppBar(title: 'Conteúdo ministrado'),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      // ✅ Apenas um dropdown de turma
-                      BotaoSelecionarTurma(
-                        turmaSelecionada: turmaSelecionada,
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionTitle('Informações da aula'),
+                    const SizedBox(height: 20),
 
-                        onTurmaSelecionada: (id, turmaNome) {
-                          turmaId = id;
-                          debugPrint(
-                            '✅ Turma selecionada: $turmaNome (ID: $turmaId)',
-                          );
-                        },
-                      ),
+                    BotaoSelecionarTurma(
+                      turmaSelecionada: turmaSelecionada,
+                      onTurmaSelecionada: (id, _) => turmaId = id,
+                    ),
 
-                      const SizedBox(height: 20),
-                      StreamDrop(
-                        dropId: 'disciplina',
-                        minhaStream: getDisciplinas(),
-                        mensagemError: 'Nenhuma Disciplina Encontrada',
-                        textLabel: 'Selecione uma Disciplina',
-                        nomeCampo: 'nome',
-                        icon: const Icon(Icons.note),
-                        onSelected: (id, nome) {
-                          setState(() {
-                            disciplinaId = id;
-                          });
-                          debugPrint(
-                            '✅ Disciplina selecionada: $nome (ID: $id)',
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      DataPickerCalendario(
-                        onDate: (data) {
-                          setState(() {
-                            dataSelecionada = data;
-                          });
-                        },
-                      ),
+                    const SizedBox(height: 16),
 
-                      const SizedBox(height: 20),
-                      Form(
-                        child: Column(
-                          children: [
-                            TextFormFieldPersonalizado(
-                              prefixIcon: CupertinoIcons.book,
-                              maxLines: 5,
-                              controller: _conteudoMinistradoController,
-                              label: 'Conteúdo Ministrado em Aula',
-                              hintText:
-                                  'Ex: "Revisão de equações do 1º grau e introdução a inequações"',
-                            ),
+                    StreamDrop(
+                      dropId: 'disciplina',
+                      minhaStream: getDisciplinas(),
+                      mensagemError: 'Nenhuma disciplina encontrada',
+                      textLabel: 'Disciplina',
+                      nomeCampo: 'nome',
+                      icon: const Icon(Icons.menu_book),
+                      onSelected: (id, _) => disciplinaId = id,
+                    ),
 
-                            const SizedBox(height: 20),
-                            TextFormFieldPersonalizado(
-                              prefixIcon: 
-                                CupertinoIcons.doc_on_clipboard,
-                              
-                              controller: _observacoesController,
-                              label: 'Observações',
-                              hintText:
-                                  'Ex: 1- O que ficou pendente pra próxima aula. 2- Materiais que precisam ser preparados',
-                              maxLines: 2,
-                            ),
-                            const SizedBox(height: 20),
-                            BotaoSalvar(
-                              salvarconteudo: () async {
-                                await salvarconteudo();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    const SizedBox(height: 16),
+
+                    DataPickerCalendario(
+                      onDate: (data) => dataSelecionada = data,
+                    ),
+
+                    const SizedBox(height: 32),
+                    const Divider(height: 1),
+                    const SizedBox(height: 32),
+
+                    _sectionTitle('Conteúdo ministrado'),
+                    const SizedBox(height: 16),
+
+                    TextFormFieldPersonalizado(
+                      prefixIcon: CupertinoIcons.book,
+                      maxLines: 5,
+                      controller: _conteudoController,
+                      label: 'Conteúdo',
+                      hintText:
+                          'Ex: Revisão de equações do 1º grau e introdução a inequações',
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    TextFormFieldPersonalizado(
+                      prefixIcon: CupertinoIcons.doc_text,
+                      maxLines: 3,
+                      controller: _observacoesController,
+                      label: 'Observações',
+                      hintText:
+                          'Pendências, avisos ou materiais para a próxima aula',
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: BotaoSalvar(salvarconteudo: salvarConteudo),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _sectionTitle(String text) {
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
     );
   }
 }

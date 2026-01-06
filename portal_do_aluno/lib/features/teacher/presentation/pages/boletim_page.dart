@@ -1,8 +1,5 @@
-// mexer no UI completo da pagina de boletim 
-// Estou sentido que está muito poluido 
-
-
-
+// mexer no UI completo da pagina de boletim
+// Estou sentido que está muito poluido
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';

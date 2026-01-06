@@ -17,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/frequencia_firestore.dart';
 import 'package:portal_do_aluno/shared/widgets/firestore/stream_tamanho_where.dart';
 
-
 class RelatoriosGerenciais extends StatefulWidget {
   const RelatoriosGerenciais({super.key});
 
@@ -161,7 +160,9 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 title: const Text('Desempenho por Turma'),
                 subtitle: const Text('Comparativo de notas médias'),
                 trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _toast('TODO: Abrir gráfico de desempenho'),
+                onTap: () => _toast(
+                  'Função em desenvolvimento: Abrir gráfico de desempenho por turma',
+                ),
               ),
             ),
             Card(
@@ -170,7 +171,9 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 title: const Text('Distribuição de Alunos'),
                 subtitle: const Text('Por série e turma'),
                 trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _toast('TODO: Abrir gráfico de distribuição'),
+                onTap: () => _toast(
+                  'Função em desenvolvimento: Abrir gráfico de distribuição de alunos',
+                ),
               ),
             ),
             Card(
@@ -179,7 +182,9 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 title: const Text('Evolução da Frequência'),
                 subtitle: const Text('Últimos 6 meses'),
                 trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _toast('TODO: Abrir gráfico de frequência'),
+                onTap: () => _toast(
+                  'Função em desenvolvimento: Abrir gráfico de frequência',
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -198,7 +203,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 trailing: IconButton(
                   icon: const Icon(Icons.download),
                   onPressed: () =>
-                      _toast('TODO: Baixar relatório de frequência'),
+                      _toast('Função em desenvolvimento: Baixar relatório'),
                 ),
               ),
             ),
@@ -209,7 +214,8 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 subtitle: const Text('Melhores e piores desempenhos'),
                 trailing: IconButton(
                   icon: const Icon(Icons.download),
-                  onPressed: () => _toast('TODO: Baixar ranking de notas'),
+                  onPressed: () =>
+                      _toast('Função em desenvolvimento: Baixar relatório'),
                 ),
               ),
             ),
@@ -220,7 +226,8 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 subtitle: const Text('Matérias com média abaixo de 6.0'),
                 trailing: IconButton(
                   icon: const Icon(Icons.download),
-                  onPressed: () => _toast('TODO: Baixar relatório crítico'),
+                  onPressed: () =>
+                      _toast('função em desenvolvimento: Baixar relatório'),
                 ),
               ),
             ),
@@ -237,7 +244,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () =>
-                        _toast('TODO: Exportar todos os relatórios'),
+                        _toast('Função em desenvolvimento: Exportar Tudo'),
                     icon: const Icon(Icons.file_download),
                     label: const Text('Exportar Tudo'),
                   ),
@@ -245,7 +252,8 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => _toast('TODO: Imprimir resumo executivo'),
+                    onPressed: () =>
+                        _toast('Função em desenvolvimento: Imprimir'),
                     icon: const Icon(Icons.print),
                     label: const Text('Imprimir'),
                   ),
