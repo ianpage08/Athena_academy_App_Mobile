@@ -18,7 +18,7 @@ class MatriculaService {
   required ResponsaveisAluno responsaveisAluno,
   required DadosAcademicos dadosAcademicos,
   required InformacoesMedicasAluno informacoesMedicasAluno,
-  required String turmaId, // 👈 Novo parâmetro
+  required String turmaId, 
 }) async {
   // Usamos o ID da turma passada
   final dadoAcademico = dadosAcademicos.copyWith(classId: turmaId);
