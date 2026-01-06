@@ -194,7 +194,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Cadastro de Matrícula'),
+      appBar: const CustomAppBar(title: 'Formulário de Matrícula'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: FadeTransition(
@@ -220,12 +220,24 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
+                  height: 56,
                   child: ElevatedButton.icon(
-                    style: Theme.of(context).elevatedButtonTheme.style,
-                    icon: const Icon(CupertinoIcons.floppy_disk),
+                    icon: const Icon(
+                      CupertinoIcons.floppy_disk,
+                      color: Colors.white,
+                    ),
                     label: const Text(
                       'Cadastrar Aluno',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                     onPressed: _cadastrarAluno,
                   ),
@@ -242,6 +254,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
   // ==================== Widgets por seção ====================
 
   Widget _buildCardAluno() => _cardSection(
+    icon: CupertinoIcons.person_2_fill,
     title: 'Dados do Aluno',
     children: [
       TextFormFieldPersonalizado(
@@ -287,6 +300,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
   );
 
   Widget _buildCardEndereco() => _cardSection(
+    icon: CupertinoIcons.map_fill,
     title: 'Endereço',
     children: [
       TextFormFieldPersonalizado(
@@ -317,20 +331,19 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Estado',
         controller: _mapController['estado']!,
-        prefixIcon:CupertinoIcons.flag,
+        prefixIcon: CupertinoIcons.flag,
       ),
     ],
   );
 
   Widget _buildCardResponsaveis() => _cardSection(
+    icon: CupertinoIcons.person_2_fill,
     title: 'Responsáveis',
     children: [
       TextFormFieldPersonalizado(
         label: 'Nome da Mãe',
         controller: _mapController['nomeMae']!,
-        prefixIcon: 
-          CupertinoIcons.person_crop_circle_fill_badge_checkmark,
-        
+        prefixIcon: CupertinoIcons.person_crop_circle_fill_badge_checkmark,
       ),
       TextFormFieldPersonalizado(
         label: 'CPF da Mãe',
@@ -366,13 +379,14 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Telefone do Pai',
         controller: _mapController['telefonePai']!,
-        prefixIcon:CupertinoIcons.phone,
+        prefixIcon: CupertinoIcons.phone,
         maxLength: 11,
       ),
     ],
   );
 
   Widget _buildCardAcademicos() => _cardSection(
+    icon: CupertinoIcons.book_fill,
     title: 'Dados Acadêmicos',
     children: [
       TextFormFieldPersonalizado(
@@ -383,7 +397,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       TextFormFieldPersonalizado(
         label: 'Ano Letivo',
         controller: _mapController['anoLetivo']!,
-        prefixIcon:CupertinoIcons.calendar_today,
+        prefixIcon: CupertinoIcons.calendar_today,
       ),
       ValueListenableBuilder<String?>(
         valueListenable: _mapValueNotifier['turnoSelecionado']!,
@@ -410,6 +424,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
   );
 
   Widget _buildCardMedicas() => _cardSection(
+    icon: CupertinoIcons.heart_fill,
     title: 'Informações Médicas',
     children: [
       TextFormFieldPersonalizado(
@@ -433,16 +448,49 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     ],
   );
 
-  Widget _cardSection({required String title, required List<Widget> children}) {
-    return Card(
+  Widget _cardSection({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.withOpacity(0.12)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            // HEADER DA SEÇÃO
+            Row(
+              children: [
+                Icon(icon, color: Theme.of(context).primaryColor),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
-            ...children.expand((child) => [child, const SizedBox(height: 12)]),
+            Divider(color: Colors.grey.withOpacity(0.2)),
+            const SizedBox(height: 16),
+
+            // CAMPOS
+            ...children.expand((child) => [child, const SizedBox(height: 14)]),
           ],
         ),
       ),

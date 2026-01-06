@@ -323,7 +323,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                                   vertical: 18,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF9FAFB),
+                                  color: Theme.of(context).cardColor,
                                   borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: Colors.grey.shade300,
@@ -333,20 +333,22 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Icon(
+                                      Icons.person_rounded,
+                                      color: Theme.of(context).iconTheme.color,
+                                    ),
                                     Text(
                                       isSelectedTipo ??
                                           'Selecione o tipo de usuário',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 15,
-                                        color: isSelectedTipo == null
-                                            ? Colors.black45
-                                            : Colors.black87,
+
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    const Icon(
+                                    Icon(
                                       Icons.keyboard_arrow_down_rounded,
-                                      color: Colors.black45,
+                                      color: Theme.of(context).iconTheme.color,
                                     ),
                                   ],
                                 ),

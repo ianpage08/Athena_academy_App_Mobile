@@ -75,7 +75,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: const [
                     BoxShadow(
@@ -116,10 +116,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                           // Matrícula
                           Text(
                             'Matrícula: ${dadosAcademicos['numeroMatricula'] ?? '---'}',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.black54,
-                            ),
+                            style: const TextStyle(fontSize: 13),
                           ),
 
                           const SizedBox(height: 2),
@@ -127,10 +124,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                           // Turma
                           Text(
                             'Turma: ${dadosAcademicos['turma'] ?? '---'}',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.black54,
-                            ),
+                            style: const TextStyle(fontSize: 13),
                           ),
                         ],
                       ),

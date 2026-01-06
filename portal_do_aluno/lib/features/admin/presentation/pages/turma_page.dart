@@ -31,10 +31,7 @@ class _TurmaPageState extends State<TurmaPage> {
             width: 40,
             height: 40,
             margin: const EdgeInsets.only(right: 16),
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
+            decoration: const BoxDecoration(shape: BoxShape.circle),
             child: IconButton(
               onPressed: () {
                 NavigatorService.navigateTo(RouteNames.adminCadastroTurmas);
@@ -176,13 +173,13 @@ class _TurmaPageState extends State<TurmaPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.black54),
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 6),
           Text(label, style: const TextStyle(fontSize: 14)),
         ],

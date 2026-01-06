@@ -83,7 +83,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Cadastro de Turma'),
-      backgroundColor: const Color(0xFFF6F7FB),
+
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -91,7 +91,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
             constraints: const BoxConstraints(maxWidth: 520),
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
@@ -114,7 +114,6 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   const SizedBox(height: 6),
                   const Text(
                     'Informe os dados básicos para criar uma nova turma.',
-                    style: TextStyle(color: Colors.black54),
                   ),
 
                   const SizedBox(height: 24),

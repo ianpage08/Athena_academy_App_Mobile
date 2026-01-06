@@ -32,7 +32,7 @@ class _BoletimPageState extends State<BoletimPage> {
           alunoId = alunoRef;
         });
       } else {
-        debugPrint('❌ Error: Aluno não encontrado');
+        debugPrint(' Error: Aluno não encontrado');
       }
     });
   }
@@ -105,7 +105,7 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
 
-        // ignore: avoid_unnecessary_containers
+        
         return Container(
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 255, 255, 255),

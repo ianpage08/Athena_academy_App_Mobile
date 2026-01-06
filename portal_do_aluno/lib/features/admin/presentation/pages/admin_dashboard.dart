@@ -72,7 +72,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         documentId: usuarioId,
                         builder: (context, snapshot) {
                           final data = snapshot.data!.data()!;
-
                           final dadosUsuario = Usuario.fromJson(data);
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
