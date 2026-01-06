@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/shared/pages/configuracao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/navigation_bottonbar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
@@ -13,7 +14,7 @@ class ConfiguracaoPage extends StatefulWidget {
 
 class _ConfiguracaoPageState extends State<ConfiguracaoPage> {
   final List<Widget> _pages = [
-    const Center(child: Text('Página de Configurações')),
+    const ConfiguracaoPage1(),
     const Center(child: Text('Página de Ajuda')),
     const Center(child: Text('Página de Suporte')),
   ];

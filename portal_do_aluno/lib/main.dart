@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/app.dart';
+import 'package:portal_do_aluno/core/app_constants/app_preferences.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
@@ -17,6 +18,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationServiceRemote().init();
   await NotificationService().init();
+  await AppPreferences.init();
+  
 
   ExercicioSevice().excluirPorDataexpiracao();
 

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/app_constants/app_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  bool _isDarkMode = false;
+  ThemeMode _themeMode = AppPreferences.getThemeMode();
+  ThemeMode get themeMode => _themeMode;
 
-  bool get isDarkmode => _isDarkMode;
-  ThemeMode get themeMode => _isDarkMode ? ThemeMode.dark : ThemeMode.light;
+  void toggleTheme(ThemeMode mode) {
+    _themeMode = mode;
+    AppPreferences.setTheme(mode);
 
-  void toggleTheme() {
-    _isDarkMode = !_isDarkMode;
     notifyListeners();
   }
 
-  void setTheme(bool isDarkMode) {
-    _isDarkMode = isDarkMode;
-    notifyListeners();
-  }
+  bool get isDarkmode => _themeMode == ThemeMode.dark;
 }
