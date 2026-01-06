@@ -135,7 +135,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     highlight: true,
                     icon: CupertinoIcons.person_2_square_stack,
                     title: 'Nova Matrícula',
-                    subtitle: 'Cadastrar novos alunos',
+                    subtitle: 'Cadastrar  alunos',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminMatriculaCadastro,
@@ -146,7 +146,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   MenuNavigationCard(
                     icon: CupertinoIcons.home,
                     title: 'Gestão Escolar',
-                    subtitle: 'Cursos, turmas e séries',
+                    subtitle: 'Turmas e disciplinas',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminGestaoEscolar,
@@ -157,7 +157,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   MenuNavigationCard(
                     icon: CupertinoIcons.person_add,
                     title: 'Usuários',
-                    subtitle: 'Gerenciar contas e perfis',
+                    subtitle: 'Gerenciar perfis',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.adminGestao);
                     },
@@ -166,7 +166,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   MenuNavigationCard(
                     icon: CupertinoIcons.doc_on_doc,
                     title: 'Relatórios',
-                    subtitle: 'Documentos e registros',
+                    subtitle: 'Certificados',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminGeracaoDocumentos,

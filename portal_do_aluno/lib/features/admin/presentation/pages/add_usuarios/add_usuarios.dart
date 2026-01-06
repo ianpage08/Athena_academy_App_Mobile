@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/admin_cadastro.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/professor_cadastro.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
-
 import 'package:portal_do_aluno/shared/widgets/botao_selecionar_aluno.dart';
 import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
-
-import 'package:portal_do_aluno/core/utils/formatters.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 
@@ -103,21 +100,81 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       context: context,
       builder: (context) {
-        return ListView(
-          children: ['Professor', 'Aluno', 'Administrador'].map((tipo) {
-            return ListTile(
-              title: Text(tipo),
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemCount: 3,
+          separatorBuilder: (_, __) =>
+              Divider(height: 1, color: Colors.grey.shade200),
+          itemBuilder: (context, index) {
+            final tipos = ['Professor', 'Aluno', 'Administrador'];
+            final tipo = tipos[index];
+            final isSelected = isSelectedTipo == tipo;
+
+            return InkWell(
               onTap: () {
                 setState(() {
                   isSelectedTipo = tipo;
-                  Navigator.pop(context);
                 });
+                Navigator.pop(context);
               },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? const Color(0xFF6366F1).withOpacity(0.08)
+                      : Colors.transparent,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _iconByTipo(tipo),
+                      size: 20,
+                      color: isSelected
+                          ? const Color(0xFF6366F1)
+                          : Colors.black54,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      tipo,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: isSelected
+                            ? const Color(0xFF6366F1)
+                            : Colors.black87,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (isSelected)
+                      const Icon(
+                        Icons.check,
+                        size: 18,
+                        color: Color(0xFF6366F1),
+                      ),
+                  ],
+                ),
+              ),
             );
-          }).toList(),
+          },
         );
       },
     );
+  }
+
+  IconData _iconByTipo(String tipo) {
+    switch (tipo) {
+      case 'Professor':
+        return Icons.school_rounded;
+      case 'Aluno':
+        return Icons.person_rounded;
+      case 'Administrador':
+        return Icons.admin_panel_settings_rounded;
+      default:
+        return Icons.person_outline;
+    }
   }
 
   // Limpa os campos e variáveis selecionadas no formulário
@@ -138,92 +195,6 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
         controller.clear();
       }
     });
-  }
-
-  // Widget para campos de cadastro do professor
-  // O parâmetro [enabled] controla se os campos podem ser editados ou não
-  Widget _professorcadastro({required bool enabled}) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: _mapController['nome']!,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[100],
-            prefixIcon: const Icon(Icons.person),
-            labelText: 'Nome',
-            hintText: 'Leila Miranda Maciel',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          enabled: enabled,
-          validator: (value) =>
-              value == null || value.isEmpty ? 'Digite o nome' : null,
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: _mapController['cpf']!,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            CpfInputFormatter(),
-          ],
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[100],
-            prefixIcon: const Icon(Icons.document_scanner),
-            labelText: 'CPF',
-            hintText: '853.654.895-59',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          enabled: enabled,
-          validator: (value) =>
-              value == null || value.isEmpty ? 'Digite o Cpf' : null,
-        ),
-        const SizedBox(height: 12),
-      ],
-    );
-  }
-
-  // Widget para campos de cadastro do administrador
-  // Similar ao professor, com controle de habilitação [enabled]
-  Widget _administradorcadastro({required bool enabled}) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: _mapController['nome']!,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[100],
-            prefixIcon: const Icon(Icons.person),
-            labelText: 'Nome',
-            hintText: 'Leila Miranda Maciel',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          enabled: enabled,
-          validator: (value) =>
-              value == null || value.isEmpty ? 'Digite o nome' : null,
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
-          controller: _mapController['cpf']!,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            CpfInputFormatter(),
-          ],
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[100],
-            prefixIcon: const Icon(Icons.document_scanner),
-            labelText: 'CPF',
-            hintText: '853.654.895-59',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          enabled: enabled,
-          validator: (value) =>
-              value == null || value.isEmpty ? 'Digite o Cpf' : null,
-        ),
-        const SizedBox(height: 12),
-      ],
-    );
   }
 
   // Método para adicionar um usuário ao banco de dados
@@ -343,24 +314,46 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           // Botão para selecionar o tipo de usuário
                           SizedBox(
                             width: double.infinity,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.deepPurple,
-                                foregroundColor: Colors.white,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(14),
+                              onTap: showtipoPerfilModal,
+                              child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
+                                  horizontal: 16,
+                                  vertical: 18,
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF9FAFB),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
-                              ),
-                              onPressed: showtipoPerfilModal,
-                              child: Text(
-                                isSelectedTipo ?? 'Selecione o tipo de usuário',
-                                style: const TextStyle(fontSize: 18),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      isSelectedTipo ??
+                                          'Selecione o tipo de usuário',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: isSelectedTipo == null
+                                            ? Colors.black45
+                                            : Colors.black87,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: Colors.black45,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
+
                           const SizedBox(height: 12),
 
                           // Coluna que exibe widgets de seleção dinâmicos conforme o tipo
@@ -406,14 +399,18 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
                               // Se for professor, exibe campos específicos (função já isolada)
                               if (isSelectedTipo == 'Professor') ...[
-                                _professorcadastro(
+                                ProfessorCadastro(
+                                  mapController1: _mapController['nome']!,
+                                  mapController2: _mapController['cpf']!,
                                   enabled: isSelectedTipo == 'Professor',
                                 ),
                               ],
 
                               // Se for administrador, exibe campos específicos (função já isolada)
                               if (isSelectedTipo == 'Administrador') ...[
-                                _administradorcadastro(
+                                AdminCadastro(
+                                  mapController1: _mapController['nome']!,
+                                  mapController2: _mapController['cpf']!,
                                   enabled: isSelectedTipo == 'Administrador',
                                 ),
                               ],
