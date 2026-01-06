@@ -15,7 +15,8 @@ class DiciplinasPage extends StatefulWidget {
 
 class _DiciplinasPageState extends State<DiciplinasPage> {
   final DisciplinaService _disciplinaService = DisciplinaService();
-  final minhaStream = FirebaseFirestore.instance
+
+  final Stream<QuerySnapshot> minhaStream = FirebaseFirestore.instance
       .collection('disciplinas')
       .orderBy('nome')
       .snapshots();
@@ -24,93 +25,171 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Diciplinas Cadastradas'),
+        title: const Text('Disciplinas'),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            onPressed: () {
-              NavigatorService.navigateTo(RouteNames.adminCadastrarDisciplina);
-            },
-            icon: const Icon(Icons.add),
+          Container(
+            width: 40,
+            height: 40,
+            margin: const EdgeInsets.only(right: 16),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: IconButton(
+                onPressed: () {
+                  NavigatorService.navigateTo(
+                    RouteNames.adminCadastrarDisciplina,
+                  );
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ),
           ),
         ],
       ),
-      body: Padding(padding: const EdgeInsets.all(8), child: _buildStream()),
+      body: Padding(padding: const EdgeInsets.all(16), child: _buildStream()),
     );
   }
 
   Widget _buildStream() {
-    return StreamBuilder(
+    return StreamBuilder<QuerySnapshot>(
       stream: minhaStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.hasError) {
-          return const Center(child: Text('Erro ao carregar os dados'));
-        }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('Nenhum dado encontrado'));
-        }
-        final docMaterias = snapshot.data!.docs;
-        return ListView.builder(
-          itemCount: docMaterias.length,
-          itemBuilder: (context, index) {
-            final data = docMaterias[index].data();
 
-            return Card(
-              child: ListTile(
-                leading: const CircleAvatar(child: Icon(Icons.book)),
-                title: Text('Materia: ${data['nome']}'),
-                subtitle: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Professor: ${data['professor'] ?? '---'}'),
-                        Text(
-                          'Aulas Previstas: ${data['aulaPrevistas'] ?? '---'}',
-                        ),
-                        Text('Carga Horaria: ${data['cargaHoraria'] ?? '---'}'),
-                      ],
-                    ),
-                    MenuPontinhoGenerico(
-                      id: data['id'],
-                      items: [
-                        MenuItemConfig(
-                          value: 'Excluir',
-                          label: 'Excluir',
-                          onSelected: (id, context, extra) async {
-                            if (id != null) {
-                              try {
-                                final excluir = await showConfirmationDialog(
-                                  context: context,
-                                  title: 'Deseja Excluir essa Disciplina?',
-                                  content: 'Essa ação é irreversível',
-                                );
-                                if (excluir == true) {
-                                  _disciplinaService.excluirDisciplina(id);
-                                }
-                              } catch (e) {
-                                if (e is Exception) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.toString())),
-                                  );
-                                }
-                              }
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
+        if (snapshot.hasError) {
+          return const Center(child: Text('Erro ao carregar disciplinas'));
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('Nenhuma disciplina cadastrada'));
+        }
+
+        final disciplinas = snapshot.data!.docs;
+
+        return ListView.separated(
+          itemCount: disciplinas.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final data = disciplinas[index].data() as Map<String, dynamic>;
+
+            return _buildDisciplinaCard(data);
           },
         );
       },
+    );
+  }
+
+  Widget _buildDisciplinaCard(Map<String, dynamic> data) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ÍCONE
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.deepPurple.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.book, color: Colors.deepPurple),
+            ),
+
+            const SizedBox(width: 16),
+
+            // CONTEÚDO
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // TÍTULO
+                  Text(
+                    data['nome'] ?? 'Disciplina',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _infoChip(
+                        Icons.person,
+                        data['professor'] ?? 'Sem professor',
+                      ),
+
+                      _infoChip(
+                        Icons.event_note,
+                        '${data['aulaPrevistas'] ?? '--'} aulas',
+                      ),
+                      _infoChip(
+                        Icons.schedule,
+                        '${data['cargaHoraria'] ?? '--'}h',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // MENU
+            MenuPontinhoGenerico(
+              id: data['id'],
+              items: [
+                MenuItemConfig(
+                  value: 'excluir',
+                  label: 'Excluir',
+                  onSelected: (id, context, extra) async {
+                    if (id == null) return;
+
+                    final confirmar = await showConfirmationDialog(
+                      context: context,
+                      title: 'Excluir disciplina?',
+                      content: 'Essa ação é irreversível.',
+                    );
+
+                    if (confirmar == true) {
+                      _disciplinaService.excluirDisciplina(id);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: Colors.black54),
+          const SizedBox(width: 6),
+          Text(label, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
     );
   }
 }

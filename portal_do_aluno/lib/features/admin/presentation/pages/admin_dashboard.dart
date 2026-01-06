@@ -74,43 +74,47 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           final data = snapshot.data!.data()!;
 
                           final dadosUsuario = Usuario.fromJson(data);
-                          return Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Color.fromARGB(
-                                  255,
-                                  88,
-                                  70,
-                                  20,
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: Color.fromARGB(
+                                    255,
+                                    88,
+                                    70,
+                                    20,
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                child: Icon(
-                                  Icons.person,
-                                  size: 30,
-                                  color: Colors.white,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Admin: ${dadosUsuario.name}',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleMedium,
+                                      ),
+                                      Text(
+                                        'Escola: AEEC',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleSmall,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Admin: ${dadosUsuario.name}',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium,
-                                    ),
-                                    Text(
-                                      'Escola: AEEC',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleSmall,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         },
                       ),

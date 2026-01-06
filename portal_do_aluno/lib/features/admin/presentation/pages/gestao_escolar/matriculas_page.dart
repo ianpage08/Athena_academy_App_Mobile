@@ -39,62 +39,8 @@ class _MatriculasPageState extends State<MatriculasPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Cards resumo
-            Row(
-              children: [
-                Expanded(
-                  child: _buildResumoCard(
-                    titulo: 'Ativos',
-                    quantidade: 5,
-                    cor: Colors.green,
-                    icone: Icons.check_circle,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildResumoCard(
-                    titulo: 'Pendentes',
-                    quantidade: 6,
-                    cor: Colors.orange,
-                    icone: Icons.pending_actions,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
             // Lista de matrículas
             Expanded(child: _buildStreamMatriculas()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildResumoCard({
-    required String titulo,
-    required int quantidade,
-    required Color cor,
-    required IconData icone,
-  }) {
-    return Card(
-      color: cor.withValues(alpha: 0.1),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          children: [
-            Icon(icone, color: cor, size: 36),
-            Text(
-              quantidade.toString(),
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: cor,
-              ),
-            ),
-            Text(
-              titulo,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
           ],
         ),
       ),
@@ -124,23 +70,73 @@ class _MatriculasPageState extends State<MatriculasPage> {
             final alunoId = dadosAluno['id'];
             final dadosAcademicos = data['dadosAcademicos'] ?? {};
 
-            return Card(
-              child: ListTile(
-                leading: const CircleAvatar(child: Icon(Icons.person)),
-                title: Text('Aluno: ${dadosAluno['nome'] ?? '---'}'),
-                subtitle: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Matricula: ${dadosAcademicos['numeroMatricula'] ?? '---'}',
-                        ),
-                        Text('Turma: ${dadosAcademicos['turma'] ?? '---'}'),
-                      ],
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x14000000),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
                     ),
+                  ],
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Avatar
+                    const CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Color(0xFFEDE9FE),
+                      child: Icon(Icons.person, color: Color(0xFF6366F1)),
+                    ),
+
                     const SizedBox(width: 12),
+
+                    // Conteúdo
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Nome
+                          Text(
+                            dadosAluno['nome'] ?? '---',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          // Matrícula
+                          Text(
+                            'Matrícula: ${dadosAcademicos['numeroMatricula'] ?? '---'}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                            ),
+                          ),
+
+                          const SizedBox(height: 2),
+
+                          // Turma
+                          Text(
+                            'Turma: ${dadosAcademicos['turma'] ?? '---'}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Menu de ações
                     MenuPontinhoGenerico(
                       id: alunoId,
                       items: [
@@ -158,23 +154,16 @@ class _MatriculasPageState extends State<MatriculasPage> {
                           value: 'excluir',
                           label: 'Excluir',
                           onSelected: (id, context, extra) async {
-                            if (id != null) {
-                              try {
-                                final excluir = await showConfirmationDialog(
-                                  context: context,
-                                  title: 'Deseja Excluir essa Matricula?',
-                                  content: 'Essa ação é irreversível',
-                                );
-                                if (excluir == true) {
-                                  _matriculaService.excluirMatricula(id);
-                                }
-                              } catch (e) {
-                                if (e is Exception) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.toString())),
-                                  );
-                                }
-                              }
+                            if (id == null) return;
+
+                            final excluir = await showConfirmationDialog(
+                              context: context,
+                              title: 'Excluir matrícula?',
+                              content: 'Essa ação é irreversível.',
+                            );
+
+                            if (excluir == true) {
+                              _matriculaService.excluirMatricula(id);
                             }
                           },
                         ),
