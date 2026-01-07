@@ -27,6 +27,10 @@ void showCreateCalendarEventModal({
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const Text(
+              'Marcar novo evento no calendário',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             Form(
               key: formKey,
               child: Column(
@@ -51,10 +55,7 @@ void showCreateCalendarEventModal({
                 ],
               ),
             ),
-            const Text(
-              'Marcar novo evento no calendário',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+
             const SizedBox(height: 16),
 
             DataPickerCalendario(onDate: onDateSelected),
