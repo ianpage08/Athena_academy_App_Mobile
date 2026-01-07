@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/controle_de_calendario_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/calendar.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/diciplinas_page_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/matriculas_page.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/turma_page.dart';
+
 import 'package:portal_do_aluno/shared/widgets/navigation_bottonbar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
@@ -20,7 +22,7 @@ class _GestaAcademicaState extends State<GestaAcademica> {
   final List<Widget> _pages = [
     const TurmaPage(),
     const DiciplinasPage(),
-    const ControleDeCalendario(),
+    const CalendarPage1(),
     const MatriculasPage(),
   ];
   int _selectedIndex = 0;

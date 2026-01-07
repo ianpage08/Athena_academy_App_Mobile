@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class DataPickerCalendario extends StatefulWidget {
   final DateTime? isSelecionada;
   final Function(DateTime? data) onDate;
@@ -43,8 +42,15 @@ class _DataPickerCalendarioState extends State<DataPickerCalendario> {
             );
 
             if (data != null) {
-              setState(() => dataSelecionada = data);
-              widget.onDate(dataSelecionada);
+              final dataNormalizada = DateTime(
+                data.year,
+                data.month,
+                data.day,
+                12,
+              );
+
+              setState(() => dataSelecionada = dataNormalizada);
+              widget.onDate(dataNormalizada);
             }
 
             _aberto.value = false;

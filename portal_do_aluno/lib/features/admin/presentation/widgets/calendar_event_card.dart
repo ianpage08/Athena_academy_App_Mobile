@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
 class CalendarEventCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -14,81 +15,84 @@ class CalendarEventCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.backgroundColor,
-    required this.trailing,
     required this.icon,
+    this.trailing,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+      
+
+    
+
+    final theme = Theme.of(context);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Container(
-          height: 100,
           width: double.infinity,
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFFE0E0E0),
-            borderRadius: BorderRadius.circular(8),
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.circular(20),
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, color: Colors.white, size: 26),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    child: Icon(icon, color: const Color(0xFFFFFFFF), size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF000000),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color?.withOpacity(
+                          0.75,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF4F4F4F),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              trailing ??
+                  Icon(
+                    CupertinoIcons.chevron_right,
+                    size: 20,
+                    color: theme.iconTheme.color?.withOpacity(0.5),
                   ),
-                ],
-              ),
-              trailing ?? const Icon(
-                CupertinoIcons.chevron_right,
-                color: Color(0xFF4F4F4F),
-                size: 24,
-              ),
             ],
           ),
         ),

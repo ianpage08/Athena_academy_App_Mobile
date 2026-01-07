@@ -53,6 +53,7 @@ class _ControleDeCalendarioState extends State<ControleDeCalendario> {
         titulo: _mapController['titulo']!.text,
         descricao: _mapController['descricao']!.text,
         data: dataSelecionada!,
+        tipo: 1,
       );
       await _calendarioService.cadastrarCalendario(novoEvento);
       if (mounted) {
