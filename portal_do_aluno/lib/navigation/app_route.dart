@@ -11,7 +11,7 @@ import 'package:portal_do_aluno/features/teacher/presentation/pages/boletim_page
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro_turma_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/conteudo_dado.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/controle_de_calendario_page.dart';
+
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/cadastro_exercicio.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/frequencia_alunos.dart';
@@ -25,7 +25,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios.dar
 import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
-import 'package:portal_do_aluno/features/student/presentation/pages/calendar_page.dart';
+
 import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/student_dashboard.dart';
@@ -56,7 +56,7 @@ Map<String, WidgetBuilder> get routes => {
     final argumentos = ModalRoute.of(context)!.settings.arguments as String;
     return DetalhesAluno(alunoId: argumentos);
   },
-  RouteNames.adminCalendar: (context) => const ControleDeCalendario(),
+  
   RouteNames.boletim: (context) => const BoletimAddNotaPage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
@@ -83,7 +83,7 @@ Map<String, WidgetBuilder> get routes => {
   // rotas do Professor
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
 
-  RouteNames.teacherCalendar: (context) => const CalendarPage(),
+  RouteNames.teacherCalendar: (context) => const AcademicCalendarPage(),
   RouteNames.teacherClasses: (context) => ClassPage(),
   RouteNames.comunicadosProfessor: (context) => const ComunicadosProfessor(),
   RouteNames.teacherExercicios: (context) => const CadastroExercicio(),

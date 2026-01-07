@@ -9,14 +9,15 @@ import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_eve
 import 'package:portal_do_aluno/features/admin/presentation/widgets/show_create_calendar_event_modal.dart';
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 
-class CalendarPage1 extends StatefulWidget {
-  const CalendarPage1({super.key});
+class CalendarEventCreationPage extends StatefulWidget {
+  const CalendarEventCreationPage({super.key});
 
   @override
-  State<CalendarPage1> createState() => _CalendarPage1State();
+  State<CalendarEventCreationPage> createState() =>
+      _CalendarEventCreationPageState();
 }
 
-class _CalendarPage1State extends State<CalendarPage1> {
+class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
   int calendarEventTypeToInt(CalendarEventType tipo) {
     switch (tipo) {
       case CalendarEventType.avaliacao:
