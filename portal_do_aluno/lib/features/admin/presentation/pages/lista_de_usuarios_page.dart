@@ -185,7 +185,7 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
         color: ativo ? Colors.white : Colors.black87,
         fontWeight: FontWeight.w600,
       ),
-      selectedColor: Colors.blueAccent,
+      selectedColor: const Color.fromARGB(131, 68, 137, 255),
       backgroundColor: Colors.grey.shade200,
       onSelected: (_) {
         setState(() {

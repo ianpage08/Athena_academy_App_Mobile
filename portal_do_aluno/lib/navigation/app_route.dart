@@ -5,6 +5,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/change_passwor
 import 'package:portal_do_aluno/features/admin/presentation/pages/sucess_page.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart';
 import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/academic_calendar_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios_aluno_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/boletim_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina_page.dart';
@@ -72,7 +73,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.studentHelp: (context) => const NoticesPage(),
   RouteNames.studentSettings: (context) => const ConfiguracaoPage1(),
 
-  RouteNames.studentCalendar: (context) => const CalendarPage(),
+  RouteNames.studentCalendar: (context) => const AcademicCalendarPage(),
 
   RouteNames.studentComunicados: (context) => const NoticesPage(),
   RouteNames.studentBoletim: (context) => const BoletimPage(),

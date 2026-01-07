@@ -17,7 +17,7 @@ class CalendarPage1 extends StatefulWidget {
 }
 
 class _CalendarPage1State extends State<CalendarPage1> {
-  int _calendarEventTypeToInt(CalendarEventType tipo) {
+  int calendarEventTypeToInt(CalendarEventType tipo) {
     switch (tipo) {
       case CalendarEventType.avaliacao:
         return 1;
@@ -53,7 +53,7 @@ class _CalendarPage1State extends State<CalendarPage1> {
         final titulo = controllers['titulo']!.text;
         final descricao = controllers['descricao']!.text;
 
-        final tipoInt = _calendarEventTypeToInt(tipo);
+        final tipoInt = calendarEventTypeToInt(tipo);
         if (titulo.isEmpty) {
           return snackBarPersonalizado(
             context: context,
@@ -126,6 +126,13 @@ class _CalendarPage1State extends State<CalendarPage1> {
               subtitle: 'Cadastrar um evento personalizado',
               backgroundColor: Colors.blueAccent,
               icon: CupertinoIcons.square_list_fill,
+            ),
+            const SizedBox(height: 16),
+            CalendarEventCard(
+              title: 'Lista de Eventos',
+              subtitle: 'Eventos já criados',
+              backgroundColor: Colors.green[300]!,
+              icon: CupertinoIcons.list_bullet,
             ),
           ],
         ),

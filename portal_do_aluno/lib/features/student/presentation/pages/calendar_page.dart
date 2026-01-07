@@ -183,9 +183,9 @@ class _CalendarPageState extends State<CalendarPage> {
                                 114,
                               ),
                               child: ListTile(
-                                leading: Icon(
+                                leading:const  Icon(
                                   Icons.event,
-                                  color: const Color.fromARGB(255, 88, 87, 88),
+                                  color: Color.fromARGB(255, 88, 87, 88),
                                 ),
                                 title: Text(titulo),
                                 subtitle: Text(descricao),
