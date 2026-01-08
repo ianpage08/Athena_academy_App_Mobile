@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum Destinatario { todos, alunos, professores, responsaveis }
-enum PrioridadeComunicado { baixa, media, alta }
 
+enum PrioridadeComunicado { baixa, media, alta }
 
 class Comunicado {
   final String id;
@@ -10,7 +10,7 @@ class Comunicado {
   final String mensagem;
   final DateTime dataPublicacao;
   final Destinatario destinatario;
-  final int prioridade;
+  final String? prioridade;
 
   Comunicado({
     required this.id,
@@ -18,7 +18,7 @@ class Comunicado {
     required this.mensagem,
     required this.dataPublicacao,
     required this.destinatario,
-    this.prioridade = 0,
+    this.prioridade,
   });
 
   Map<String, dynamic> toJson() => {
@@ -38,7 +38,7 @@ class Comunicado {
     destinatario: json['destinatario'] != null
         ? Destinatario.values.byName(json['destinatario'] as String)
         : Destinatario.todos,
-    prioridade: json['prioridade'] as int? ?? 0,
+    prioridade: json['prioridade'] as String? ?? '',
   );
 
   Comunicado copyWith({
@@ -47,7 +47,7 @@ class Comunicado {
     String? mensagem,
     DateTime? dataPublicacao,
     Destinatario? destinatario,
-    int? prioridade,
+    String? prioridade,
   }) => Comunicado(
     id: id ?? this.id,
     titulo: titulo ?? this.titulo,

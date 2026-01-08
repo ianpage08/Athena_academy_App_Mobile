@@ -1,106 +1,97 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/widgets/card_statement.dart';
+import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 
-// Widget para visualizar comunicados em tempo real usando um Stream.
-
-class StreamVizualizacaoDeComunicados extends StatefulWidget {
-  // Stream que fornece os dados dos comunicados do Firestore.
+/// Widget responsável por exibir comunicados em tempo real via Stream
+class StreamVisualizacaoDeComunicados extends StatefulWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> comunicadosStream;
 
-  const StreamVizualizacaoDeComunicados({
+  const StreamVisualizacaoDeComunicados({
     super.key,
     required this.comunicadosStream,
   });
 
   @override
-  State<StreamVizualizacaoDeComunicados> createState() =>
-      _StreamVizualizacaoDeComunicadosState();
+  State<StreamVisualizacaoDeComunicados> createState() =>
+      _StreamVisualizacaoDeComunicadosState();
 }
 
-class _StreamVizualizacaoDeComunicadosState
-    extends State<StreamVizualizacaoDeComunicados> {
+class _StreamVisualizacaoDeComunicadosState
+    extends State<StreamVisualizacaoDeComunicados> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      // Escuta o stream passado como parâmetro para atualizar a UI em tempo real.
       stream: widget.comunicadosStream,
       builder: (context, snapshot) {
-        // Estado de carregamento: mostra um indicador de progresso enquanto os dados são buscados.
+        // Loading
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Estado de erro: exibe uma mensagem de erro se houver problema no stream.
+        // Error
         if (snapshot.hasError) {
-          return Center(child: Text('Erro: ${snapshot.error}'));
+          return const Center(child: Text('Erro ao carregar os comunicados'));
         }
 
-        // Dados recebidos: lista de documentos de comunicados.
-        final comunicado = snapshot.data!.docs;
+        final docs = snapshot.data?.docs ?? [];
 
-        // Constrói uma lista rolável com os comunicados.
+        // Empty state
+        if (docs.isEmpty) {
+          return const Center(
+            child: Text(
+              'Nenhum comunicado disponível',
+              style: TextStyle(color: Colors.black54),
+            ),
+          );
+        }
+
         return ListView.builder(
-          // Número de itens na lista baseado na quantidade de documentos.
-          itemCount: comunicado.length,
+          itemCount: docs.length,
           itemBuilder: (context, index) {
-            // Documento atual do comunicado.
-            final comunicadoDoc = comunicado[index];
+            final doc = docs[index];
+            final data = doc.data();
 
-            // Extrai o título do documento, com fallback se não existir.
-            final titulo = comunicadoDoc['titulo'] ?? 'Sem título';
+            
+            final String titulo = data['titulo'] ?? 'Sem título';
+            final String descricao = data['mensagem'] ?? 'Sem descrição';
 
-            // Converte a data de publicação (Timestamp) para DateTime e formata.
-            final dataPublicacao =
-                (comunicadoDoc['dataPublicacao'] as Timestamp).toDate();
-            final dataFormatada =
-                '${dataPublicacao.day}/${dataPublicacao.month}/${dataPublicacao.year}';
+            // Data formatada (com zero à esquerda)
+            final DateTime dataPublicacao =
+                (data['dataPublicacao'] as Timestamp).toDate();
+            final String dataFormatada = DateFormat(
+              'dd/MM/yyyy',
+            ).format(dataPublicacao);
 
-            // Extrai a descrição/mensagem do documento, com fallback.
-            final descricao = comunicadoDoc['mensagem'] ?? 'Sem descrição';
+            // Prioridade (String -> Enum)
+            final PrioridadeComunicado prioridade = _mapPrioridade(
+              data['prioridade'],
+            );
 
-            // Retorna um Card para cada comunicado, com ícone, título, descrição e data.
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    // Ícone de mensagem no lado esquerdo.
-                    leading: Icon(
-                      Icons.message,
-                      color: Colors.deepPurpleAccent[200],
-                    ),
-
-                    // Título do comunicado.
-                    title: Text(titulo, style: const TextStyle(fontSize: 20)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-
-                        // Descrição do comunicado.
-                        Text(descricao),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // Data formatada no canto inferior direito.
-                            Text(dataFormatada),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            return CardStatement(
+              title: titulo,
+              subtitle: descricao,
+              data: dataFormatada,
+              prioridade: prioridade,
             );
           },
         );
       },
     );
+  }
+
+  /// Converte a prioridade salva no Firestore (String) para enum
+  PrioridadeComunicado _mapPrioridade(String? prioridade) {
+    switch (prioridade) {
+      case 'alta':
+        return PrioridadeComunicado.alta;
+      case 'media':
+        return PrioridadeComunicado.media;
+      case 'baixa':
+        return PrioridadeComunicado.baixa;
+      default:
+        return PrioridadeComunicado.baixa;
+    }
   }
 }

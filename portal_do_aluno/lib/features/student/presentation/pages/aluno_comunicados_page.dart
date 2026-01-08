@@ -27,7 +27,7 @@ class _NoticesPageState extends State<NoticesPage> {
       appBar: const CustomAppBar(title: 'Comunicados'),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: StreamVizualizacaoDeComunicados(
+        child: StreamVisualizacaoDeComunicados(
           // Passa o stream de comunicados para o widget de visualização
           comunicadosStream: comunicadosStream,
         ),

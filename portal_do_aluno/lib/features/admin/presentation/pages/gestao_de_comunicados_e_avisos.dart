@@ -25,6 +25,7 @@ class _ComunicacaoInstitucionalPageState
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _mensagemController = TextEditingController();
+  PrioridadeComunicado? prioridade;
 
   destinatarioSelected() {
     switch (_isSelectedDestinatario) {
@@ -69,6 +70,7 @@ class _ComunicacaoInstitucionalPageState
         destinatario: Destinatario.values.byName(
           _isSelectedDestinatario!.toLowerCase(),
         ),
+        prioridade: prioridade!.toString().split('.').last,
       );
 
       try {
@@ -134,6 +136,123 @@ class _ComunicacaoInstitucionalPageState
     );
   }
 
+  Widget _buildPrioridade() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[200],
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: _abrirModalPrioridade,
+        icon: prioridade != null
+            ? Icon(
+                _iconePrioridade(prioridade!),
+                color: _corPrioridade(prioridade!),
+              )
+            : const Icon(Icons.flag_outlined, color: Colors.grey),
+
+        label: Text(
+          prioridade != null
+              ? _labelPrioridade(prioridade!)
+              : 'Selecione a prioridade',
+          style: const TextStyle(color: Colors.black, fontSize: 18),
+        ),
+      ),
+    );
+  }
+
+  void _abrirModalPrioridade() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: PrioridadeComunicado.values.map(_itemPrioridade).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _itemPrioridade(PrioridadeComunicado nivel) {
+    final selecionado = prioridade == nivel;
+
+    return InkWell(
+      onTap: () {
+        setState(() {
+          prioridade = nivel;
+        });
+        Navigator.pop(context);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: selecionado
+              ? _corPrioridade(nivel).withOpacity(0.15)
+              : Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Icon(_iconePrioridade(nivel), color: _corPrioridade(nivel)),
+            const SizedBox(width: 12),
+            Text(
+              _labelPrioridade(nivel),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _labelPrioridade(PrioridadeComunicado nivel) {
+    switch (nivel) {
+      case PrioridadeComunicado.baixa:
+        return 'Baixa';
+      case PrioridadeComunicado.media:
+        return 'Média';
+      case PrioridadeComunicado.alta:
+        return 'Alta';
+    }
+  }
+
+  Color _corPrioridade(PrioridadeComunicado nivel) {
+    switch (nivel) {
+      case PrioridadeComunicado.baixa:
+        return Colors.green;
+      case PrioridadeComunicado.media:
+        return Colors.orange;
+      case PrioridadeComunicado.alta:
+        return Colors.red;
+    }
+  }
+
+  IconData _iconePrioridade(PrioridadeComunicado nivel) {
+    switch (nivel) {
+      case PrioridadeComunicado.baixa:
+        return Icons.arrow_downward;
+      case PrioridadeComunicado.media:
+        return Icons.remove;
+      case PrioridadeComunicado.alta:
+        return Icons.arrow_upward;
+    }
+  }
+
   Widget _buildFormulario() {
     return Card(
       child: Padding(
@@ -170,6 +289,9 @@ class _ComunicacaoInstitucionalPageState
                     'Destinatário',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 5),
+                  _buildPrioridade(),
+
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,

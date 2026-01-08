@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/widgets/card_statement.dart';
 import 'package:portal_do_aluno/shared/widgets/firestore/stream_vizualizacao_de_comunicados.dart';
 import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
 
@@ -27,7 +26,13 @@ class _ComunicadosProfessorState extends State<ComunicadosProfessor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Comunicados'),
-      body: Padding(padding: const EdgeInsets.all(12), child: CardStatement()),
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: StreamVisualizacaoDeComunicados(
+          // Passa o stream de comunicados para o widget de visualização
+          comunicadosStream: comunicadosStream,
+        ),
+      ),
     );
   }
 }
