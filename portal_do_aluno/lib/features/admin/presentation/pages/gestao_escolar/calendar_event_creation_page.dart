@@ -7,6 +7,9 @@ import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_card.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/show_create_calendar_event_modal.dart';
+import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/route_names.dart';
+
 import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
 
 class CalendarEventCreationPage extends StatefulWidget {
@@ -130,6 +133,9 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
             ),
             const SizedBox(height: 16),
             CalendarEventCard(
+              onTap: () {
+                NavigatorService.navigateTo(RouteNames.studentCalendar);
+              },
               title: 'Lista de Eventos',
               subtitle: 'Eventos já criados',
               backgroundColor: Colors.green[300]!,

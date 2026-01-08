@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/widgets/card_statement.dart';
 
 // Widget para visualizar comunicados em tempo real usando um Stream.
 
@@ -65,32 +66,36 @@ class _StreamVizualizacaoDeComunicadosState
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: ListTile(
-                // Ícone de mensagem no lado esquerdo.
-                leading: Icon(
-                  Icons.message,
-                  color: Colors.deepPurpleAccent[200],
-                ),
+              child: Column(
+                children: [
+                  ListTile(
+                    // Ícone de mensagem no lado esquerdo.
+                    leading: Icon(
+                      Icons.message,
+                      color: Colors.deepPurpleAccent[200],
+                    ),
 
-                // Título do comunicado.
-                title: Text(titulo, style: const TextStyle(fontSize: 20)),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-
-                    // Descrição do comunicado.
-                    Text(descricao),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    // Título do comunicado.
+                    title: Text(titulo, style: const TextStyle(fontSize: 20)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Data formatada no canto inferior direito.
-                        Text(dataFormatada),
+                        const SizedBox(height: 8),
+
+                        // Descrição do comunicado.
+                        Text(descricao),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // Data formatada no canto inferior direito.
+                            Text(dataFormatada),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
