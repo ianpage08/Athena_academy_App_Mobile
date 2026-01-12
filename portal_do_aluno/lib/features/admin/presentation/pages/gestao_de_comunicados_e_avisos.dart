@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
+import 'package:portal_do_aluno/features/student/presentation/widgets/animated_overlay.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
@@ -27,6 +28,7 @@ class _ComunicacaoInstitucionalPageState
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _mensagemController = TextEditingController();
   PrioridadeComunicado? prioridade;
+  bool isLoading = false;
 
   destinatarioSelected() {
     switch (_isSelectedDestinatario) {
@@ -64,6 +66,10 @@ class _ComunicacaoInstitucionalPageState
       );
 
       try {
+        setState(() {
+          isLoading = true;
+        });
+
         await _comunicadoService.enviarComunidado(novoComunicado);
         final tokens = await _comunicadoService.getTokensDestinatario(
           _isSelectedDestinatario!,
@@ -102,28 +108,37 @@ class _ComunicacaoInstitucionalPageState
             cor: Colors.red,
           );
         }
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(title: 'Comunicação Institucional'),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _buildFormulario(),
-              const SizedBox(height: 12),
-              _buildEstatisticas(),
-              const SizedBox(height: 12),
-              _buildHistorico(),
-            ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: const CustomAppBar(title: 'Comunicação Institucional'),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  _buildFormulario(),
+                  const SizedBox(height: 12),
+                  _buildEstatisticas(),
+                  const SizedBox(height: 12),
+                  _buildHistorico(),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+        if (isLoading) const AnimatedOverlay(),
+      ],
     );
   }
 

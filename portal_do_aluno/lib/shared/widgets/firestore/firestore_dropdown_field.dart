@@ -67,7 +67,7 @@ class _FirestoreDropdownFieldState extends State<FirestoreDropdownField> {
 
                   await showModalBottomSheet(
                     context: context,
-                    backgroundColor: Colors.white,
+
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(18),
@@ -131,7 +131,7 @@ class _FirestoreDropdownFieldState extends State<FirestoreDropdownField> {
 
                                   return Card(
                                     elevation: 0,
-                                    color: Colors.grey.shade100,
+                                    color: Theme.of(context).cardTheme.color,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
@@ -176,21 +176,18 @@ class _FirestoreDropdownFieldState extends State<FirestoreDropdownField> {
                 duration: const Duration(milliseconds: 250),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 14,
+                  vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: widget.habilitado
+                      ? Theme.of(context).cardColor
+                      : Colors.grey[200],
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color.fromARGB(31, 158, 158, 158),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.5),
                   ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(26, 0, 0, 0),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

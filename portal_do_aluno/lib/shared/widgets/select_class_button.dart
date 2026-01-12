@@ -131,14 +131,6 @@ class _SelectClassButtonState extends State<SelectClassButton> {
                           context,
                         ).colorScheme.primary.withOpacity(0.5),
                       ),
-
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(26, 0, 0, 0),
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

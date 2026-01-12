@@ -32,6 +32,8 @@ import 'package:portal_do_aluno/features/student/presentation/pages/student_dash
 import 'package:portal_do_aluno/features/teacher/presentation/pages/school_class_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_communications_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_dashboard.dart';
+import 'package:portal_do_aluno/shared/pages/about_app_pages.dart';
+import 'package:portal_do_aluno/shared/pages/help_page.dart';
 import 'package:portal_do_aluno/shared/pages/settings_page.dart';
 
 Map<String, WidgetBuilder> get routes => {
@@ -56,7 +58,9 @@ Map<String, WidgetBuilder> get routes => {
     final argumentos = ModalRoute.of(context)!.settings.arguments as String;
     return DetalhesAluno(alunoId: argumentos);
   },
-  
+  RouteNames.helpAppPage: (context) => const HelpPage(),
+  RouteNames.aboutAppPage: (context) => const AboutAppPage(),
+
   RouteNames.boletim: (context) => const GradeEntryPage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
@@ -85,7 +89,8 @@ Map<String, WidgetBuilder> get routes => {
 
   RouteNames.teacherCalendar: (context) => const AcademicCalendarPage(),
   RouteNames.teacherClasses: (context) => SchoolClassPage(),
-  RouteNames.comunicadosProfessor: (context) => const TeacherCommunicationsPage(),
+  RouteNames.comunicadosProfessor: (context) =>
+      const TeacherCommunicationsPage(),
   RouteNames.teacherExercicios: (context) => const ExerciseAssignmentPage(),
 };
 

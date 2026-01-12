@@ -62,15 +62,8 @@ class _CustomDatePickerFieldState extends State<CustomDatePickerField> {
               color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color.fromARGB(31, 158, 158, 158),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
               ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color.fromARGB(26, 0, 0, 0),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

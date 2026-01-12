@@ -64,6 +64,9 @@ class RouteNames {
   static const String contactSupport = '/contact_support';
   static const String sucessResetPassword = '/sucess_reset_password';
 
+  static const String aboutAppPage = '/about_app_page';
+  static const String helpAppPage = '/help_app_page';
+
 
   //paginas de Erro
   static const String notFound = '/not_found';
