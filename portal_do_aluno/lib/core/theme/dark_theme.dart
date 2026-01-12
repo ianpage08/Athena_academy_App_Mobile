@@ -32,7 +32,7 @@ ThemeData get darkTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.darkButton,
+        backgroundColor: AppColors.darkButtonGhost,
         foregroundColor: AppColors.darkTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -58,10 +58,10 @@ ThemeData get darkTheme {
         ),
       ),
       errorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColors.error, width: 2),
+        borderSide: BorderSide(color: AppColors.darkError, width: 2),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColors.error, width: 2),
+        borderSide: BorderSide(color: AppColors.darkError, width: 2),
       ),
     ),
     textTheme: const TextTheme(
@@ -74,12 +74,16 @@ ThemeData get darkTheme {
         fontSize: 16,
         color: Color.fromARGB(255, 252, 251, 226),
       ),
-      titleSmall: TextStyle(fontSize: 14, color: AppColors.darkTextPrimary),
+      titleSmall: TextStyle(fontSize: 12, color: AppColors.darkTextPrimary),
     ),
     colorScheme: const ColorScheme.dark(
       primary: Color.fromARGB(162, 170, 170, 170),
       secondary: AppColors.student,
       tertiary: AppColors.teacher,
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.darkBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
   );
 }

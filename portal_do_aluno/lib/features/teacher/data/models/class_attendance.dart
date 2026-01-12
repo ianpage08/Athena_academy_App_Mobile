@@ -6,7 +6,6 @@ class ClassAttendance {
   final String id;
   final String alunoId;
   final String classId;
-
   final DateTime data;
   final Presenca presenca;
 

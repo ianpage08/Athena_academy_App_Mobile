@@ -39,7 +39,7 @@ class _SelectClassButtonState extends State<SelectClassButton> {
 
                 await showModalBottomSheet(
                   context: context,
-                  backgroundColor: Colors.white,
+
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(18),
@@ -71,9 +71,14 @@ class _SelectClassButtonState extends State<SelectClassButton> {
 
                                 return Card(
                                   elevation: 0,
-                                  color: Colors.grey.shade100,
+                                  color: Theme.of(context).cardTheme.color,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary.withOpacity(0.2),
+                                    ),
                                   ),
                                   child: ListTile(
                                     leading: const Icon(
@@ -122,8 +127,11 @@ class _SelectClassButtonState extends State<SelectClassButton> {
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color.fromARGB(31, 158, 158, 158),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.5),
                       ),
+
                       boxShadow: const [
                         BoxShadow(
                           color: Color.fromARGB(26, 0, 0, 0),

@@ -202,7 +202,7 @@ class AnnouncementCard extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                backgroundColor: AppColors.lightButton,
+                backgroundColor: AppColors.lightButtonPrimary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

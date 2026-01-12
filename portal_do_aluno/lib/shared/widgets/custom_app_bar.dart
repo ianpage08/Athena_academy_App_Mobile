@@ -38,7 +38,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
       actions: [
-        NotificationPoup(userId: userId, route: nameRoute),
+        NotificationPoup(
+          userId: userId,
+          route: nameRoute ?? RouteNames.comunicadosProfessor,
+        ),
         IconButton(
           onPressed: () async {
             final sair = await showAppConfirmationDialog(

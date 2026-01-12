@@ -95,15 +95,15 @@ class _TurmaPageState extends State<TurmaPage> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.deepPurple.withOpacity(0.12),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: Text(
                   serie.isNotEmpty ? serie[0] : '?',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                 ),
               ),

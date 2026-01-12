@@ -37,18 +37,27 @@ class BuildInput extends StatelessWidget {
         hintText: hint,
         prefixIcon: Icon(icon, size: 22),
         filled: true,
-        fillColor: enabled ? const Color(0xFFF9FAFB) : const Color(0xFFF1F1F1),
+        fillColor: enabled
+            ? Theme.of(context).cardColor
+            : const Color(0xFFF1F1F1),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 18,
+          vertical: 16,
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF6366F1), width: 1.4),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 1.4,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),

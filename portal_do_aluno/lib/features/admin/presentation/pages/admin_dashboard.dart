@@ -128,7 +128,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.5,
+                childAspectRatio: 1.45,
                 mainAxisSpacing: 16,
                 physics: const BouncingScrollPhysics(),
                 children: [
@@ -138,7 +138,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     highlight: true,
                     icon: CupertinoIcons.person_2_square_stack,
                     title: 'Nova Matrícula',
-                    subtitle: 'Cadastrar  alunos',
+                    subtitle: 'Cadastrar alunos ',
                     onTap: () {
                       NavigatorService.navigateTo(
                         RouteNames.adminMatriculaCadastro,

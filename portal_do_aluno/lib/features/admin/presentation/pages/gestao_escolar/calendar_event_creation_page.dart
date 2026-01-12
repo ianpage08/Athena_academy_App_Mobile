@@ -59,7 +59,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
 
         final tipoInt = calendarEventTypeToInt(tipo);
         if (titulo.isEmpty) {
-          return snackBarPersonalizado(
+          return showAppSnackBar(
             context: context,
             mensagem: 'Por favor, preencha todos os campos corretamente.',
             cor: Colors.red,
@@ -96,7 +96,11 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Calendário Escolar')),
+      appBar: AppBar(
+        title: const Text('Calendário Escolar'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(

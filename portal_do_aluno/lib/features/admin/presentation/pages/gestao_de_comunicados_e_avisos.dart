@@ -43,26 +43,12 @@ class _ComunicacaoInstitucionalPageState
     }
   }
 
-  final List<Map<String, dynamic>> historico = [
-    {
-      "titulo": "Reunião de Pais - 3º Bimestre",
-      "destinatario": "Pais/Responsáveis",
-      "mensagem": "Reunião será realizada no dia 15/12...",
-      "data": "10/12 14:30",
-      'vizualizacao': 45,
-    },
-    {
-      "titulo": "Suspensão das Aulas - Feriado",
-      "destinatario": "Todos",
-      "mensagem": "Aulas suspensas no dia 15/11...",
-      "data": "14/11 09:15",
-      'vizualizacao': 90,
-    },
-  ];
   bool anexoAdicionado = false;
   String? _isSelectedDestinatario;
   Future<void> _enviarMenssagem() async {
-    if (_formKey.currentState!.validate() && _isSelectedDestinatario != null) {
+    if (_formKey.currentState!.validate() &&
+        _isSelectedDestinatario != null &&
+        prioridade != null) {
       final novoComunicado = Comunicado(
         id: '',
         titulo: _tituloController.text,
@@ -103,6 +89,7 @@ class _ComunicacaoInstitucionalPageState
           _tituloController.clear();
           _mensagemController.clear();
           _isSelectedDestinatario = null;
+          prioridade = null;
           anexoAdicionado = false;
         });
       } catch (e, s) {
@@ -145,24 +132,18 @@ class _ComunicacaoInstitucionalPageState
       width: double.infinity,
       height: 50,
       decoration: const BoxDecoration(
-        color: AppColors.lightButton,
+        color: AppColors.lightButtonPrimary,
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
       child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.lightButton,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
+        style: Theme.of(context).elevatedButtonTheme.style,
         onPressed: _abrirModalPrioridade,
         icon: prioridade != null
             ? Icon(
                 _iconePrioridade(prioridade!),
                 color: _corPrioridade(prioridade!),
               )
-            : const Icon(Icons.flag_outlined, color: Colors.grey),
+            : const Icon(Icons.flag_outlined, color: Colors.white),
 
         label: Text(
           prioridade != null
@@ -185,9 +166,14 @@ class _ComunicacaoInstitucionalPageState
       ),
       builder: (_) {
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: PrioridadeComunicado.values.map(_itemPrioridade).toList(),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: PrioridadeComunicado.values
+                  .map(_itemPrioridade)
+                  .toList(),
+            ),
           ),
         );
       },
@@ -210,8 +196,9 @@ class _ComunicacaoInstitucionalPageState
         decoration: BoxDecoration(
           color: selecionado
               ? _corPrioridade(nivel).withOpacity(0.15)
-              : Colors.grey[100],
+              : Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _corPrioridade(nivel)),
         ),
         child: Row(
           children: [
@@ -315,50 +302,130 @@ class _ComunicacaoInstitucionalPageState
                         showModalBottomSheet(
                           context: context,
                           builder: (context) {
-                            return ListView(
+                            IconData _iconByDestinatario(String destinatario) {
+                              switch (destinatario.toLowerCase()) {
+                                case 'alunos':
+                                  return Icons.school_rounded;
+                                case 'professores':
+                                  return Icons.person_rounded;
+                                case 'responsáveis':
+                                  return Icons.family_restroom_rounded;
+                                case 'todos':
+                                  return Icons.groups_rounded;
+                                default:
+                                  return Icons.notifications_rounded;
+                              }
+                            }
+
+                            List destinatarioList = [
+                              'Todos',
+                              'Alunos',
+                              'Professores',
+                            ];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                ListTile(
-                                  leading: const Icon(Icons.people),
-                                  title: const Text('Todos'),
-                                  onTap: () {
-                                    setState(() {
-                                      _isSelectedDestinatario = 'Todos';
-                                      Navigator.pop(context);
-                                    });
-                                  },
+                                const SizedBox(height: 12),
+                                Text(
+                                  'Selecione um destinatário',
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                                const Divider(),
-                                ListTile(
-                                  leading: const Icon(Icons.groups),
-                                  title: const Text('Alunos'),
-                                  onTap: () {
-                                    setState(() {
-                                      _isSelectedDestinatario = 'Alunos';
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                ),
-                                const Divider(),
-                                ListTile(
-                                  leading: const Icon(Icons.school),
-                                  title: const Text('Professores'),
-                                  onTap: () {
-                                    setState(() {
-                                      _isSelectedDestinatario = 'Professores';
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                ),
-                                const Divider(),
-                                ListTile(
-                                  leading: const Icon(Icons.person),
-                                  title: const Text('Responsáveis'),
-                                  onTap: () {
-                                    setState(() {
-                                      _isSelectedDestinatario = 'Responsáveis';
-                                      Navigator.pop(context);
-                                    });
-                                  },
+                                const SizedBox(height: 12),
+
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: destinatarioList.length,
+                                    itemBuilder: (context, index) {
+                                      final destinatario =
+                                          destinatarioList[index];
+                                      final isSelected =
+                                          _isSelectedDestinatario ==
+                                          destinatario;
+
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 6,
+                                          horizontal: 12,
+                                        ),
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                          onTap: () {
+                                            setState(() {
+                                              _isSelectedDestinatario =
+                                                  destinatario;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: isSelected
+                                                  ? Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                        .withOpacity(0.08)
+                                                  : Theme.of(context).cardColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                              border: Border.all(
+                                                color: isSelected
+                                                    ? Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withOpacity(0.5)
+                                                    : Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withOpacity(0.5),
+                                              ),
+                                            ),
+                                            child: ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor: isSelected
+                                                    ? Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withOpacity(0.15)
+                                                    : Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary
+                                                          .withOpacity(0.12),
+                                                child: Icon(
+                                                  _iconByDestinatario(
+                                                    destinatario,
+                                                  ),
+                                                  color: isSelected
+                                                      ? Theme.of(
+                                                          context,
+                                                        ).colorScheme.primary
+                                                      : Theme.of(
+                                                          context,
+                                                        ).iconTheme.color,
+                                                ),
+                                              ),
+                                              title: Text(
+                                                destinatario,
+                                                style: TextStyle(
+                                                  fontWeight: isSelected
+                                                      ? FontWeight.w600
+                                                      : FontWeight.w500,
+                                                ),
+                                              ),
+                                              trailing: isSelected
+                                                  ? Icon(
+                                                      Icons.check_circle,
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.primary,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ],
                             );
@@ -392,7 +459,7 @@ class _ComunicacaoInstitucionalPageState
               ),
             ),
 
-            Container(
+            /*Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -432,8 +499,7 @@ class _ComunicacaoInstitucionalPageState
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 12),
+            ),*/
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -465,9 +531,7 @@ class _ComunicacaoInstitucionalPageState
 
   Widget _buildEstatisticas() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        const SizedBox(width: 16),
         StreamBuilder<int>(
           stream: _comunicadoService
               .calcularQuantidadeDeCominicados()
@@ -491,7 +555,7 @@ class _ComunicacaoInstitucionalPageState
             );
           },
         ),
-        StreamBuilder<int>(
+        /*StreamBuilder<int>(
           stream: _comunicadoService.contadorDeVisualizacoesTotalVistas(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -511,7 +575,7 @@ class _ComunicacaoInstitucionalPageState
               Colors.green.shade900,
             );
           },
-        ),
+        ),*/
       ],
     );
   }

@@ -70,7 +70,7 @@ class _ComunicadosStreamListState
 
             return Padding(
               padding: const EdgeInsets.all(12),
-              child: CardStatement(
+              child: AnnouncementCard(
                 title: titulo,
                 subtitle: descricao,
                 data: dataFormatada,

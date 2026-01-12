@@ -30,8 +30,8 @@ class NavigationMenuCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: highlight
-                ? AppColors.lightButton.withOpacity(0.06)
-                : theme.colorScheme.surface,
+                ? AppColors.lightButtonPrimary.withOpacity(0.06)
+                : Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(16),
             border: highlight
                 ? Border.all(

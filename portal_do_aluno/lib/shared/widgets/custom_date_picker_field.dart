@@ -59,7 +59,7 @@ class _CustomDatePickerFieldState extends State<CustomDatePickerField> {
             duration: const Duration(milliseconds: 250),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).cardTheme.color,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: const Color.fromARGB(31, 158, 158, 158),

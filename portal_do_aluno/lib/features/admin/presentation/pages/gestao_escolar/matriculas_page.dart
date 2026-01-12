@@ -75,7 +75,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: Theme.of(context).cardTheme.color,
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: const [
                     BoxShadow(
@@ -89,10 +89,15 @@ class _MatriculasPageState extends State<MatriculasPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Avatar
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 22,
-                      backgroundColor: Color(0xFFEDE9FE),
-                      child: Icon(Icons.person, color: Color(0xFF6366F1)),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.1),
+                      child: Icon(
+                        Icons.person,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
                     ),
 
                     const SizedBox(width: 12),

@@ -44,18 +44,19 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color borderColor = Theme.of(
+      context,
+    ).colorScheme.primary.withOpacity(0.4);
 
-    final Color borderColor =
-        Theme.of(context).dividerColor.withOpacity(0.4);
-
-    final Color focusColor =
-        Theme.of(context).colorScheme.primary.withOpacity(0.9);
+    final Color focusColor = Theme.of(
+      context,
+    ).colorScheme.primary.withOpacity(0.9);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        boxShadow: const [
+      decoration: const BoxDecoration(
+        boxShadow: [
           BoxShadow(
             color: Color.fromARGB(20, 0, 0, 0),
             blurRadius: 6,
@@ -73,11 +74,12 @@ class CustomTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
 
-        validator: validator ??
+        validator:
+            validator ??
             (obrigatorio
                 ? (value) => (value == null || value.isEmpty)
-                    ? 'Campo obrigatório'
-                    : null
+                      ? 'Campo obrigatório'
+                      : null
                 : null),
 
         decoration: InputDecoration(
@@ -87,10 +89,7 @@ class CustomTextFormField extends StatelessWidget {
 
           // ---------- ÍCONES ----------
           prefixIcon: prefixIcon != null
-              ? Icon(
-                  prefixIcon,
-                  color: Theme.of(context).iconTheme.color,
-                )
+              ? Icon(prefixIcon, color: Theme.of(context).iconTheme.color)
               : null,
           suffixIcon: suffixIcon,
 
@@ -102,40 +101,26 @@ class CustomTextFormField extends StatelessWidget {
           contentPadding: contentPadding,
 
           // ---------- BORDAS ----------
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
 
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: borderColor,
-              width: 1.3,
-            ),
+            borderSide: BorderSide(color: borderColor, width: 1.3),
           ),
 
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: focusColor,
-              width: 2,
-            ),
+            borderSide: BorderSide(color: focusColor, width: 2),
           ),
 
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Colors.red,
-              width: 2,
-            ),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
           ),
 
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(
-              color: Colors.red,
-              width: 2,
-            ),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
           ),
         ),
       ),

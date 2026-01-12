@@ -73,7 +73,7 @@ class _ExerciseAssignmentPageState extends State<ExerciseAssignmentPage> {
           .doc(professorId)
           .get();
 
-      final exercicio = Exercicios(
+      final exercicio = StudentTask(
         id: '',
         titulo: _controllers['titulo']!.text,
         conteudoDoExercicio: _controllers['conteudo']!.text,

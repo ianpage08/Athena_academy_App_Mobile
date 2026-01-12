@@ -238,7 +238,7 @@ class _AttendanceRegistrationPageState extends State<AttendanceRegistrationPage>
 
     try {
       for (var pre in presencas.entries) {
-        final frequencia = Frequencia(
+        final frequencia =ClassAttendance(
           id: '',
           alunoId: pre.key,
           classId: turmaId!,

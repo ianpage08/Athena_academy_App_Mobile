@@ -35,7 +35,7 @@ class _CustomDropdownFieldState extends State<CustomDropdownField> {
 
               await showModalBottomSheet(
                 context: context,
-                backgroundColor: Colors.white,
+
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
                 ),

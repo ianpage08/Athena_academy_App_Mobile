@@ -58,7 +58,7 @@ class _SelectStudentButtonState extends State<SelectStudentButton> {
 
                 await showModalBottomSheet(
                   context: context,
-                  backgroundColor: Colors.white,
+
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(18),
@@ -92,7 +92,7 @@ class _SelectStudentButtonState extends State<SelectStudentButton> {
 
                                 return Card(
                                   elevation: 0,
-                                  color: Colors.grey.shade100,
+                                  color: Theme.of(context).cardTheme.color,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -143,7 +143,9 @@ class _SelectStudentButtonState extends State<SelectStudentButton> {
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color.fromARGB(31, 158, 158, 158),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.5),
                       ),
                       boxShadow: const [
                         BoxShadow(

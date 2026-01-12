@@ -2,54 +2,93 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppColors {
-  // Dark Theme Colors
-  static const Color darkBackground = Color(0xFF0E0B1F); // Fundo principal
-  static const Color darkCard = Color(0xFF1E1B2E); // Containers / Cards
-  static const Color darkPrimary = Color(0xFF7C3AED); // Roxo principal
-  static const Color darkSecondary = Color(0xFF8B5CF6); // Roxo secundário
-  static const Color darkTextPrimary = Color(0xFFEDE9FE); // Texto principal
-  static const Color darkTextSecondary = Color(0xFFA78BFA); // Texto secundário
-  static const Color darkButton = Color(0xFF1E88E5);
-  static const Color darkIcon = Color(0xFFC4B5FD); // Ícones
-  static const Color darkError = Color(0xFFF43F5E); // Erro
-  static const Color darkSuccess = Color(0xFF10B981); // Sucesso
-  static const Color darkAppBar = Color(0xFF2E003E);
+  // Fundo principal (menos preto, mais elegante)
+  static const Color darkBackground = Color(0xFF121026);
+
+  // Cards / Containers (camada clara)
+  static const Color darkCard = Color(0xFF23204A);
+
+  // AppBar (ligeiramente destacada)
+  static const Color darkAppBar = Color(0xFF181538);
+
+  // Roxo principal (menos neon)
+  static const Color darkPrimary = Color(0xFF8B5CF6);
+
+  // Roxo secundário (hover / focus)
+  static const Color darkSecondary = Color(0xFFA78BFA);
+
+  // Texto principal (off-white)
+  static const Color darkTextPrimary = Color(0xFFEDEAFF);
+
+  // Texto secundário
+  static const Color darkTextSecondary = Color(0xFFBDB7E2);
+
+  // Ícones
+  static const Color darkIcon = Color(0xFFC7C3F4);
+
+  // Inputs / superfícies elevadas
+  static const Color darkInputFill = Color(0xFF26224A);
+
+  // Bordas sutis
+  static const Color darkBorder = Color(0xFF2F2B5C);
+
+  // Botão principal
+  static const Color darkButtonPrimary = Color(0xFF8B5CF6);
+
+  // Botão ghost
+  static const Color darkButtonGhost = Color(0xFF2A2558);
+
+  // Estados
+  static const Color darkError = Color(0xFFF87171);
+  static const Color darkSuccess = Color(0xFF34D399);
+  static const Color darkWarning = Color(0xFFFBBF24);
 
   // Light Theme Colors
-  static const Color lightBackgroundColor = Color(0xFFF8FAFC);
+  // =========================
+  // LIGHT THEME – Warm Neutral
+  // =========================
 
-  static const Color appBar = Color(0xFFD6DEE7); // Cinza azulado claro — estilo
-  // Fundo AppBar
-  static const Color lightPrimary = Color(
-    0xFF3A6EA5,
-  ); // Azul elegante (botões e destaques)
-  static const Color lightSecondary = Color(
-    0xFF5C86C5,
-  ); // Azul mais suave para realces
-  // Fundo quase branco com leve toque azulado
-  static const Color lightCard = Color(
-    0xFFFFFFFF,
-  ); // Cartões e painéis brancos limpos
-  static const Color lightTextPrimary = Color(
-    0xFF1C1C1E,
-  ); // Preto-acinzentado típico do iOS
-  static const Color lightTextSecondary = Color(
-    0xFF5E5E68,
-  ); // Cinza médio para textos secundários
-  static const Color lightIcon = Color(0xFF3A6EA5); // Ícones em azul frio
-  static const Color lightBorder = Color.fromARGB(
-    255,
-    198,
-    198,
-    238,
-  ); // Bordas e divisores sutis
-  static const Color lightInputFill = Color(
-    0xFFF2F3F6,
-  ); // Campos de texto em cinza bem claro
-  static const Color lightButton = Color(0xFF007BFF); // Botões no tom principal
-  static const Color lightSuccess = Color(0xFF34C759); // Verde iOS
-  static const Color lighTerror = Color(0xFFFF3B30); // Vermelho iOS
-  static const Color lighThint = Color(0xFF8E8E93); // Placeholders e dicas
+  /// Fundo principal (off-white quente)
+  static const Color lightBackgroundSoft = Color(0xFFF9F8F3);
+  // RGB: 249, 248, 243 → papel premium
+
+  /// Cards e superfícies
+  static const Color lightCard = Color(0xFFFFFFFF);
+
+  /// AppBar clara e elegante
+  static const Color lightAppBar = Color(0xFFF3F1EA);
+
+  /// Cor primária (mantém identidade)
+  static const Color lightPrimary = Color(0xFF3A6EA5);
+
+  /// Secundária suave
+  static const Color lightSecondary = Color(0xFF5C86C5);
+
+  /// Texto principal
+  static const Color lightTextPrimary = Color(0xFF1E1E1E);
+
+  /// Texto secundário
+  static const Color lightTextSecondary = Color(0xFF6B6B6B);
+
+  /// Ícones
+  static const Color lightIcon = Color(0xFF3A6EA5);
+
+  /// Bordas e divisores
+  static const Color lightBorder = Color(0xFFE4E1D8);
+
+  /// Inputs (bem leve e quente)
+  static const Color lightInputFill = Color(0xFFF1EFE7);
+
+  /// Botão primário
+  static const Color lightButtonPrimary = Color(0xFF3A6EA5);
+
+  /// Botão secundário / ghost
+  static const Color lightButtonGhost = Color(0xFFEAE6DA);
+
+  /// Estados
+  static const Color lightSuccess = Color(0xFF2E7D32);
+  static const Color lightError = Color(0xFFD32F2F);
+  static const Color lightHint = Color(0xFF9E9E9E);
 
   static const Color primary = Color.fromARGB(255, 36, 1, 87); // roxo
   static const Color student = Color(0xFF2196F3); // azul

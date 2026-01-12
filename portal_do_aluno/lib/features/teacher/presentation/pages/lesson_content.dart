@@ -50,7 +50,7 @@ class _LessonContentState extends State<LessonContent> {
       return;
     }
 
-    final conteudo = ConteudoPresenca(
+    final conteudo = LessonRecord(
       id: '',
       classId: turmaId!,
       conteudo: _conteudoController.text,

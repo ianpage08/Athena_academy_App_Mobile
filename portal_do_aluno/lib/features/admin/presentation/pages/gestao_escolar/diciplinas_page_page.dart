@@ -96,10 +96,10 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.deepPurple.withOpacity(0.12),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.book, color: Colors.deepPurple),
+              child: Icon(Icons.book, color: Theme.of(context).iconTheme.color),
             ),
 
             const SizedBox(width: 16),

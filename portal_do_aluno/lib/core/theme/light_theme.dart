@@ -7,10 +7,10 @@ ThemeData get lightTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     primaryColor: AppColors.lightPrimary,
-    scaffoldBackgroundColor: AppColors.lightBackgroundColor,
+    scaffoldBackgroundColor: AppColors.lightBackgroundSoft,
 
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.appBar,
+      backgroundColor: AppColors.lightAppBar,
       foregroundColor: AppColors.lightTextPrimary,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
       elevation: 1,
@@ -30,7 +30,7 @@ ThemeData get lightTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.lightButton,
+        backgroundColor: AppColors.lightButtonPrimary,
         foregroundColor: AppColors.lightTextPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shadowColor: const Color.fromARGB(255, 0, 0, 0),
@@ -39,8 +39,8 @@ ThemeData get lightTheme {
     ),
 
     inputDecorationTheme: const InputDecorationTheme(
-      hintStyle: TextStyle(color: AppColors.lighThint),
-      labelStyle: TextStyle(color: AppColors.lighThint),
+      hintStyle: TextStyle(color: AppColors.lightHint),
+      labelStyle: TextStyle(color: AppColors.lightHint),
       filled: true,
       fillColor: Color.fromARGB(255, 172, 160, 228),
       iconColor: AppColors.lightIcon,
@@ -70,8 +70,12 @@ ThemeData get lightTheme {
     colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(162, 170, 170, 170),
 
-      secondary: AppColors.lightButton,
+      secondary: AppColors.lightButtonPrimary,
       tertiary: AppColors.teacher,
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: AppColors.lightBackgroundSoft,
+      
     ),
   );
 }
