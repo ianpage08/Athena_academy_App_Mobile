@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
-import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 
-import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
+import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
@@ -131,7 +131,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                     ),
 
                     // Menu de ações
-                    MenuPontinhoGenerico(
+                    ActionMenuButton(
                       id: alunoId,
                       items: [
                         MenuItemConfig(
@@ -150,7 +150,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                           onSelected: (id, context, extra) async {
                             if (id == null) return;
 
-                            final excluir = await showConfirmationDialog(
+                            final excluir = await showAppConfirmationDialog(
                               context: context,
                               title: 'Excluir matrícula?',
                               content: 'Essa ação é irreversível.',

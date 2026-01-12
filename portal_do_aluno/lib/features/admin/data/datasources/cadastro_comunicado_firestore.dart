@@ -38,7 +38,7 @@ class ComunicadoService {
           .doc(userId)
           .collection('visualizacoes')
           .doc(docRef.id);
-      
+
       batch.set(document, {
         'id': docRef.id,
         'userId': userId,
@@ -170,5 +170,33 @@ class ComunicadoService {
       });
     }
     await batch.commit();
+  }
+
+  Future<void> excluirComunicadoPorTempo() async {
+    final agora = Timestamp.now();
+    final comunicados = await _firestore
+        .collection('comunicados')
+        .where('dataDeExpiracao', isLessThanOrEqualTo: agora).limit(480)
+        .get();
+    try{
+      if (comunicados.docs.isEmpty) {
+      debugPrint('Nenhum comunicado expirado encontrado');
+      return;
+    }
+
+    WriteBatch batch = _firestore.batch();
+
+    for (var comunicado in comunicados.docs) {
+      batch.delete(comunicado.reference);
+    }
+    await batch.commit();
+    debugPrint('Comunicados expirados removidos: ${comunicados.docs.length}');
+    }catch(e){
+      debugPrint('Erro ao excluir comunicados: $e');
+    }
+
+    
+
+    
   }
 }

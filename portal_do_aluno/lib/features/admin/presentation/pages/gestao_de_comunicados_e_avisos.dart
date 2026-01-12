@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
-import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
-import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
+import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class ComunicacaoInstitucionalPage extends StatefulWidget {
   const ComunicacaoInstitucionalPage({super.key});
@@ -71,6 +72,9 @@ class _ComunicacaoInstitucionalPageState
           _isSelectedDestinatario!.toLowerCase(),
         ),
         prioridade: prioridade!.toString().split('.').last,
+        dataDeExpiracao: Timestamp.fromDate(
+          DateTime.now().add(const Duration(days: 20)),
+        ),
       );
 
       try {
@@ -88,7 +92,7 @@ class _ComunicacaoInstitucionalPageState
         }
         if (!context.mounted) return;
         if (mounted) {
-          snackBarPersonalizado(
+          showAppSnackBar(
             context: context,
             mensagem: 'Comunicado enviado com sucesso! 🎉',
             cor: Colors.green,
@@ -105,7 +109,7 @@ class _ComunicacaoInstitucionalPageState
         if (mounted) {
           debugPrint('Erro ao enviar: $e');
           debugPrintStack(stackTrace: s);
-          snackBarPersonalizado(
+          showAppSnackBar(
             context: context,
             mensagem: 'Erro ao enviar Comunicado',
             cor: Colors.red,
@@ -141,12 +145,12 @@ class _ComunicacaoInstitucionalPageState
       width: double.infinity,
       height: 50,
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightButton,
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[200],
+          backgroundColor: AppColors.lightButton,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -164,7 +168,10 @@ class _ComunicacaoInstitucionalPageState
           prioridade != null
               ? _labelPrioridade(prioridade!)
               : 'Selecione a prioridade',
-          style: const TextStyle(color: Colors.black, fontSize: 18),
+          style: const TextStyle(
+            color: Color.fromARGB(255, 255, 255, 255),
+            fontSize: 18,
+          ),
         ),
       ),
     );
@@ -277,7 +284,7 @@ class _ComunicacaoInstitucionalPageState
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: _tituloController,
 
                     prefixIcon: Icons.title,
@@ -286,11 +293,16 @@ class _ComunicacaoInstitucionalPageState
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Destinatário',
+                    'Selecione uma Prioridade',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
                   _buildPrioridade(),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Destinatário',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
 
                   const SizedBox(height: 5),
                   SizedBox(
@@ -369,7 +381,7 @@ class _ComunicacaoInstitucionalPageState
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: _mensagemController,
                     maxLines: 4,
                     prefixIcon: Icons.message,
@@ -598,14 +610,14 @@ class _ComunicacaoInstitucionalPageState
                         ),
                       ],
                     ),
-                    trailing: MenuPontinhoGenerico(
+                    trailing: ActionMenuButton(
                       id: item['id'],
                       items: [
                         MenuItemConfig(
                           value: 'Excluir',
                           label: 'Excluir',
                           onSelected: (id, context, extra) async {
-                            final excluir = await showConfirmationDialog(
+                            final excluir = await showAppConfirmationDialog(
                               context: context,
                               title: 'Deseja Excluir esse Comunicado?',
                               content: 'Essa ação é irreversível',

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portal_do_aluno/features/teacher/data/models/frequencia.dart';
+import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -7,7 +7,7 @@ class FrequenciaService {
   final CollectionReference frequenciasCollection = _firestore.collection(
     'frequencias',
   );
-  Stream<List<Frequencia>> getFrequencia(String turmaId) {
+  Stream<List<ClassAttendance>> getFrequencia(String turmaId) {
     return frequenciasCollection
         .where('classId', isEqualTo: turmaId)
         .snapshots()
@@ -15,7 +15,7 @@ class FrequenciaService {
           (snapshot) => snapshot.docs
               .map(
                 (item) =>
-                    Frequencia.fromJson(item.data() as Map<String, dynamic>),
+                    ClassAttendance.fromJson(item.data() as Map<String, dynamic>),
               )
               .toList(),
         );
@@ -24,7 +24,7 @@ class FrequenciaService {
   Future<void> salvarFrequenciaPorTurma({
     required String alunoId,
     required String turmaId,
-    required Frequencia frequencia,
+    required ClassAttendance frequencia,
   }) async {
     // Normaliza a data para comparar apenas o dia (ignorando hora/minuto/segundo)
     final dataDoDia = DateTime(

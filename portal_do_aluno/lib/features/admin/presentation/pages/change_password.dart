@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+import 'package:portal_do_aluno/shared/widgets/save_button.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -36,7 +36,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       listControllers: listControllers,
     )) {
       if (novaSenha != repetirSenha) {
-        return snackBarPersonalizado(
+        return showAppSnackBar(
           context: context,
           mensagem: 'As senhas não são iguais',
         );
@@ -45,7 +45,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         await _cadastroService.atualizarSenha(usuarioId, novaSenha);
       } catch (e) {
         if (mounted) {
-          snackBarPersonalizado(
+          showAppSnackBar(
             context: context,
             mensagem: 'Erro ao atualizar a senha',
             cor: Colors.red,
@@ -93,7 +93,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 6),
-                      TextFormFieldPersonalizado(
+                      CustomTextFormField(
                         obscureText: isObscure,
                         hintText: 'Digite sua nova senha',
                         controller: _mapTextEditing['novaSenha']!,
@@ -138,7 +138,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 6),
-                      TextFormFieldPersonalizado(
+                      CustomTextFormField(
                         obscureText: isObscure,
                         controller: _mapTextEditing['repetirSenha']!,
                         hintText: 'Confirme sua nova senha',
@@ -177,7 +177,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       const SizedBox(height: 24),
 
                       /// Botão Salvar
-                      BotaoSalvar(
+                      SaveButton(
                         salvarconteudo: () async {
                           _salvarSenha(usuarioId);
                           NavigatorService.navigateReplaceWith(

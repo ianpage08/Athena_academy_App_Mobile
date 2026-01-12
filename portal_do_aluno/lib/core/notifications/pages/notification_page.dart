@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/notifications/notification_service_local.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
-import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
-import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
+import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
@@ -140,7 +140,7 @@ class _TurmaPageState extends State<TurmaPage> {
             ),
 
             // MENU
-            MenuPontinhoGenerico(
+            ActionMenuButton(
               id: data['id'],
               items: [
                 MenuItemConfig(
@@ -149,7 +149,7 @@ class _TurmaPageState extends State<TurmaPage> {
                   onSelected: (id, context, extra) async {
                     if (id == null) return;
 
-                    final confirmar = await showConfirmationDialog(
+                    final confirmar = await showAppConfirmationDialog(
                       context: context,
                       title: 'Excluir turma?',
                       content: 'Essa ação é irreversível.',

@@ -4,14 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/data_picker_calendario.dart';
-import 'package:portal_do_aluno/shared/widgets/fixed_drop.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_dropdown_field.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class MatriculaCadastro extends StatefulWidget {
   const MatriculaCadastro({super.key});
@@ -103,7 +103,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
         ) ||
         dataSelecionada.value == null ||
         _mapValueNotifier['turmaId']!.value == null) {
-      snackBarPersonalizado(
+      showAppSnackBar(
         context: context,
         mensagem:
             'Por favor, preencha todos os campos obrigatórios corretamente.',
@@ -166,7 +166,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       );
 
       if (mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Aluno cadastrado com sucesso! 🎉',
         );
@@ -174,7 +174,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       _limparCampos();
     } catch (e) {
       if (mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Erro ao cadastrar aluno',
         );
@@ -257,12 +257,12 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     icon: CupertinoIcons.person_2_fill,
     title: 'Dados do Aluno',
     children: [
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Nome Completo do Aluno',
         controller: _mapController['nomeAluno']!,
         prefixIcon: CupertinoIcons.person_fill,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'CPF',
         controller: _mapController['cpfAluno']!,
         prefixIcon: CupertinoIcons.number,
@@ -272,14 +272,14 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
           CpfInputFormatter(),
         ],
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Naturalidade',
         controller: _mapController['naturalidade']!,
         prefixIcon: CupertinoIcons.location_solid,
       ),
       ValueListenableBuilder<String?>(
         valueListenable: _mapValueNotifier['sexoSelecionado']!,
-        builder: (context, sexo, child) => FixedDrop(
+        builder: (context, sexo, child) => CustomDropdownField(
           itens: const ['Masculino', 'Feminino'],
           selecionado: sexo,
           titulo: 'Selecione o sexo do aluno(a)',
@@ -291,7 +291,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       ValueListenableBuilder<DateTime?>(
         valueListenable: dataSelecionada,
         builder: (context, dataEscolhida, child) {
-          return DataPickerCalendario(
+          return CustomDatePickerField(
             onDate: (data) => dataSelecionada.value = data,
           );
         },
@@ -303,32 +303,32 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     icon: CupertinoIcons.map_fill,
     title: 'Endereço',
     children: [
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'CEP',
         controller: _mapController['cep']!,
         prefixIcon: CupertinoIcons.map_pin_ellipse,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Rua',
         controller: _mapController['rua']!,
         prefixIcon: CupertinoIcons.location,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Número',
         controller: _mapController['numero']!,
         prefixIcon: CupertinoIcons.number_square,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Bairro',
         controller: _mapController['bairro']!,
         prefixIcon: CupertinoIcons.map_pin,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Cidade',
         controller: _mapController['cidade']!,
         prefixIcon: CupertinoIcons.building_2_fill,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Estado',
         controller: _mapController['estado']!,
         prefixIcon: CupertinoIcons.flag,
@@ -340,12 +340,12 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     icon: CupertinoIcons.person_2_fill,
     title: 'Responsáveis',
     children: [
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Nome da Mãe',
         controller: _mapController['nomeMae']!,
         prefixIcon: CupertinoIcons.person_crop_circle_fill_badge_checkmark,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'CPF da Mãe',
         controller: _mapController['cpfMae']!,
         prefixIcon: CupertinoIcons.number_circle,
@@ -355,18 +355,18 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
           CpfInputFormatter(),
         ],
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Telefone da Mãe',
         controller: _mapController['telefoneMae']!,
         prefixIcon: CupertinoIcons.phone_fill,
         maxLength: 11,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Nome do Pai',
         controller: _mapController['nomePai']!,
         prefixIcon: CupertinoIcons.person_crop_circle_fill,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'CPF do Pai',
         controller: _mapController['cpfPai']!,
         prefixIcon: CupertinoIcons.number_circle_fill,
@@ -376,7 +376,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
           CpfInputFormatter(),
         ],
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Telefone do Pai',
         controller: _mapController['telefonePai']!,
         prefixIcon: CupertinoIcons.phone,
@@ -389,12 +389,12 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     icon: CupertinoIcons.book_fill,
     title: 'Dados Acadêmicos',
     children: [
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Número da Matrícula',
         controller: _mapController['numeroMatricula']!,
         prefixIcon: CupertinoIcons.doc_text,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Ano Letivo',
         controller: _mapController['anoLetivo']!,
         prefixIcon: CupertinoIcons.calendar_today,
@@ -402,7 +402,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
       ValueListenableBuilder<String?>(
         valueListenable: _mapValueNotifier['turnoSelecionado']!,
         builder: (context, value, child) {
-          return FixedDrop(
+          return CustomDropdownField(
             itens: const ['Matutino', 'Vespertino'],
             selecionado: value,
             titulo: 'Selecione o turno',
@@ -412,7 +412,7 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
           );
         },
       ),
-      BotaoSelecionarTurma(
+      SelectClassButton(
         turmaSelecionada: _mapValueNotifier['turmaNome']!,
         onTurmaSelecionada: (id, turmaNome) {
           _mapValueNotifier['turmaNome']!.value = turmaNome;
@@ -427,19 +427,19 @@ class _MatriculaCadastroState extends State<MatriculaCadastro>
     icon: CupertinoIcons.heart_fill,
     title: 'Informações Médicas',
     children: [
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Alergias',
         controller: _mapController['alergias']!,
         prefixIcon: CupertinoIcons.bandage_fill,
         obrigatorio: false,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Medicações',
         controller: _mapController['medicamentos']!,
         prefixIcon: CupertinoIcons.capsule_fill,
         obrigatorio: false,
       ),
-      TextFormFieldPersonalizado(
+      CustomTextFormField(
         label: 'Observações',
         controller: _mapController['observacoes']!,
         prefixIcon: CupertinoIcons.text_bubble_fill,

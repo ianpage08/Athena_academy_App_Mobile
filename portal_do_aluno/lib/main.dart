@@ -2,13 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/app.dart';
 import 'package:portal_do_aluno/core/app_constants/app_preferences.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
+import 'package:portal_do_aluno/features/admin/data/datasources/calendario_firestore.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/core/services/notification_service_remote.dart';
 import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/firebase/firebase_options.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/providers/presenca_provider.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/providers/attendance_provider.dart';
 import 'package:portal_do_aluno/core/notifications/notification_service_local.dart';
 
 import 'package:provider/provider.dart';
@@ -19,23 +21,20 @@ void main() async {
   await NotificationServiceRemote().init();
   await NotificationService().init();
   await AppPreferences.init();
-  
 
   ExercicioSevice().excluirPorDataexpiracao();
-
-  
+  ComunicadoService().excluirComunicadoPorTempo();
+  CalendarioService().excluirPorDataexpiracao();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => PresencaProvider()),
+        ChangeNotifierProvider(create: (_) => AttendanceProvider()),
         ChangeNotifierProvider(create: (_) => SelectedProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child:const  MyApp(
-        
-      ),
+      child: const MyApp(),
     ),
   );
 }

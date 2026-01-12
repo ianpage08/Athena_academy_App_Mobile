@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_firestore.dart';
-import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
-import 'package:portal_do_aluno/shared/widgets/popup_menu_botton.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
+import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
@@ -144,7 +144,7 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
             ),
 
             // MENU
-            MenuPontinhoGenerico(
+            ActionMenuButton(
               id: data['id'],
               items: [
                 MenuItemConfig(
@@ -153,7 +153,7 @@ class _DiciplinasPageState extends State<DiciplinasPage> {
                   onSelected: (id, context, extra) async {
                     if (id == null) return;
 
-                    final confirmar = await showConfirmationDialog(
+                    final confirmar = await showAppConfirmationDialog(
                       context: context,
                       title: 'Excluir disciplina?',
                       content: 'Essa ação é irreversível.',

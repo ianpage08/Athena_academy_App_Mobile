@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/turma.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/save_button.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class CadastroTurma extends StatefulWidget {
   const CadastroTurma({super.key});
@@ -33,7 +33,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
       formKey: _formKey,
       listControllers: _allControllers,
     )) {
-      snackBarPersonalizado(
+      showAppSnackBar(
         context: context,
         mensagem: 'Preencha todos os campos corretamente.',
         cor: Colors.red,
@@ -54,7 +54,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
 
       if (!mounted) return;
 
-      snackBarPersonalizado(
+      showAppSnackBar(
         context: context,
         mensagem: 'Turma cadastrada com sucesso! 🎉',
         cor: Colors.green,
@@ -63,7 +63,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
       FormHelper.limparControllers(controllers: _allControllers);
     } catch (_) {
       if (!mounted) return;
-      snackBarPersonalizado(
+      showAppSnackBar(
         context: context,
         mensagem: 'Erro ao cadastrar turma. Tente novamente.',
         cor: Colors.red,
@@ -119,7 +119,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   const SizedBox(height: 24),
 
                   // CAMPOS
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: _mapController['professorTitular']!,
                     prefixIcon: Icons.person,
                     label: 'Professor titular',
@@ -128,7 +128,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   ),
                   const SizedBox(height: 16),
 
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: _mapController['turno']!,
                     prefixIcon: Icons.schedule,
                     label: 'Turno',
@@ -137,7 +137,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   ),
                   const SizedBox(height: 16),
 
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: _mapController['serie']!,
                     prefixIcon: Icons.class_,
                     label: 'Série',
@@ -146,7 +146,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   ),
                   const SizedBox(height: 16),
 
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: _mapController['qtdAlunos']!,
                     prefixIcon: Icons.group,
                     label: 'Quantidade de alunos',
@@ -159,7 +159,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   // BOTÃO
                   SizedBox(
                     width: double.infinity,
-                    child: BotaoSalvar(salvarconteudo: _cadastroTurma),
+                    child: SaveButton(salvarconteudo: _cadastroTurma),
                   ),
                 ],
               ),

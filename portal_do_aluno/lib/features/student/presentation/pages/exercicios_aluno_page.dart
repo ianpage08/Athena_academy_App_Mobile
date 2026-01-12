@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios_detalhes_page.dart';
 import 'package:provider/provider.dart';
 

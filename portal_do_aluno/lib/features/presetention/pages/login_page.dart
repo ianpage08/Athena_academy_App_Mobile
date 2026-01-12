@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/core/utils/validacao.dart';
 import 'package:portal_do_aluno/shared/helpers/single_execution_flag.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
 
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 32),
 
                       // Campo CPF
-                      TextFormFieldPersonalizado(
+                      CustomTextFormField(
                         controller: _cpfController,
                         keyboardType: TextInputType.number, //  Melhor para CPF
                         inputFormatters: [
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 16),
 
                       // Campo Senha
-                      TextFormFieldPersonalizado(
+                      CustomTextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
 
@@ -270,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
         await NavigatorService.navigateToDashboard();
       } catch (e) {
         if (mounted) {
-          snackBarPersonalizado(
+          showAppSnackBar(
             context: context,
             mensagem: 'Cpf ou senha inválidos',
             cor: Colors.red,
@@ -310,7 +310,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleForgotPassword() {
-    snackBarPersonalizado(
+    showAppSnackBar(
       context: context,
       mensagem: 'Falar com o suporte',
       cor: Colors.orange,

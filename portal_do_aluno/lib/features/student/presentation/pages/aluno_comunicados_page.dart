@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/shared/widgets/firestore/stream_vizualizacao_de_comunicados.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/comunicados_stream_list.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class NoticesPage extends StatefulWidget {
   const NoticesPage({super.key});
@@ -27,7 +27,7 @@ class _NoticesPageState extends State<NoticesPage> {
       appBar: const CustomAppBar(title: 'Comunicados'),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: StreamVisualizacaoDeComunicados(
+        child: ComunicadosStreamList(
           // Passa o stream de comunicados para o widget de visualização
           comunicadosStream: comunicadosStream,
         ),

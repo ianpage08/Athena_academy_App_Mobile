@@ -7,14 +7,14 @@ import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart'
 import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/academic_calendar_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios_aluno_page.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/boletim_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/grade_entry_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro_turma_page.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/conteudo_dado.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson_content.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_do_aluno_test_page.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/cadastro_exercicio.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/frequencia_alunos.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise_assignment_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/attendance_registration_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
@@ -29,10 +29,10 @@ import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/student_dashboard.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/turma_page.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/professor_comunicados_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/school_class_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_communications_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_dashboard.dart';
-import 'package:portal_do_aluno/shared/pages/configuracao_page.dart';
+import 'package:portal_do_aluno/shared/pages/settings_page.dart';
 
 Map<String, WidgetBuilder> get routes => {
   RouteNames.slashScreen: (context) => const SplashPage(),
@@ -49,7 +49,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminGeracaoDocumentos: (context) =>
       const RelatoriosDocumentosPage(),
   RouteNames.adminListaDeUsuarios: (context) => const ListaDeUsuariosPage(),
-  RouteNames.adminFrequencia: (context) => const FrequenciaAdmin(),
+  RouteNames.adminFrequencia: (context) => const AttendanceRegistrationPage(),
   RouteNames.adminComunicacaoInstiticional: (context) =>
       const ComunicacaoInstitucionalPage(),
   RouteNames.adminDetalhesAlunos: (context) {
@@ -57,7 +57,7 @@ Map<String, WidgetBuilder> get routes => {
     return DetalhesAluno(alunoId: argumentos);
   },
   
-  RouteNames.boletim: (context) => const BoletimAddNotaPage(),
+  RouteNames.boletim: (context) => const GradeEntryPage(),
   RouteNames.adminRelatoriosGerenciais: (context) =>
       const RelatoriosGerenciais(),
   RouteNames.adminCadastroTurmas: (context) => const CadastroTurma(),
@@ -65,13 +65,13 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminSegurancaEPermissoes: (context) =>
       const SegurancaEPermissoes(),
 
-  RouteNames.addOqueFoiDado: (context) => const OqueFoiDado(),
+  RouteNames.addOqueFoiDado: (context) => const LessonContent(),
 
   // rotas do Aluno
   RouteNames.studentDashboard: (context) => const StudentDashboard(),
 
   RouteNames.studentHelp: (context) => const NoticesPage(),
-  RouteNames.studentSettings: (context) => const ConfiguracaoPage1(),
+  RouteNames.studentSettings: (context) => const SettingsPage(),
 
   RouteNames.studentCalendar: (context) => const AcademicCalendarPage(),
 
@@ -84,9 +84,9 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
 
   RouteNames.teacherCalendar: (context) => const AcademicCalendarPage(),
-  RouteNames.teacherClasses: (context) => ClassPage(),
-  RouteNames.comunicadosProfessor: (context) => const ComunicadosProfessor(),
-  RouteNames.teacherExercicios: (context) => const CadastroExercicio(),
+  RouteNames.teacherClasses: (context) => SchoolClassPage(),
+  RouteNames.comunicadosProfessor: (context) => const TeacherCommunicationsPage(),
+  RouteNames.teacherExercicios: (context) => const ExerciseAssignmentPage(),
 };
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {

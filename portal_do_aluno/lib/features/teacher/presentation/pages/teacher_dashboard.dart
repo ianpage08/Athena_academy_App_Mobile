@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/tokens_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/shared/widgets/menu_navigation_card.dart';
-import 'package:portal_do_aluno/shared/widgets/firestore/stream_referencia_id.dart';
+import 'package:portal_do_aluno/shared/widgets/navigation_menu_card.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/firestore_document_stream_builder.dart';
 import 'package:portal_do_aluno/core/app_constants/colors.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/frequencia_alunos.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/attendance_registration_page.dart';
 import 'package:provider/provider.dart';
 
 class TeacherDashboard extends StatefulWidget {
@@ -70,7 +70,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: MeuStreamBuilder(
+                      child: FirestoreDocumentStreamBuilder(
                         collectionPath: 'usuarios',
                         documentId: usuarioId,
                         builder: (context, snapshot) {
@@ -139,21 +139,21 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                   physics: const BouncingScrollPhysics(),
                   mainAxisSpacing: 10,
                   children: [
-                    // MenuNavigationCard: widget personalizado dos botões do menu.
+                    // NavigationMenuCard: widget personalizado dos botões do menu.
                     // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       highlight: true,
                       icon: Icons.school,
                       title: 'Frequência',
                       subtitle: 'Lista de presença',
                       onTap: () {
                         NavigatorService.navigateToWithAnimation(
-                          const FrequenciaAdmin(),
+                          const AttendanceRegistrationPage(),
                         );
                       },
                     ),
 
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       icon: Icons.assignment,
                       title: 'Lançar Notas',
                       subtitle: 'Notas dos alunos',
@@ -162,7 +162,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                       },
                     ),
 
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       icon: Icons.menu_book,
                       title: 'Conteúdo da Aula',
                       subtitle: 'Conteúdo lecionado',
@@ -171,7 +171,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                       },
                     ),
 
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       icon: Icons.note_add,
                       title: 'Exercícios',
                       subtitle: 'Cadastrar atividades',
@@ -182,7 +182,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                       },
                     ),
 
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       icon: Icons.event,
                       title: 'Calendário',
                       subtitle: 'Calendário escolar',
@@ -191,7 +191,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                       },
                     ),
 
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       icon: Icons.message,
                       title: 'Comunicados',
                       subtitle: 'Avisos e mensagens',
@@ -202,7 +202,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                       },
                     ),
 
-                    MenuNavigationCard(
+                    NavigationMenuCard(
                       icon: Icons.settings,
                       title: 'Configurações',
                       subtitle: 'Preferências do sistema',

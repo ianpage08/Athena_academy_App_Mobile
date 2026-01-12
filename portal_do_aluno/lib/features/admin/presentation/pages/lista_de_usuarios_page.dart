@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/helpers/show_confirmation_dialog.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 
 class ListaDeUsuariosPage extends StatefulWidget {
   const ListaDeUsuariosPage({super.key});
@@ -221,7 +221,7 @@ class _ListaDeUsuariosPageState extends State<ListaDeUsuariosPage> {
             break;
 
           case 'excluir':
-            final excluir = await showConfirmationDialog(
+            final excluir = await showAppConfirmationDialog(
               context: context,
               title: 'Deseja excluir esse usuário?',
               content: 'Essa ação é irreversível',

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/shared/widgets/data_picker_calendario.dart';
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/save_button.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 
 void showCreateCalendarEventModal({
   required BuildContext context,
@@ -36,7 +36,7 @@ void showCreateCalendarEventModal({
               key: formKey,
               child: Column(
                 children: [
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: controllers['titulo']!,
                     label: 'Título do Evento',
                     hintText: 'Digite o título do evento',
@@ -45,7 +45,7 @@ void showCreateCalendarEventModal({
 
                   const SizedBox(height: 16),
 
-                  TextFormFieldPersonalizado(
+                  CustomTextFormField(
                     controller: controllers['descricao']!,
                     label: 'Descrição do Evento',
                     hintText: 'Digite a descrição do evento (opcional)',
@@ -57,11 +57,11 @@ void showCreateCalendarEventModal({
               ),
             ),
 
-            DataPickerCalendario(onDate: onDateSelected),
+            CustomDatePickerField(onDate: onDateSelected),
 
             const SizedBox(height: 24),
 
-            BotaoSalvar(
+            SaveButton(
               salvarconteudo: () async {
                 await salvarconteudo(tipo);
               },

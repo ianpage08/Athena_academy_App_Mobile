@@ -10,7 +10,7 @@ import 'package:portal_do_aluno/features/admin/presentation/widgets/show_create_
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 
 class CalendarEventCreationPage extends StatefulWidget {
   const CalendarEventCreationPage({super.key});
@@ -74,6 +74,9 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
               descricao: descricao,
               data: Timestamp.fromDate(dataSelecionada!).toDate(),
               tipo: tipoInt,
+              dataDeExpiracao: Timestamp.fromDate(
+                dataSelecionada!.add(const Duration(days: 30)),
+              ),
             );
             await _calendarioService.cadastrarCalendario(novoEvento);
             debugPrint('Tipo: $tipoInt');

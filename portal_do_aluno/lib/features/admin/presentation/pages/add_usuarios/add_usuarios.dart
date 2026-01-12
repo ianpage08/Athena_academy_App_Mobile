@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/admin_cadastro.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/professor_cadastro.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_selecionar_aluno.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/select_student_button.dart';
+import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 
@@ -211,7 +211,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
       // Validações específicas para tipo Aluno
       if (isSelectedTipo == 'Aluno' && (alunoId == null || nomeAluno == null)) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Selecione um aluno antes de cadastrar.',
           cor: Colors.orange,
@@ -223,7 +223,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
       if (isSelectedTipo == 'Professor' &&
           (_mapController['nome']!.text.isEmpty ||
               _mapController['cpf']!.text.isEmpty)) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Preencha todos os campos antes de cadastrar.',
           cor: Colors.orange,
@@ -244,7 +244,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
         if (verificarCpf.docs.isNotEmpty) {
           if (mounted) {
-            snackBarPersonalizado(
+            showAppSnackBar(
               context: context,
               mensagem: 'CPF já cadastrado no sistema.',
               cor: Colors.red,
@@ -269,7 +269,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
 
           // Feedback visual para usuário
           if (mounted) {
-            snackBarPersonalizado(
+            showAppSnackBar(
               context: context,
               mensagem: 'Usuário cadastrado com sucesso! 🎉',
               cor: Colors.green,
@@ -363,7 +363,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                             children: [
                               // Se for aluno: seleção de turma e aluno (widgets podem ser extraídos)
                               if (isSelectedTipo == 'Aluno') ...[
-                                BotaoSelecionarTurma(
+                                SelectClassButton(
                                   turmaSelecionada:
                                       _mapValueNotifier['turmaSelecionada']!,
                                   onTurmaSelecionada: (id, nomeCompleto) {
@@ -377,7 +377,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                                 ),
                                 const SizedBox(height: 12),
                                 if (turmaId != null)
-                                  BotaoSelecionarAluno(
+                                  SelectStudentButton(
                                     alunoSelecionado:
                                         _mapValueNotifier['alunoSelecionado']!,
                                     turmaId: turmaId,
@@ -420,7 +420,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           ),
 
                           // Campos para senha e confirmação de senha
-                          TextFormFieldPersonalizado(
+                          CustomTextFormField(
                             controller: _mapController['senha']!,
                             obscureText: !isPasswordVisible,
 
@@ -463,7 +463,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                           ),
                           const SizedBox(height: 12),
 
-                          TextFormFieldPersonalizado(
+                          CustomTextFormField(
                             controller: _mapController['confirmarSenha']!,
                             obscureText: !isPasswordVisible,
 

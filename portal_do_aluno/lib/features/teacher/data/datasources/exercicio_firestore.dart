@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:portal_do_aluno/features/teacher/data/models/exercicios.dart';
+import 'package:portal_do_aluno/features/teacher/data/models/student_task.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -10,7 +10,7 @@ class ExercicioSevice {
   }
 
   Future<void> cadastrarNovoExercicio(
-    Exercicios exercicios,
+    StudentTask exercicios,
     String turmaId,
   ) async {
     final docRef = _firestore.collection('exercicios').doc();

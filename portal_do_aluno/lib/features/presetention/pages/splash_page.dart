@@ -3,7 +3,7 @@ import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
-import 'package:portal_do_aluno/shared/services/auth_storage_token.dart';
+import 'package:portal_do_aluno/shared/services/secure_auth_storage.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -48,8 +48,8 @@ class _SplashPageState extends State<SplashPage>
   Future<void> checkToken() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    final token = await AuthStorageService().getToken();
-    final user = await AuthStorageService().getUser();
+    final token = await SecureAuthStorage().getToken();
+    final user = await SecureAuthStorage().getUser();
 
     if (!mounted) {
       return;

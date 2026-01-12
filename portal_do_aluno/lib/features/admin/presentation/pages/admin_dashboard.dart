@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/tokens_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/shared/widgets/menu_navigation_card.dart';
-import 'package:portal_do_aluno/shared/widgets/firestore/stream_referencia_id.dart';
+import 'package:portal_do_aluno/shared/widgets/navigation_menu_card.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/firestore_document_stream_builder.dart';
 
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -67,7 +67,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: MeuStreamBuilder(
+                      child: FirestoreDocumentStreamBuilder(
                         collectionPath: 'usuarios',
                         documentId: usuarioId,
                         builder: (context, snapshot) {
@@ -132,9 +132,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 mainAxisSpacing: 16,
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  // MenuNavigationCard: widget personalizado dos botões do menu.
+                  // NavigationMenuCard: widget personalizado dos botões do menu.
                   // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     highlight: true,
                     icon: CupertinoIcons.person_2_square_stack,
                     title: 'Nova Matrícula',
@@ -146,7 +146,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: CupertinoIcons.home,
                     title: 'Gestão Escolar',
                     subtitle: 'Turmas e disciplinas',
@@ -157,7 +157,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: CupertinoIcons.person_add,
                     title: 'Usuários',
                     subtitle: 'Gerenciar perfis',
@@ -166,7 +166,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: CupertinoIcons.doc_on_doc,
                     title: 'Relatórios',
                     subtitle: 'Certificados',
@@ -177,7 +177,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: CupertinoIcons.chat_bubble_2_fill,
                     title: 'Comunicação',
                     subtitle: 'Avisos e comunicados',
@@ -188,7 +188,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: CupertinoIcons.lock_shield,
                     title: 'Segurança',
                     subtitle: 'Permissões e acessos',
@@ -199,7 +199,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: Icons.settings,
                     title: 'Configurações',
                     subtitle: 'Preferências do sistema',

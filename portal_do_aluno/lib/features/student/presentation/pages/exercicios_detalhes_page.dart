@@ -8,7 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:portal_do_aluno/features/student/data/datasources/entrega_exercicio_service.dart';
 import 'package:portal_do_aluno/features/student/data/models/entrega_de_atividade.dart';
 import 'package:portal_do_aluno/features/admin/helper/anexo_helper.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +59,7 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
     );
     try {
       if (urls.isEmpty && mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Selecione a imagem do exercicios para enviar',
           cor: Colors.orange,
@@ -74,7 +74,7 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
       imgSelected.clear();
     } catch (e) {
       if (mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Erro ao Enviar',
           cor: Colors.red,
@@ -159,7 +159,7 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
                                     imgSelected.addAll(imagens);
 
                                     if (mounted) {
-                                      snackBarPersonalizado(
+                                      showAppSnackBar(
                                         context: context,
                                         mensagem:
                                             '${imagens.length} imagem(ns) selecionada(s)',
@@ -188,7 +188,7 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     if (imgSelected.isEmpty) {
-                                      snackBarPersonalizado(
+                                      showAppSnackBar(
                                         context: context,
                                         mensagem: 'Nenhuma imagem selecionada',
                                         cor: Colors.orange,

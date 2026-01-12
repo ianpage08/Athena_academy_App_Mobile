@@ -7,9 +7,9 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/turma_page.dart';
 
-import 'package:portal_do_aluno/shared/widgets/navigation_bottonbar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_bottom_navigation_bar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class GestaAcademica extends StatefulWidget {
   const GestaAcademica({super.key});
@@ -38,7 +38,7 @@ class _GestaAcademicaState extends State<GestaAcademica> {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Gestão Escolar'),
 
-      bottomNavigationBar: NavigationBottonbar(
+      bottomNavigationBar: CustomBottomNavigationBar(
         onTap: _onItemTap,
         pageIndex: _selectedIndex,
 

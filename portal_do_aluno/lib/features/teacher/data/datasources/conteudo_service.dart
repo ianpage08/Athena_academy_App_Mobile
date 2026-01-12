@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portal_do_aluno/features/teacher/data/models/conteudo_presenca.dart';
+import 'package:portal_do_aluno/features/teacher/data/models/lesson_record.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -10,7 +10,7 @@ class ConteudoPresencaService {
 
   Future<void> cadastrarPresencaConteudoProfessor({
     required String turmaId,
-    required ConteudoPresenca conteudoPresenca,
+    required LessonRecord conteudoPresenca,
     
     
   }) async {

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portal_do_aluno/features/teacher/data/models/boletim.dart';
-import 'package:portal_do_aluno/features/teacher/data/models/nota_disciplina.dart';
+import 'package:portal_do_aluno/features/teacher/data/models/academic_report.dart';
+import 'package:portal_do_aluno/features/teacher/data/models/grade_record.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -28,9 +28,9 @@ class BoletimService {
   Future<void> criarBoletim({
     required String alunoId,
     required String matriculaId,
-    required List<NotaDisciplina> disciplinas,
+    required List<GradeRecord> disciplinas,
   }) async {
-    final novoBoletim = Boletim(
+    final novoBoletim = AcademicReport(
       id: alunoId,
       alunoId: alunoId,
       disciplinas: disciplinas,
@@ -57,7 +57,7 @@ class BoletimService {
     final docRef = collectionBoletim.doc(alunoId);
     final doc = await docRef.get();
 
-    Boletim boletim;
+    AcademicReport boletim;
 
     //  Cria boletim novo se não existir
     if (!doc.exists) {
@@ -68,7 +68,7 @@ class BoletimService {
 
       // Cria lista de NotaDisciplina com notas vazias
       final listaDisciplina = disciplinasSnapShot.docs.map((doc) {
-        return NotaDisciplina(
+        return GradeRecord(
           id: doc.id,
           disciplinaId: doc.id,
           nomeDisciplina: doc['nome'],
@@ -93,7 +93,7 @@ class BoletimService {
       return;
     } else {
       //  Carrega boletim existente
-      boletim = Boletim.fromJson(doc.data() as Map<String, dynamic>);
+      boletim = AcademicReport.fromJson(doc.data() as Map<String, dynamic>);
     }
 
     //  Atualiza ou adiciona disciplina existente
@@ -109,7 +109,7 @@ class BoletimService {
     } else {
       // Adiciona nova disciplina se não existir
       boletim.disciplinas.add(
-        NotaDisciplina(
+        GradeRecord(
           id: disciplinaId,
           disciplinaId: disciplinaId,
           nomeDisciplina: nomeDisciplina,
@@ -146,10 +146,10 @@ class BoletimService {
   // Calcula média geral
 
   // Busca boletim de um aluno (direto pelo documento)
-  Future<Boletim?> buscarBoletimPorAluno(String alunoId) async {
+  Future<AcademicReport?> buscarBoletimPorAluno(String alunoId) async {
     final doc = await collectionBoletim.doc(alunoId).get();
     if (!doc.exists) return null;
-    return Boletim.fromJson(doc.data() as Map<String, dynamic>);
+    return AcademicReport.fromJson(doc.data() as Map<String, dynamic>);
   }
 
   // Exclui boletim de um aluno

@@ -15,7 +15,7 @@ Exportar PDF/Excel*/
 
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/frequencia_firestore.dart';
-import 'package:portal_do_aluno/shared/widgets/firestore/stream_tamanho_where.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/firestore_collection_count.dart';
 
 class RelatoriosGerenciais extends StatefulWidget {
   const RelatoriosGerenciais({super.key});
@@ -101,7 +101,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
               mainAxisSpacing: 12,
               childAspectRatio: 1.4,
               children: [
-                StreamContagem(
+                FirestoreCollectionCount(
                   collectionPath: 'usuarios',
                   fieldName: 'type',
                   fieldValue: 'student',
@@ -109,7 +109,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                     return _buildCardMetrica('👥 Alunos', total, Colors.blue);
                   },
                 ),
-                StreamContagem(
+                FirestoreCollectionCount(
                   collectionPath: 'usuarios',
                   fieldName: 'type',
                   fieldValue: 'teacher',
@@ -121,7 +121,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                     );
                   },
                 ),
-                StreamContagem(
+                FirestoreCollectionCount(
                   collectionPath: 'turmas',
                   builder: (context, snapshot, total) {
                     return _buildCardMetrica('🏫 Turmas', total, Colors.orange);

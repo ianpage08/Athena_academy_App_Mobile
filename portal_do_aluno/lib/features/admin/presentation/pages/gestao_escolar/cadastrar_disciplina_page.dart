@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/diciplinas.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_limpar.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_salvar.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
-import 'package:portal_do_aluno/shared/widgets/text_form_field.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/clear_button.dart';
+import 'package:portal_do_aluno/shared/widgets/save_button.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class CadastrarDisciplina extends StatefulWidget {
   const CadastrarDisciplina({super.key});
@@ -36,7 +36,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
       formKey: _formKey,
       listControllers: _allControllers,
     )) {
-      snackBarPersonalizado(
+      showAppSnackBar(
         context: context,
         mensagem: 'Por favor, preencha todos os campos corretamente.',
         cor: Colors.red,
@@ -53,7 +53,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
     try {
       await cadastrarNovaDisciplina.cadastrarNovaDisciplina(disciplina);
       if (mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Disciplina cadastrada com sucesso! 🎉',
           cor: Colors.green,
@@ -98,7 +98,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          TextFormFieldPersonalizado(
+                          CustomTextFormField(
                             controller: _mapController['nomeDisciplina']!,
                             prefixIcon: Icons.book,
                             label: 'Nome da Disciplina',
@@ -106,7 +106,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                             keyboardType: TextInputType.text,
                           ),
                           const SizedBox(height: 16),
-                          TextFormFieldPersonalizado(
+                          CustomTextFormField(
                             controller: _mapController['aulasPrevistas']!,
                             prefixIcon: Icons.calendar_month_outlined,
 
@@ -115,7 +115,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                             keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          TextFormFieldPersonalizado(
+                          CustomTextFormField(
                             controller: _mapController['cargaHoraria']!,
                             prefixIcon: Icons.lock_clock_outlined,
                             label: 'Carga Horaria',
@@ -123,7 +123,7 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                             keyboardType: TextInputType.number,
                           ),
                           const SizedBox(height: 16),
-                          TextFormFieldPersonalizado(
+                          CustomTextFormField(
                             controller: _mapController['nomeProfessor']!,
                             prefixIcon: Icons.person,
                             label: 'Nome do Professor',
@@ -137,14 +137,14 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                   ),
                   const SizedBox(height: 16),
 
-                  BotaoSalvar(
+                  SaveButton(
                     salvarconteudo: () async {
                       await _cadastrarMateria();
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  BotaoLimpar(
+                  ClearButton(
                     limparconteudo: () async {
                       _limparCampos();
                     },

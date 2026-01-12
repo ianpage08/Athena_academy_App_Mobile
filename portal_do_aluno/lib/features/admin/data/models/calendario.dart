@@ -6,6 +6,7 @@ class Calendario {
   final String? descricao;
   final DateTime data;
   final int? tipo;
+  final Timestamp dataDeExpiracao;
   
 
   Calendario({
@@ -14,6 +15,8 @@ class Calendario {
     this.descricao,
     required this.data,
     required this.tipo,
+    required this.dataDeExpiracao,
+    
     
   });
 
@@ -23,6 +26,7 @@ class Calendario {
     'descricao': descricao,
     'data': data,
     'tipo': tipo,
+    'dataDeExpiracao': dataDeExpiracao,
     
   };
 
@@ -32,6 +36,7 @@ class Calendario {
     descricao: json['descricao'] as String,
     data: (json['data'] as Timestamp).toDate(),
     tipo: json['tipo'] as int,
+    dataDeExpiracao: json['dataDeExpiracao'] as Timestamp,
     
   );
 
@@ -41,6 +46,7 @@ class Calendario {
     String? descricao,
     DateTime? data,
     int? tipo,
+    Timestamp? dataDeExpiracao,
     
   }) {
     return Calendario(
@@ -49,8 +55,7 @@ class Calendario {
       descricao: descricao ?? this.descricao,
       data: data ?? this.data,
       tipo: tipo ?? this.tipo,
-      
-      
+      dataDeExpiracao: dataDeExpiracao ?? this.dataDeExpiracao,
     );
   }
 }

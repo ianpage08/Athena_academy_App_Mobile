@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/features/admin/data/datasources/contrato_pdf_firestore.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_selecionar_aluno.dart';
-import 'package:portal_do_aluno/shared/widgets/botao_selecionar_turma.dart';
+import 'package:portal_do_aluno/shared/widgets/select_student_button.dart';
+import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
 import 'package:printing/printing.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
-import 'package:portal_do_aluno/shared/helpers/snack_bar_helper.dart';
+import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 
 class GerarDocumentosPage extends StatefulWidget {
   const GerarDocumentosPage({super.key});
@@ -213,7 +213,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  BotaoSelecionarTurma(
+                  SelectClassButton(
                     turmaSelecionada: _mapValueNotifier['turma']!,
                     onTurmaSelecionada: (id, turmaNome) {
                       setState(() {
@@ -224,7 +224,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                   ),
                   const SizedBox(height: 16),
                   _mapSelectedValues['turmaId'] != null
-                      ? BotaoSelecionarAluno(
+                      ? SelectStudentButton(
                           alunoSelecionado: _mapValueNotifier['aluno']!,
                           turmaId: _mapSelectedValues['turmaId']!,
                           onAlunoSelecionado: (id, nomeCompleto, cpf) {
@@ -251,28 +251,28 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
             onPressed: () async {
               switch (tipoDeDocumento) {
                 case 'Certificado':
-                  snackBarPersonalizado(
+                  showAppSnackBar(
                     context: context,
                     mensagem: 'Certificado gerado com sucesso!',
                   );
                   _limparCampos();
                   break;
                 case 'Histórico':
-                  snackBarPersonalizado(
+                  showAppSnackBar(
                     context: context,
                     mensagem: 'Histórico gerado com sucesso!',
                   );
                   _limparCampos();
                   break;
                 case 'Declaração':
-                  snackBarPersonalizado(
+                  showAppSnackBar(
                     context: context,
                     mensagem: 'Declaração gerado com sucesso!',
                   );
                   _limparCampos();
                   break;
                 case 'Relatorio':
-                  snackBarPersonalizado(
+                  showAppSnackBar(
                     context: context,
                     mensagem: 'Relatorio gerado com sucesso!',
                   );
@@ -281,7 +281,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
                 case 'Matricula':
                   if (_mapValueNotifier['turma']!.value == null ||
                       _mapValueNotifier['aluno']!.value == null) {
-                    return snackBarPersonalizado(
+                    return showAppSnackBar(
                       context: context,
                       mensagem: 'Selecione um aluno e turma',
                       cor: Colors.red,
@@ -316,7 +316,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
   Future<void> _gerarContratoMatricula() async {
     if (_mapSelectedValues['turmaId'] == null ||
         _mapSelectedValues['alunoId'] == null) {
-      snackBarPersonalizado(
+      showAppSnackBar(
         context: context,
         mensagem: 'Selecione um aluno e turma',
         cor: Colors.red,
@@ -331,7 +331,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
 
       if (!docAluno.exists) {
         if (mounted) {
-          snackBarPersonalizado(
+          showAppSnackBar(
             context: context,
             mensagem: 'Aluno não encontrado',
             cor: Colors.red,
@@ -359,7 +359,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
       );
       await Printing.layoutPdf(onLayout: (format) => contratoPronto);
       if (mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Documento Gerado com sucesso! 🎉',
         );
@@ -367,7 +367,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
     } catch (e, s) {
       debugPrint('erro ao gerar documento $e \n $s');
       if (mounted) {
-        snackBarPersonalizado(
+        showAppSnackBar(
           context: context,
           mensagem: 'Erro ao Gerar Documento ',
           cor: Colors.red,

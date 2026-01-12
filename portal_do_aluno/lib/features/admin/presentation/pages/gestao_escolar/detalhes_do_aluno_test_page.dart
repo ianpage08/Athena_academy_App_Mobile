@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/contrato_pdf_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:printing/printing.dart';
 
 class DetalhesAluno extends StatefulWidget {

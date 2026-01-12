@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/tokens_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/shared/widgets/menu_navigation_card.dart';
-import 'package:portal_do_aluno/shared/widgets/firestore/stream_referencia_id.dart';
+import 'package:portal_do_aluno/shared/widgets/navigation_menu_card.dart';
+import 'package:portal_do_aluno/shared/widgets/firestore/firestore_document_stream_builder.dart';
 
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class StudentDashboard extends StatefulWidget {
@@ -70,7 +70,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: MeuStreamBuilder(
+                      child: FirestoreDocumentStreamBuilder(
                         collectionPath: 'usuarios',
                         documentId: usuarioId,
                         builder: (context, snapshot) {
@@ -131,9 +131,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 childAspectRatio: 1.5,
                 mainAxisSpacing: 16,
                 children: [
-                  // MenuNavigationCard: widget personalizado dos botões do menu.
+                  // NavigationMenuCard: widget personalizado dos botões do menu.
                   // - NavigationService e RouteNames: controle de rotas e nomes das páginas personalizados.
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     highlight: true,
                     icon: Icons.school,
                     title: 'Boletim',
@@ -147,7 +147,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: Icons.assignment,
                     title: 'Tarefas',
                     subtitle: 'Atividades e exercícios',
@@ -156,7 +156,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: Icons.event,
                     title: 'Calendário',
                     subtitle: 'Datas e eventos',
@@ -165,7 +165,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: Icons.message,
                     title: 'Comunicados',
                     subtitle: 'Avisos da escola',
@@ -176,7 +176,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     },
                   ),
 
-                  MenuNavigationCard(
+                  NavigationMenuCard(
                     icon: Icons.settings,
                     title: 'Configurações',
                     subtitle: 'Preferências do app',

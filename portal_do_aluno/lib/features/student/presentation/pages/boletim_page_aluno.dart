@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/teacher/data/models/nota_disciplina.dart';
+import 'package:portal_do_aluno/features/teacher/data/models/grade_record.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 
-import 'package:portal_do_aluno/shared/widgets/app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class BoletimPage extends StatefulWidget {
@@ -136,7 +136,7 @@ class _BoletimPageState extends State<BoletimPage> {
                 ).copyWith(dividerColor: Colors.transparent),
                 child: Builder(
                   builder: (context) {
-                    final disciplina = NotaDisciplina.fromJson(materia);
+                    final disciplina = GradeRecord.fromJson(materia);
 
                     final mediaFinal = disciplina.calcularMediaFinal() ?? 0.0;
                     final mediasPorUnidade = disciplina

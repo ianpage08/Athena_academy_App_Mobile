@@ -11,6 +11,7 @@ class Comunicado {
   final DateTime dataPublicacao;
   final Destinatario destinatario;
   final String? prioridade;
+  final Timestamp dataDeExpiracao;
 
   Comunicado({
     required this.id,
@@ -19,6 +20,7 @@ class Comunicado {
     required this.dataPublicacao,
     required this.destinatario,
     this.prioridade,
+    required this.dataDeExpiracao,
   });
 
   Map<String, dynamic> toJson() => {
@@ -28,6 +30,7 @@ class Comunicado {
     'dataPublicacao': Timestamp.fromDate(dataPublicacao),
     'destinatario': destinatario.toString().split('.').last,
     'prioridade': prioridade,
+    'dataDeExpiracao': dataDeExpiracao,
   };
 
   factory Comunicado.fromJson(Map<String, dynamic> json) => Comunicado(
@@ -39,6 +42,7 @@ class Comunicado {
         ? Destinatario.values.byName(json['destinatario'] as String)
         : Destinatario.todos,
     prioridade: json['prioridade'] as String? ?? '',
+    dataDeExpiracao: json['dataDeExpiracao'] as Timestamp,
   );
 
   Comunicado copyWith({
@@ -48,6 +52,7 @@ class Comunicado {
     DateTime? dataPublicacao,
     Destinatario? destinatario,
     String? prioridade,
+    Timestamp? dataDeExpiracao,
   }) => Comunicado(
     id: id ?? this.id,
     titulo: titulo ?? this.titulo,
@@ -55,5 +60,6 @@ class Comunicado {
     dataPublicacao: dataPublicacao ?? this.dataPublicacao,
     destinatario: destinatario ?? this.destinatario,
     prioridade: prioridade ?? this.prioridade,
+    dataDeExpiracao: dataDeExpiracao ?? this.dataDeExpiracao,
   );
 }
