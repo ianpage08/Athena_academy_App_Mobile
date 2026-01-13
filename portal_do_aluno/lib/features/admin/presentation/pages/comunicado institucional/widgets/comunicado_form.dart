@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
-import 'package:portal_do_aluno/features/admin/presentation/comunicado%20institucional/widgets/comunicado_destinatario_selector.dart';
-import 'package:portal_do_aluno/features/admin/presentation/comunicado%20institucional/widgets/comunicado_prioridade_seletor_.dart';
-import 'package:portal_do_aluno/features/admin/presentation/comunicado%20institucional/widgets/comunicado_submit_button.dart';
-import 'package:portal_do_aluno/features/admin/presentation/comunicado%20institucional/widgets/form_header_comunicado.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/widgets/comunicado_destinatario_selector.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/widgets/comunicado_prioridade_seletor_.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/widgets/comunicado_submit_button.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/widgets/form_header_comunicado.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 
 class ComunicadoForm extends StatelessWidget {

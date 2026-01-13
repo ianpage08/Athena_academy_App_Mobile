@@ -16,7 +16,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar
 import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise_assignment_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendance_registration_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
-import 'package:portal_do_aluno/features/admin/presentation/comunicado%20institucional/gestao_de_comunicados_e_avisos.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/lista_de_usuarios_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/matricula_cadastro.dart';
