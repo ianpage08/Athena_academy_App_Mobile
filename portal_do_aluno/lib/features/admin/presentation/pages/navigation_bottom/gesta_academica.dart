@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/diciplinas_page_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/matriculas_page.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/pages/turma_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/turma_page.dart';
 
 import 'package:portal_do_aluno/shared/widgets/custom_bottom_navigation_bar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
