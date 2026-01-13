@@ -8,18 +8,13 @@ import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 class ComunicadosStreamList extends StatefulWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>> comunicadosStream;
 
-  const ComunicadosStreamList({
-    super.key,
-    required this.comunicadosStream,
-  });
+  const ComunicadosStreamList({super.key, required this.comunicadosStream});
 
   @override
-  State<ComunicadosStreamList> createState() =>
-      _ComunicadosStreamListState();
+  State<ComunicadosStreamList> createState() => _ComunicadosStreamListState();
 }
 
-class _ComunicadosStreamListState
-    extends State<ComunicadosStreamList> {
+class _ComunicadosStreamListState extends State<ComunicadosStreamList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -28,6 +23,9 @@ class _ComunicadosStreamListState
         // Loading
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('Nenhum comunicado disponível'));
         }
 
         // Error

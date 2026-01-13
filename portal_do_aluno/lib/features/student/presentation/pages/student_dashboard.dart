@@ -104,8 +104,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                                         context,
                                       ).textTheme.titleMedium,
                                     ),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      'Escola: AEEC',
+                                      'Escola: Espaço da Criança',
                                       style: Theme.of(
                                         context,
                                       ).textTheme.titleSmall,
@@ -128,7 +129,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.5,
+                childAspectRatio: 1.45,
                 mainAxisSpacing: 16,
                 children: [
                   // NavigationMenuCard: widget personalizado dos botões do menu.

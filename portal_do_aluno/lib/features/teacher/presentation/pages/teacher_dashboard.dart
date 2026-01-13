@@ -107,8 +107,9 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                                           context,
                                         ).textTheme.titleMedium,
                                       ),
+                                      const SizedBox(height: 4),
                                       Text(
-                                        'Escola: AEEC',
+                                        'Escola: Espaço da Criança',
                                         style: Theme.of(
                                           context,
                                         ).textTheme.titleSmall,
@@ -135,7 +136,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 child: GridView.count(
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
-                  childAspectRatio: 1.5,
+                  childAspectRatio: 1.45,
                   physics: const BouncingScrollPhysics(),
                   mainAxisSpacing: 10,
                   children: [

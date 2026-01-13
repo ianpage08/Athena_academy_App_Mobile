@@ -49,7 +49,7 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> {
               child: Container(
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                  color: Theme.of(context).cardTheme.color,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(

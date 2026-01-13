@@ -37,7 +37,7 @@ class AnnouncementCard extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: theme.cardColor,
+                    color: theme.cardTheme.color,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: const [
                       BoxShadow(
@@ -72,19 +72,16 @@ class AnnouncementCard extends StatelessWidget {
                                 const SizedBox(height: 6),
                                 Text(
                                   limitarCampo(subtitle, 80),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
+                                  style: theme.textTheme.bodyMedium,
                                 ),
                               ],
                             ),
                           ),
 
-                          const Icon(
+                          Icon(
                             CupertinoIcons.chevron_right,
                             size: 20,
-                            color: Colors.black45,
+                            color: theme.iconTheme.color,
                           ),
                         ],
                       ),
@@ -93,18 +90,15 @@ class AnnouncementCard extends StatelessWidget {
 
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.access_time,
                             size: 14,
-                            color: Colors.black45,
+                            color: theme.iconTheme.color,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             'Publicado em: $data',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black45,
-                            ),
+                            style: theme.textTheme.bodySmall,
                           ),
                         ],
                       ),

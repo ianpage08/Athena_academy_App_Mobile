@@ -71,7 +71,7 @@ class _SelectClassButtonState extends State<SelectClassButton> {
 
                                 return Card(
                                   elevation: 0,
-                                  color: Theme.of(context).cardTheme.color,
+                                  color: Theme.of(context).cardColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                     side: BorderSide(

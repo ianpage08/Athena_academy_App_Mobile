@@ -81,7 +81,7 @@ class _FirestoreSelectButtonState extends State<FirestoreSelectButton> {
                               ),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).cardTheme.color,
+                                  color: Theme.of(context).cardColor,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
                                     color: Theme.of(
@@ -139,7 +139,7 @@ class _FirestoreSelectButtonState extends State<FirestoreSelectButton> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: Theme.of(context).cardTheme.color,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.5),

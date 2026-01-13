@@ -37,9 +37,7 @@ Future<bool?> showAppConfirmationDialog({
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   cancelText,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 53, 53, 53),
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),
