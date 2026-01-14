@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/build_input.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/widgets/build_input.dart';
 
 class ProfessorCadastro extends StatelessWidget {
   final TextEditingController mapController1;

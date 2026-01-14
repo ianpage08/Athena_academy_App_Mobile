@@ -58,8 +58,12 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    final usuarioId = args['usuarioId'] ?? '';
+        ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+    if (args == null || args['usuarioId'] == null) {
+      return const Scaffold(body: Center(child: Text('Usuário inválido')));
+    }
+
+    final usuarioId = args['usuarioId']!;
 
     return Scaffold(
       appBar: const CustomAppBar(title: ''),

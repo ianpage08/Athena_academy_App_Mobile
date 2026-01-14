@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/build_input.dart';
+
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/widgets/build_input.dart';
 
 class AdminCadastro extends StatelessWidget {
   final TextEditingController mapController1;
@@ -48,6 +49,4 @@ class AdminCadastro extends StatelessWidget {
       ],
     );
   }
-
 }
-  

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/admin_cadastro.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/add_usuarios/professor_cadastro.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/widgets/admin_cadastro.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/widgets/professor_cadastro.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/select_student_button.dart';
