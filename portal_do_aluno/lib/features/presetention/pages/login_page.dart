@@ -11,7 +11,7 @@ import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datas
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 
 import '../../../core/app_constants/app_constants.dart';
-import '../../../core/app_constants/colors.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

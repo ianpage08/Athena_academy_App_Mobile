@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/widgets/filtro_usuarios.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/widgets/usuarios_list_stream.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista%20de%20usuarios/widgets/filtro_usuarios.dart';
+
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista%20de%20usuarios/widgets/usuarios_list_stream.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
 
 class ListaDeUsuariosPage extends StatefulWidget {

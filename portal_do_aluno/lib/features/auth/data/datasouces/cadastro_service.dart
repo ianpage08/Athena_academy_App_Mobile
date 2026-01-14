@@ -19,6 +19,7 @@ class CadastroService {
         .get();
 
     if (consulta.docs.isNotEmpty) {
+      
       throw Exception('CPF já cadastrado');
     }
 

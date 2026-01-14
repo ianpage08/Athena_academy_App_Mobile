@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/add_usuarios.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista_de_usuarios_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o%20de%20usuarios/add_usuarios.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista%20de%20usuarios/lista_de_usuarios_page.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_bottom_navigation_bar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
