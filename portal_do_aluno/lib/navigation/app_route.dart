@@ -19,7 +19,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bot
 import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista%20de%20usuarios/lista_de_usuarios_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_cadastro.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/matricula_cadastro.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_permissoes.dart';

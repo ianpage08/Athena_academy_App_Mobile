@@ -1,55 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
-import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
-
-import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
+import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 
-class MatriculasPage extends StatefulWidget {
-  const MatriculasPage({super.key});
+class StreamListMatriculas extends StatelessWidget {
+  final MatriculaService  matriculaService;
 
-  @override
-  State<MatriculasPage> createState() => _MatriculasPageState();
-}
-
-class _MatriculasPageState extends State<MatriculasPage> {
-  final minhaStream = FirebaseFirestore.instance
-      .collection('matriculas')
-      .snapshots();
-  final MatriculaService _matriculaService = MatriculaService();
+  const StreamListMatriculas({super.key, required this.matriculaService});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de Alunos Matrículados'),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            onPressed: () {
-              NavigatorService.navigateTo(RouteNames.adminMatriculaCadastro);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Lista de matrículas
-            Expanded(child: _buildStreamMatriculas()),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStreamMatriculas() {
     return StreamBuilder(
-      stream: minhaStream,
+      stream:  FirebaseFirestore.instance
+      .collection('matriculas')
+      .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -162,7 +129,7 @@ class _MatriculasPageState extends State<MatriculasPage> {
                             );
 
                             if (excluir == true) {
-                              _matriculaService.excluirMatricula(id);
+                              matriculaService.excluirMatricula(id);
                             }
                           },
                         ),

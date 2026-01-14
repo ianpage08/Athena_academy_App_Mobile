@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/sections/dados_academicos_section.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/sections/dados_aluno_section.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/sections/dados_endereco_section.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/sections/dados_medicos_section.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/sections/dados_responsaveis_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/sections/dados_academicos_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/sections/dados_aluno_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/sections/dados_endereco_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/sections/dados_medicos_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/sections/dados_responsaveis_section.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/widgets/card_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/widgets/card_section.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_dropdown_field.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';

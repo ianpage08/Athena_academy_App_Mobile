@@ -3,7 +3,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar
 
 import 'package:flutter/cupertino.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/diciplinas_page_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/matriculas_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20lista/matriculas_list_page.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/turma_page.dart';
 

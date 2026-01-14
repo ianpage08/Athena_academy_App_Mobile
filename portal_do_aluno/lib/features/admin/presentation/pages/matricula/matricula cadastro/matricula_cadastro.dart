@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/widgets/matricula_form.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/widgets/matricula_form.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
 class MatriculaCadastro extends StatelessWidget {
