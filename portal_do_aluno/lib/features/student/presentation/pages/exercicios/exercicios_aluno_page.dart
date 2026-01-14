@@ -1,13 +1,10 @@
-// --- PAGINA TESTE --- //
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-
+import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/widgets/card_exercicio.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
-import 'package:portal_do_aluno/features/student/presentation/pages/exercicios_detalhes_page.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/exercicios%20detalhes/exercicios_detalhes_page.dart';
 import 'package:provider/provider.dart';
 
 class ExerciciosAlunoPage extends StatefulWidget {
@@ -63,13 +60,7 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
     });
   }
 
-  String limitarTexto(String texto, int limite) {
-    if (texto.length > limite) {
-      return '${texto.substring(0, limite)}...';
-    } else {
-      return texto;
-    }
-  }
+  
 
   final ValueNotifier<bool> showModalNotifier = ValueNotifier(false);
 
@@ -144,12 +135,13 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
                                   ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: cardExecicio(
-                                  titulo,
-                                  conteudoDoExercicio,
-                                  nomeProfessor,
-                                  userId!,
-                                  exercicio.id,
+                                child: CardExercicio(
+                                  titulo: titulo,
+                                  conteudo: conteudoDoExercicio,
+                                  nomeProfessor: nomeProfessor,
+                                  userId: userId!,
+                                  exerciciosId: exercicio.id,
+                                  getStatusEntregue: getStatusEntregue,
                                 ),
                               ),
                             ),
@@ -164,74 +156,6 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
           },
         ),
       ),
-    );
-  }
-
-  Widget cardExecicio(
-    String titulo,
-    String conteudo,
-    String nomeProfessor,
-    String userId,
-    String exerciciosId,
-  ) {
-    return FutureBuilder<bool>(
-      future: getStatusEntregue(userId, exerciciosId),
-      builder: (context, snapshot) {
-        final status = snapshot.data ?? false;
-        return Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color.fromARGB(55, 88, 87, 87)),
-            borderRadius: BorderRadius.circular(12),
-            color: Theme.of(context).cardTheme.color,
-          ),
-          height: 82,
-
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        limitarTexto('Exercicio de: $titulo', 30),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(limitarTexto(conteudo, 30)),
-                      Text('Professor: $nomeProfessor'),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: 100,
-                width: 50,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                  color: status == true
-                      ? Colors.green
-                      : const Color.fromARGB(255, 26, 110, 236),
-                ),
-
-                child: Icon(
-                  status == true
-                      ? CupertinoIcons.check_mark
-                      : CupertinoIcons.arrow_right,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
