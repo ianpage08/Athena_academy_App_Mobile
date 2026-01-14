@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/relatorios%20e%20documentos/gerar_documentos.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios%20e%20documentos/relatorios.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_bottom_navigation_bar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/transicao_page.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
