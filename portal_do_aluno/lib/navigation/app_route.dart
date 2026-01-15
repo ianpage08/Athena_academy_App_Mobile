@@ -13,7 +13,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/lesson_content.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes%20alunos/detalhes_do_aluno_page.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise_assignment_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise/exercise_assignment_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/attendance_registration_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/gestao_de_comunicados_e_avisos.dart';
