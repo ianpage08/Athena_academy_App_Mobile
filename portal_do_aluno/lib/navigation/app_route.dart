@@ -7,7 +7,7 @@ import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart'
 import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/academic_calendar_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/exercicios_aluno_page.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/grade_entry_page.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/grade/grade_entry_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastrar_disciplina_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro_turma_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/lesson_content.dart';
@@ -29,7 +29,6 @@ import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/student_dashboard.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/school_class_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_communications_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_dashboard.dart';
 import 'package:portal_do_aluno/shared/pages/about_app_pages.dart';
@@ -88,7 +87,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
 
   RouteNames.teacherCalendar: (context) => const AcademicCalendarPage(),
-  RouteNames.teacherClasses: (context) => SchoolClassPage(),
+  
   RouteNames.comunicadosProfessor: (context) =>
       const TeacherCommunicationsPage(),
   RouteNames.teacherExercicios: (context) => const ExerciseAssignmentPage(),

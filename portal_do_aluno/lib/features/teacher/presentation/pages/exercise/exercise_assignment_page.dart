@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/features/student/presentation/widgets/animated_overlay.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise/controller/create_exercise_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise/widgets/exercise_form.dart';
-import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+
+import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
+
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/submit_state_builder.dart';
 import 'package:provider/provider.dart';
 
 class ExerciseAssignmentPage extends StatefulWidget {
@@ -16,13 +20,24 @@ class ExerciseAssignmentPage extends StatefulWidget {
 }
 
 class _ExerciseAssignmentPageState extends State<ExerciseAssignmentPage> {
-  bool _isLoading = false;
   final CreateExerciseController controller = CreateExerciseController();
+  late final VoidCallback _submitListener;
 
   @override
   void dispose() {
     controller.dispose();
+    controller.submitState.removeListener(_submitListener);
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _submitListener = SubmitStateListener.attach(
+      context: context,
+      state: controller.submitState,
+      successMessage: 'Exercício cadastrado com sucesso!',
+    );
   }
 
   @override
@@ -48,21 +63,14 @@ class _ExerciseAssignmentPageState extends State<ExerciseAssignmentPage> {
                     children: [
                       ExerciseForm(controller: controller),
                       const SizedBox(height: 24),
-                      SaveButton(
-                        salvarconteudo: () async {
-                          setState(() => _isLoading = true);
-
-                          final sucesso = await controller.submit(professorId);
-
-                          setState(() => _isLoading = false);
-                          showAppSnackBar(
-                            context: context,
-                            mensagem: sucesso
-                                ? 'Exercício cadastrado com sucesso!'
-                                : 'Preencha todos os campos corretamente.',
-                            cor: sucesso ? Colors.green : Colors.orange,
-                          );
-                        },
+                      SubmitStateBuilder(
+                        listenable: controller.submitState,
+                        initial: SaveButton(
+                          salvarconteudo: () async {
+                            controller.submit(professorId);
+                          },
+                        ),
+                        loading: const AnimatedOverlay(),
                       ),
                     ],
                   ),
@@ -70,7 +78,6 @@ class _ExerciseAssignmentPageState extends State<ExerciseAssignmentPage> {
               ),
             ),
           ),
-          if (_isLoading == true) const AnimatedOverlay(),
         ],
       ),
     );

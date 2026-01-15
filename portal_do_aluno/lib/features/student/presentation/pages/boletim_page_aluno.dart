@@ -105,16 +105,11 @@ class _BoletimPageState extends State<BoletimPage> {
           );
         }
 
-        
         return Container(
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFFFFFF), Color.fromARGB(255, 240, 240, 240)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+
             boxShadow: const [
               BoxShadow(
                 color: Color.fromARGB(44, 0, 0, 0),

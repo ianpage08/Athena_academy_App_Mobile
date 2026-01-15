@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
+import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart';
@@ -8,6 +9,7 @@ import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_fire
 import 'package:portal_do_aluno/features/teacher/data/models/student_task.dart';
 
 class CreateExerciseController {
+  final submitState = ValueNotifier<SubmitState>(Initial());
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ExercicioSevice _exercicioSevice = ExercicioSevice();
   final ComunicadoService _comunicadoService = ComunicadoService();
@@ -21,7 +23,6 @@ class CreateExerciseController {
 
   String? turmaId;
   DateTime? dataSelecionada;
-  
 
   /// 🔹 Constrói o objeto a partir do estado do controller
   StudentTask buildTask({
@@ -43,17 +44,17 @@ class CreateExerciseController {
     );
   }
 
-  Future<bool> submit(String professorId) async {
+  Future<SubmitState> submit(String professorId) async {
     if (!FormHelper.isFormValid(
-      formKey: formKey,
-      listControllers: [tituloController, conteudoController],
-    )) {
-      return false;
+          formKey: formKey,
+          listControllers: [tituloController, conteudoController],
+        ) ||
+        turmaId == null ||
+        dataSelecionada == null) {
+      submitState.value = Error('Preencha todos os campos');
+      return submitState.value;
     }
-
-    if (turmaId == null || dataSelecionada == null) {
-      return false;
-    }
+    submitState.value = Loading();
 
     try {
       final profDoc = await _firestore
@@ -67,13 +68,20 @@ class CreateExerciseController {
       );
 
       await _exercicioSevice.cadastrarNovoExercicio(task, turmaId!);
-      await notificarTurma();
-      clear();
+      
+      try{
+        await notificarTurma();
+      }catch(e){
+        debugPrint('Erro ao notificar turma: $e');
+      }
 
-      return true;
+      clear();
+      submitState.value = Success();
+      return submitState.value;
     } catch (e) {
+      submitState.value = Error('Erro ao cadastrar exercício');
       debugPrint('Erro ao cadastrar exercício: $e');
-      return false;
+      return submitState.value;
     } 
   }
 
