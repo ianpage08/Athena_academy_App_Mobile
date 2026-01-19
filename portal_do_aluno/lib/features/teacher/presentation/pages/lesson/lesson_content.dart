@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/controller/lesson_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_context_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_info_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/section_title.dart';
-import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 
@@ -16,32 +17,26 @@ class LessonContent extends StatefulWidget {
 
 class _LessonContentState extends State<LessonContent> {
   final LessonController controller = LessonController();
+  late final VoidCallback _submitListener;
 
   @override
   void dispose() {
+    _submitListener();
     controller.dispose();
     super.dispose();
   }
 
-  Future<void> _salvar() async {
-    if (controller.validateForm) {
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Preencha todos os campos',
-        cor: Colors.orange,
-      );
-    }
-    final sucesso = await controller.submit(context);
+  @override
+  void initState() {
+    super.initState();
 
-    if (sucesso && mounted) {
-      showAppSnackBar(
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _submitListener = SubmitStateListener.attach(
         context: context,
-        mensagem: sucesso
-            ? 'Conteudo salvo com sucesso'
-            : 'Erro ao salvar conteudo',
-        cor: sucesso ? Colors.green : Colors.redAccent,
+        state: controller.submitState,
+        successMessage: 'Conteúdo salvo com sucesso',
       );
-    }
+    });
   }
 
   @override
@@ -66,7 +61,7 @@ class _LessonContentState extends State<LessonContent> {
                     const SectionTitle('Informações da aula'),
                     const SizedBox(height: 20),
 
-                    /// 🔹 INFO
+                    ///  INFO
                     LessonInfoSection(controller: controller),
 
                     const SizedBox(height: 32),
@@ -76,17 +71,20 @@ class _LessonContentState extends State<LessonContent> {
                     const SectionTitle('Conteúdo ministrado'),
                     const SizedBox(height: 16),
 
-                    /// 🔹 CONTENT
+                    ///  CONTENT
                     LessonContentSection(controller: controller),
 
                     const SizedBox(height: 28),
 
-                    /// 🔹 ACTION
+                    ///  ACTION
                     SizedBox(
                       width: double.infinity,
                       child: SaveButton(
                         salvarconteudo: () async {
-                          _salvar();
+                          if (controller.submitState.value is Loading) {
+                            return;
+                          }
+                          controller.submit();
                         },
                       ),
                     ),

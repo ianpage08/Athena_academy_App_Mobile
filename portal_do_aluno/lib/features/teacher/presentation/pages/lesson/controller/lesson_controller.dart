@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
+import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/lesson_record.dart';
-import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 
 class LessonController {
+  final submitState = ValueNotifier<SubmitState>(Initial());
   final ConteudoPresencaService _serviceConteudo = ConteudoPresencaService();
   Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() =>
       _firestore.collection('disciplinas').snapshots();
@@ -21,24 +22,24 @@ class LessonController {
   String? turmaId;
   String? disciplinaId;
   DateTime? dataSelecionada;
-  bool isLoading = false;
+  
 
-  bool get validateForm {
-    return turmaId == null ||
-        disciplinaId == null ||
-        dataSelecionada == null ||
-        conteudoController.text.isEmpty ||
-        observacoesController.text.isEmpty;
+  bool get isFormValid {
+    return turmaId != null &&
+        disciplinaId != null &&
+        dataSelecionada != null &&
+        conteudoController.text.isNotEmpty &&
+        observacoesController.text.isNotEmpty;
   }
 
   void clear() {
-    disciplinaId = null;
-    dataSelecionada = null;
+    
+    
     conteudoController.clear();
     observacoesController.clear();
   }
 
-  LessonRecord buildLessson() {
+  LessonRecord buildLesson() {
     return LessonRecord(
       id: '',
       classId: turmaId!,
@@ -48,24 +49,22 @@ class LessonController {
     );
   }
 
-  Future<bool> submit(BuildContext context) async {
+  Future<SubmitState> submit() async {
+    if (!isFormValid) {
+      return submitState.value = Error('Preencha todos os campos');
+    }
+    submitState.value = Loading();
     try {
       await _serviceConteudo.cadastrarPresencaConteudoProfessor(
         turmaId: turmaId!,
-        conteudoPresenca: buildLessson(),
+        conteudoPresenca: buildLesson(),
       );
 
-      return true;
+      clear();
+      return submitState.value = Success();
     } catch (e) {
-      if (context.mounted) {
-        showAppSnackBar(
-          context: context,
-          mensagem: 'Erro ao salvar conteudo',
-          cor: Colors.redAccent,
-        );
-      }
+      return submitState.value = Error('Erro ao cadastrar conteudo');
     }
-    return false;
   }
 
   void dispose() {

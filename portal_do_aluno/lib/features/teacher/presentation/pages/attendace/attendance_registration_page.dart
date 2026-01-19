@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/student/presentation/widgets/animated_overlay.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/controller/attedance_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/widgets/attendance_aluno_list.dart';
 import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
+import 'package:portal_do_aluno/shared/widgets/submit_state_builder.dart';
 
 class AttendanceRegistrationPage extends StatefulWidget {
   const AttendanceRegistrationPage({super.key});
@@ -25,7 +27,15 @@ class _AttendanceRegistrationPageState
       appBar: const CustomAppBar(title: 'Registro de Presença'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
-        child: SaveButton(salvarconteudo: () => controller.salvar(context)),
+        child: SubmitStateBuilder(
+          listenable: controller.state,
+          initial: SaveButton(
+            salvarconteudo: () async {
+              controller.salvar(context);
+            },
+          ),
+          loading: const AnimatedOverlay(),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -38,6 +48,7 @@ class _AttendanceRegistrationPageState
               onTurmaSelecionada: (id, nome) {
                 controller.turmaId = id;
                 turmaSelecionada.value = nome;
+                debugPrint(controller.turmaId);
               },
             ),
             const SizedBox(height: 16),

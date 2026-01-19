@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/frequencia_firestore.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/providers/attendance_provider.dart';
-import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
+
 import 'package:provider/provider.dart';
 
 
 class AttendanceRegistrationController {
   final FrequenciaService _service = FrequenciaService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final state = ValueNotifier<SubmitState>(Initial());
+
 
   String? turmaId;
   DateTime? dataSelecionada;
@@ -22,15 +25,14 @@ class AttendanceRegistrationController {
         .snapshots();
   }
 
-  Future<void> salvar(BuildContext context) async {
+  Future<SubmitState> salvar(BuildContext context) async {
+
     if (turmaId == null || dataSelecionada == null) {
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Selecione turma e data.',
-        cor: Colors.orange,
-      );
-      return;
+      
+      return state.value = Error('Preencha todos os campos');
     }
+    state.value = Loading();
+    
 
     final provider = context.read<AttendanceProvider>();
     final presencas = provider.presencas;
@@ -58,25 +60,16 @@ class AttendanceRegistrationController {
         );
       }
       if(context.mounted){
-        showAppSnackBar(
-        context: context,
-        mensagem: 'Presenças salvas com sucesso!',
-        cor: Colors.green,
-      );
       
       
-
+      state.value = Success();
       provider.limpar();
       context.read<SelectedProvider>().limparDrop('turma');
       }
+      return state.value;
     } catch (_) {
-      if(context.mounted){
-        showAppSnackBar(
-        context: context,
-        mensagem: 'Erro ao salvar frequência.',
-        cor: Colors.red,
-      );
-      }
+      state.value = Error('Erro ao salvar presença');
+      return state.value;
       
     }
   }

@@ -29,7 +29,7 @@ class SubmitStateBuilder extends StatelessWidget {
         if (state is Error) {
           return error?.call(state.message) ?? Text(state.message);
         }
-        return initial;
+        return const SizedBox.shrink();
       },
     );
   }

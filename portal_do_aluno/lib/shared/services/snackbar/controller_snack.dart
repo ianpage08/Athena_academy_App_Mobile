@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/app_snackbar.dart';
@@ -10,11 +10,14 @@ class SubmitStateListener {
     required ValueNotifier<SubmitState> state,
     String successMessage = 'Sucesso!',
   }) {
+    SubmitState? lastState;
     void listener() {
       final currentState = state.value;
       if (!context.mounted) {
         return;
       }
+      lastState = currentState;
+      
       if (currentState is Success) {
         AppSnackbar.show(
           context: context,
@@ -30,9 +33,8 @@ class SubmitStateListener {
         );
       }
     }
-    state.addListener(listener);
-    return listener;
-  }
 
-  
+    state.addListener(listener);
+    return () => state.removeListener(listener);
+  }
 }
