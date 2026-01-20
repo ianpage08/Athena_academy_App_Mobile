@@ -34,7 +34,7 @@ class _LessonContentState extends State<LessonContent> {
       _submitListener = SubmitStateListener.attach(
         context: context,
         state: controller.submitState,
-        successMessage: 'Conteúdo salvo com sucesso',
+        
       );
     });
   }
@@ -81,7 +81,7 @@ class _LessonContentState extends State<LessonContent> {
                       width: double.infinity,
                       child: SaveButton(
                         salvarconteudo: () async {
-                          if (controller.submitState.value is Loading) {
+                          if (controller.submitState.value is SubmitLoading) {
                             return;
                           }
                           controller.submit();

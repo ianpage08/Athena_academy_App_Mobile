@@ -1,56 +1,88 @@
-import 'package:flutter/widgets.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/boletim_helper.dart';
 
 class GradeEntryController {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final BoletimHelper boletimHelper = BoletimHelper();
-  final TextEditingController notaController = TextEditingController();
-  final state = ValueNotifier<SubmitState>(Initial());
 
-  final ValueNotifier<String?> turmaSelecionada = ValueNotifier(null);
-  final ValueNotifier<String?> alunoSelecionado = ValueNotifier(null);
+  final formKey = GlobalKey<FormState>();
+  final notaController = TextEditingController();
 
-  final Map<String, String?> selected = {
+  final turmaSelecionada = ValueNotifier<String?>(null);
+  final alunoSelecionado = ValueNotifier<String?>(null);
+
+  final selected = ValueNotifier<Map<String, String?>>({
     'turmaId': null,
     'alunoId': null,
     'disciplinaId': null,
     'disciplinaNome': null,
     'unidade': null,
     'tipoAvaliacao': null,
-  };
+  });
 
-  final unidades = ['Unidade 1', 'Unidade 2', 'Unidade 3', 'Unidade 4'];
-  final avaliacoes = ['Teste', 'Prova', 'Trabalho', 'Nota Extra'];
+  final unidades = const [
+    'Unidade 1',
+    'Unidade 2',
+    'Unidade 3',
+    'Unidade 4',
+  ];
 
-  void limpar() {
-    selected.updateAll((key, value) => null);
-    alunoSelecionado.value = null;
-    notaController.clear();
+  final avaliacoes = const [
+    'Teste',
+    'Prova',
+    'Trabalho',
+    'Nota Extra',
+  ];
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() {
+    return firestore.collection('disciplinas').snapshots();
   }
 
-  Future<SubmitState> salvar() async {
-    if (notaController.text.isEmpty) {
-      return state.value = Error('Preencha a nota');
-    }
-    state.value = Loading();
-    
+  bool get isFormValid {
+    final s = selected.value;
+    return s['turmaId'] != null &&
+        s['alunoId'] != null &&
+        s['disciplinaId'] != null &&
+        s['unidade'] != null &&
+        s['tipoAvaliacao'] != null &&
+        notaController.text.isNotEmpty;
+  }
 
-    try {
-      await boletimHelper.salvarNota(
-        alunoId: selected['alunoId']!,
-        turmaId: selected['turmaId']!,
-        disciplinaId: selected['disciplinaId']!,
-        disciplinaNome: selected['disciplinaNome']!,
-        unidade: selected['unidade']!,
-        tipoDeNota: selected['tipoAvaliacao']!,
-        nota: double.parse(notaController.text.replaceAll(',', '.')),
-      );
-      state.value = Success();
-      return state.value;
-    } catch (e) {
-      return state.value = Error('Erro ao salvar nota');
-    }
-    
+  void updateField(String key, String? value) {
+    selected.value = {...selected.value, key: value};
+  }
+
+  void clear() {
+    turmaSelecionada.value = null;
+    alunoSelecionado.value = null;
+    notaController.clear();
+    selected.value = {
+      'turmaId': null,
+      'alunoId': null,
+      'disciplinaId': null,
+      'disciplinaNome': null,
+      'unidade': null,
+      'tipoAvaliacao': null,
+    };
+  }
+
+  Future<void> salvarNota() async {
+    if (!formKey.currentState!.validate()) return;
+
+    final s = selected.value;
+
+    await boletimHelper.salvarNota(
+      alunoId: s['alunoId']!,
+      turmaId: s['turmaId']!,
+      disciplinaId: s['disciplinaId']!,
+      disciplinaNome: s['disciplinaNome']!,
+      unidade: s['unidade']!,
+      tipoDeNota: s['tipoAvaliacao']!,
+      nota: double.parse(notaController.text.replaceAll(',', '.')),
+    );
+
+    clear();
   }
 
   void dispose() {

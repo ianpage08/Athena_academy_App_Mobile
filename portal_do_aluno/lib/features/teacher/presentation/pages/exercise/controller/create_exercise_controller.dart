@@ -51,10 +51,10 @@ class CreateExerciseController {
         ) ||
         turmaId == null ||
         dataSelecionada == null) {
-      submitState.value = Error('Preencha todos os campos');
+      submitState.value = SubmitError('Preencha todos os campos');
       return submitState.value;
     }
-    submitState.value = Loading();
+    submitState.value = SubmitLoading();
 
     try {
       final profDoc = await _firestore
@@ -76,10 +76,10 @@ class CreateExerciseController {
       }
 
       clear();
-      submitState.value = Success();
+      submitState.value = SubmitSuccess('Exercício cadastrado com sucesso');
       return submitState.value;
     } catch (e) {
-      submitState.value = Error('Erro ao cadastrar exercício');
+      submitState.value = SubmitError('Erro ao cadastrar exercício');
       debugPrint('Erro ao cadastrar exercício: $e');
       return submitState.value;
     } 

@@ -3,15 +3,19 @@ abstract class SubmitState {}
 
 class Initial extends SubmitState {}
 
-class Loading extends SubmitState {}
+class SubmitLoading extends SubmitState {}
 
-class Success extends SubmitState {}
-
-
-class Error extends SubmitState {
+class SubmitSuccess extends SubmitState {
   final String message;
 
-  Error(this.message);
+  SubmitSuccess(this.message);
+}
+
+
+class SubmitError extends SubmitState {
+  final String message;
+
+  SubmitError(this.message);
 }
 
 

@@ -24,7 +24,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bot
 import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios%20e%20documentos/relatorios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/features/presetention/pages/login_page.dart';
+import 'package:portal_do_aluno/features/presetention/pages/login/login_page.dart';
 
 import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';

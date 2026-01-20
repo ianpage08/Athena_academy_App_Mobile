@@ -51,9 +51,9 @@ class LessonController {
 
   Future<SubmitState> submit() async {
     if (!isFormValid) {
-      return submitState.value = Error('Preencha todos os campos');
+      return submitState.value = SubmitError('Preencha todos os campos');
     }
-    submitState.value = Loading();
+    submitState.value = SubmitLoading();
     try {
       await _serviceConteudo.cadastrarPresencaConteudoProfessor(
         turmaId: turmaId!,
@@ -61,9 +61,9 @@ class LessonController {
       );
 
       clear();
-      return submitState.value = Success();
+      return submitState.value = SubmitSuccess('Conteudo cadastrado com sucesso');
     } catch (e) {
-      return submitState.value = Error('Erro ao cadastrar conteudo');
+      return submitState.value = SubmitError('Erro ao cadastrar conteudo');
     }
   }
 

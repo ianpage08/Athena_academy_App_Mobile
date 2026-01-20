@@ -8,7 +8,6 @@ import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
-
 class AttendanceRegistrationPage extends StatefulWidget {
   const AttendanceRegistrationPage({super.key});
 
@@ -36,7 +35,6 @@ class _AttendanceRegistrationPageState
       _submitCurrente = SubmitStateListener.attach(
         context: context,
         state: controller.state,
-        successMessage: 'Presença registrada com sucesso!',
       );
     });
 

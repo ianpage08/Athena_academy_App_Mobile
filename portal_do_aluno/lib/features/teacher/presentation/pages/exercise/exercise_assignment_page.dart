@@ -31,7 +31,6 @@ class _ExerciseAssignmentPageState extends State<ExerciseAssignmentPage> {
     _submitListener = SubmitStateListener.attach(
       context: context,
       state: controller.submitState,
-      successMessage: 'Exercício cadastrado com sucesso!',
     );
   }
 

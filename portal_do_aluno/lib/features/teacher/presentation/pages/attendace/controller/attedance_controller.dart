@@ -29,9 +29,9 @@ class AttendanceRegistrationController {
 
     if (turmaId == null || dataSelecionada == null) {
       
-      return state.value = Error('Preencha todos os campos');
+      return state.value = SubmitError('Preencha todos os campos');
     }
-    state.value = Loading();
+    state.value = SubmitLoading();
     
 
     final provider = context.read<AttendanceProvider>();
@@ -62,13 +62,13 @@ class AttendanceRegistrationController {
       if(context.mounted){
       
       
-      state.value = Success();
+      state.value = SubmitSuccess('Presença salva com sucesso');
       provider.limpar();
       context.read<SelectedProvider>().limparDrop('turma');
       }
       return state.value;
     } catch (_) {
-      state.value = Error('Erro ao salvar presença');
+      state.value = SubmitError('Erro ao salvar presença');
       return state.value;
       
     }

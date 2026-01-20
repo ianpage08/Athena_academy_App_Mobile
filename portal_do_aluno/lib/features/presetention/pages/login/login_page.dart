@@ -10,7 +10,7 @@ import 'package:portal_do_aluno/core/utils/formatters.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 
-import '../../../core/app_constants/app_constants.dart';
+import '../../../../core/app_constants/app_constants.dart';
 
 
 class LoginPage extends StatefulWidget {

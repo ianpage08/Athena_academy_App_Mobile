@@ -22,11 +22,11 @@ class SubmitStateBuilder extends StatelessWidget {
     return ValueListenableBuilder<SubmitState>(
       valueListenable: listenable,
       builder: (_, state, _) {
-        if (state is Loading) {
+        if (state is SubmitLoading) {
           return loading;
         }
 
-        if (state is Error) {
+        if (state is SubmitError) {
           return error?.call(state.message) ?? Text(state.message);
         }
         return const SizedBox.shrink();
