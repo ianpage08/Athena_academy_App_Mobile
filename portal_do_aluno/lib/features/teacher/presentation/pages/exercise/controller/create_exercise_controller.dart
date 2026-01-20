@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/base/base_controller.dart';
 import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
@@ -8,7 +9,7 @@ import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart
 import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_firestore.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/student_task.dart';
 
-class CreateExerciseController {
+class CreateExerciseController  extends BaseController{
   final submitState = ValueNotifier<SubmitState>(Initial());
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ExercicioSevice _exercicioSevice = ExercicioSevice();
@@ -102,9 +103,10 @@ class CreateExerciseController {
     tituloController.clear();
     conteudoController.clear();
   }
-
+  @override
   void dispose() {
     tituloController.dispose();
     conteudoController.dispose();
+    super.dispose();
   }
 }

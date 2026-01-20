@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:portal_do_aluno/core/base/base_controller.dart';
 import 'package:portal_do_aluno/features/student/data/datasources/entrega_exercicio_service.dart';
 import 'package:portal_do_aluno/features/student/data/models/entrega_de_atividade.dart';
 import 'package:portal_do_aluno/features/admin/helper/anexo_helper.dart';
 
-class ExerciseDeliveryController {
+class ExerciseDeliveryController extends BaseController {
   final EntregaExercicioService _service = EntregaExercicioService();
 
   final isUploading = ValueNotifier<bool>(false);
@@ -73,9 +74,10 @@ class ExerciseDeliveryController {
       isUploading.value = false;
     }
   }
-
+  @override
   void dispose() {
     isUploading.dispose();
     imagensSelecionadas.dispose();
+    super.dispose();
   }
 }
