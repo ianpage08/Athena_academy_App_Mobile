@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/base/base_controller.dart';
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/frequencia_firestore.dart';
@@ -10,7 +9,7 @@ import 'package:portal_do_aluno/features/teacher/presentation/providers/attendan
 import 'package:provider/provider.dart';
 
 
-class AttendanceRegistrationController extends BaseController{
+class AttendanceRegistrationController {
   final FrequenciaService _service = FrequenciaService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final state = ValueNotifier<SubmitState>(Initial());
@@ -73,11 +72,5 @@ class AttendanceRegistrationController extends BaseController{
       return state.value;
       
     }
-  }
-  @override
-  void dispose() {
-    turmaId = null;
-    dataSelecionada = null;
-    super.dispose();
   }
 }

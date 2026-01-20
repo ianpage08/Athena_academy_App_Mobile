@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/base/base_controller.dart';
 import 'package:portal_do_aluno/features/admin/helper/boletim_helper.dart';
 
-class GradeEntryController extends BaseController {
+class GradeEntryController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final BoletimHelper boletimHelper = BoletimHelper();
 
@@ -85,9 +84,8 @@ class GradeEntryController extends BaseController {
 
     clear();
   }
-  @override
+
   void dispose() {
     notaController.dispose();
-    super.dispose();
   }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/base/base_controller.dart';
 import 'package:portal_do_aluno/features/auth/data/datasouces/auth_service_datasource.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/shared/helpers/single_execution_flag.dart';
 
-class LoginController extends BaseController{
+class LoginController {
   final formKey = GlobalKey<FormState>();
   final cpfController = TextEditingController();
   final passwordController = TextEditingController();
@@ -48,12 +47,11 @@ class LoginController extends BaseController{
     cpfController.text = cpf;
     passwordController.text = senha;
   }
-  @override
+
   void dispose() {
     cpfController.dispose();
     passwordController.dispose();
     isLoading.dispose();
     obscurePassword.dispose();
-    super.dispose();
   }
 }
