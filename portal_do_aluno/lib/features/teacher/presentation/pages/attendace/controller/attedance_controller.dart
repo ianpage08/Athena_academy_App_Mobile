@@ -1,5 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+
+
+import 'package:portal_do_aluno/core/errors/app_error.dart';
+import 'package:portal_do_aluno/core/errors/app_error_type.dart';
+
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/frequencia_firestore.dart';
@@ -9,7 +15,7 @@ import 'package:portal_do_aluno/features/teacher/presentation/providers/attendan
 import 'package:provider/provider.dart';
 
 
-class AttendanceRegistrationController {
+class AttendanceRegistrationController  {
   final FrequenciaService _service = FrequenciaService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final state = ValueNotifier<SubmitState>(Initial());
@@ -29,7 +35,7 @@ class AttendanceRegistrationController {
 
     if (turmaId == null || dataSelecionada == null) {
       
-      return state.value = SubmitError('Preencha todos os campos');
+      return state.value = SubmitError(AppError(type: AppErrorType.validation , message: 'Preencha todos os campos'));
     }
     state.value = SubmitLoading();
     
@@ -68,7 +74,7 @@ class AttendanceRegistrationController {
       }
       return state.value;
     } catch (_) {
-      state.value = SubmitError('Erro ao salvar presença');
+      state.value = SubmitError(AppError(type: AppErrorType.unknown , message: 'Erro ao salvar presença'));
       return state.value;
       
     }

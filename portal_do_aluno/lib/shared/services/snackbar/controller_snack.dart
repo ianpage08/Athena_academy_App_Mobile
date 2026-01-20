@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/enum_snack_type.dart';
@@ -8,7 +7,7 @@ class SubmitStateListener {
   static VoidCallback attach({
     required BuildContext context,
     required ValueNotifier<SubmitState> state,
-    final String? message,
+    
     
   }) {
     SubmitState? lastState;
@@ -27,16 +26,19 @@ class SubmitStateListener {
 
       switch (currentState) {
         case (SubmitSuccess()):
+          
           AppSnackbar.show(
             context: context,
-            message: currentState.message,
+            message: currentState.message ,
             type: SnackType.success,
           );
           break;
         case (SubmitError()):
+          
+
           AppSnackbar.show(
             context: context,
-            message: currentState.message ,
+            message: currentState.message.message ,
             type: SnackType.error,
           );
           break;

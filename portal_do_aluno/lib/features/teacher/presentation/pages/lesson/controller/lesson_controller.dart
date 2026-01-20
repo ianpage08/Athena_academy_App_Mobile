@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:portal_do_aluno/core/errors/app_error.dart';
+import 'package:portal_do_aluno/core/errors/app_error_type.dart';
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/lesson_record.dart';
 
-class LessonController {
+
+
+
+class LessonController{
+
   final submitState = ValueNotifier<SubmitState>(Initial());
   final ConteudoPresencaService _serviceConteudo = ConteudoPresencaService();
   Stream<QuerySnapshot<Map<String, dynamic>>> getDisciplinas() =>
@@ -22,7 +27,7 @@ class LessonController {
   String? turmaId;
   String? disciplinaId;
   DateTime? dataSelecionada;
-  
+
 
   bool get isFormValid {
     return turmaId != null &&
@@ -49,9 +54,14 @@ class LessonController {
     );
   }
 
-  Future<SubmitState> submit() async {
+  Future<void> submit() async {
     if (!isFormValid) {
-      return submitState.value = SubmitError('Preencha todos os campos');
+      submitState.value = SubmitError(
+        AppError(
+          message: 'Preencha todos os campos',
+          type: AppErrorType.validation,
+        ),
+      );
     }
     submitState.value = SubmitLoading();
     try {
@@ -61,11 +71,19 @@ class LessonController {
       );
 
       clear();
-      return submitState.value = SubmitSuccess('Conteudo cadastrado com sucesso');
+      submitState.value = SubmitSuccess('Conteudo cadastrado com sucesso');
+    } on FirebaseException {
+      submitState.value = SubmitError(
+        AppError(
+          type: AppErrorType.network,
+          message: 'Erro de conexão. Verifique sua internet.',
+        ),
+      );
     } catch (e) {
-      return submitState.value = SubmitError('Erro ao cadastrar conteudo');
+      SubmitError(AppError(type: AppErrorType.unknown, message: 'Erro inesperado. Tente novamente'));
     }
   }
+
 
   void dispose() {
     conteudoController.dispose();
