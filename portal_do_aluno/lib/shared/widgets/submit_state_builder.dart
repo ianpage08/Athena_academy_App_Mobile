@@ -6,7 +6,6 @@ class SubmitStateBuilder extends StatelessWidget {
   final ValueListenable<SubmitState> listenable;
   final Widget initial;
   final Widget loading;
-
   final Widget Function(String message)? error;
 
   const SubmitStateBuilder({
@@ -21,15 +20,19 @@ class SubmitStateBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<SubmitState>(
       valueListenable: listenable,
-      builder: (_, state, _) {
+      builder: (_, state, __) {
         if (state is SubmitLoading) {
           return loading;
         }
 
         if (state is SubmitError) {
-          return error?.call(state.message) ?? Text(state.message);
+          if (error != null) {
+            return error!(state.message.message);
+          }
+          return const SizedBox.shrink();
         }
-        return const SizedBox.shrink();
+
+        return initial;
       },
     );
   }

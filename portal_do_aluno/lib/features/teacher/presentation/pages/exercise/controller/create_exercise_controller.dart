@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/base/base_controller.dart';
+import 'package:portal_do_aluno/core/errors/app_error.dart';
+import 'package:portal_do_aluno/core/errors/app_error_type.dart';
 import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
 import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
@@ -9,7 +11,7 @@ import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart
 import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_firestore.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/student_task.dart';
 
-class CreateExerciseController  extends BaseController{
+class CreateExerciseController extends BaseController {
   final submitState = ValueNotifier<SubmitState>(Initial());
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ExercicioSevice _exercicioSevice = ExercicioSevice();
@@ -52,7 +54,12 @@ class CreateExerciseController  extends BaseController{
         ) ||
         turmaId == null ||
         dataSelecionada == null) {
-      submitState.value = SubmitError('Preencha todos os campos');
+      submitState.value = SubmitError(
+        AppError(
+          type: AppErrorType.validation,
+          message: 'Preencha todos os campos',
+        ),
+      );
       return submitState.value;
     }
     submitState.value = SubmitLoading();
@@ -69,10 +76,10 @@ class CreateExerciseController  extends BaseController{
       );
 
       await _exercicioSevice.cadastrarNovoExercicio(task, turmaId!);
-      
-      try{
+
+      try {
         await notificarTurma();
-      }catch(e){
+      } catch (e) {
         debugPrint('Erro ao notificar turma: $e');
       }
 
@@ -80,10 +87,15 @@ class CreateExerciseController  extends BaseController{
       submitState.value = SubmitSuccess('Exercício cadastrado com sucesso');
       return submitState.value;
     } catch (e) {
-      submitState.value = SubmitError('Erro ao cadastrar exercício');
+      submitState.value = SubmitError(
+        AppError(
+          type: AppErrorType.unknown,
+          message: 'Erro ao cadastrar exercício',
+        ),
+      );
       debugPrint('Erro ao cadastrar exercício: $e');
       return submitState.value;
-    } 
+    }
   }
 
   Future<void> notificarTurma() async {
@@ -103,6 +115,7 @@ class CreateExerciseController  extends BaseController{
     tituloController.clear();
     conteudoController.clear();
   }
+
   @override
   void dispose() {
     tituloController.dispose();

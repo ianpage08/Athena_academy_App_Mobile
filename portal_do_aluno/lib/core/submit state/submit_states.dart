@@ -1,3 +1,5 @@
+import 'package:portal_do_aluno/core/errors/app_error.dart';
+
 abstract class SubmitState {}
 
 
@@ -13,7 +15,7 @@ class SubmitSuccess extends SubmitState {
 
 
 class SubmitError extends SubmitState {
-  final String message;
+  final AppError message;
 
   SubmitError(this.message);
 }

@@ -1,0 +1,6 @@
+enum AppEnvironmentType {
+  development,
+  production,
+}
+
+
