@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets/turma_card.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/turma_card.dart';
 
 class TurmaStreamList extends StatelessWidget {
   final Stream<QuerySnapshot> stream;

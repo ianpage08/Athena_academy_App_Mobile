@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets/turma_stream_list.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/turma_stream_list.dart';
 import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 

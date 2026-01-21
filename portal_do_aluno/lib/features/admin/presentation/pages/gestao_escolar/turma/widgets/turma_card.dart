@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets/info_chip.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets/stream_alunos_contagem.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/info_chip.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/stream_alunos_contagem.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 
