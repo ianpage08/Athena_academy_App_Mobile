@@ -69,15 +69,14 @@ class CalendarEventController {
       return;
     }
     submitState.value = SubmitLoading();
-
+    debugPrint('Salvando evento...');
 
     try {
       await _service.cadastrarCalendario(_buildEvent(tipo));
-      await notificarUsuarios();
       clear();
-      
-      submitState.value = SubmitSuccess('Evento criado com sucesso!');
 
+      submitState.value = SubmitSuccess('Evento criado com sucesso!');
+      debugPrint('Evento criado com sucesso!');
     } on FirebaseException {
       submitState.value = SubmitError(
         AppError(
@@ -86,21 +85,27 @@ class CalendarEventController {
         ),
       );
     } catch (e) {
+      debugPrint('Erro ao criar evento: $e');
       submitState.value = SubmitError(
-        AppError(
-          type: AppErrorType.unknown,
-          message: 'Erro ao criar evento ',
-        ),
+        AppError(type: AppErrorType.unknown, message: 'Erro ao criar evento '),
       );
     }
   }
 
   Future<void> notificarUsuarios() async {
+    debugPrint('Notificando usuários...');
     final tokens = await _comunicadoService.getTokensDestinatario('todos');
+    debugPrint('Tokens: ${tokens.length}');
+
     final descricao = limitarCampo(descricaoController.text.trim(), 40);
 
     for (final token in tokens) {
-      enviarNotification(token, 'Novo Evento adicionado', descricao);
+      await enviarNotification(
+        token,
+        'Novo Evento: ${tituloController.text}',
+        descricao,
+      );
+      debugPrint('Notificação enviada para $token');
     }
   }
 

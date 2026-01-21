@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
+import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 
 class CreateCalendarEventModal extends StatelessWidget {
@@ -8,7 +10,7 @@ class CreateCalendarEventModal extends StatelessWidget {
   final TextEditingController descricaoController;
   final CalendarEventType tipo;
   final bool isLoading;
-  final ValueChanged<DateTime> onDateSelected;
+  final DateTime onDateSelected;
   final VoidCallback onSubmit;
 
   const CreateCalendarEventModal({
@@ -25,61 +27,67 @@ class CreateCalendarEventModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: MediaQuery.of(context).viewInsets,
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        top: 16,
+      ),
       child: Form(
         key: formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Novo ${tipo.name}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-
-            const SizedBox(height: 16),
-
-            TextFormField(
-              controller: tituloController,
-              decoration: const InputDecoration(labelText: 'Título'),
-              validator: (v) =>
-                  v == null || v.isEmpty ? 'Campo obrigatório' : null,
-            ),
-
-            const SizedBox(height: 12),
-
-            TextFormField(
-              controller: descricaoController,
-              decoration: const InputDecoration(labelText: 'Descrição'),
-              maxLines: 3,
-            ),
-
-            const SizedBox(height: 12),
-
-            ElevatedButton.icon(
-              onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2100),
-                  initialDate: DateTime.now(),
-                );
-                if (date != null) {
-                  onDateSelected(date);
-                }
-              },
-              icon: const Icon(Icons.calendar_today),
-              label: const Text('Selecionar data'),
+            // Header
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Novo ${tipo.name}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Preencha os dados do evento',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ),
 
             const SizedBox(height: 24),
 
-            SaveButton(
-              salvarconteudo: () async {
-                onSubmit;
-              },
+            // Título
+            CustomTextFormField(
+              prefixIcon: Icons.title,
+              controller: tituloController,
+              label: 'Título',
             ),
 
             const SizedBox(height: 16),
+
+            // Descrição
+            CustomTextFormField(
+              prefixIcon: Icons.description,
+              controller: descricaoController,
+              label: 'Descrição',
+            ),
+            const SizedBox(height: 16),
+
+            // Data
+            CustomDatePickerField(
+              isSelecionada: onDateSelected,
+              onDate: (data) => onDateSelected,
+            ),
+
+            const SizedBox(height: 24),
+
+            // Ação
+            SaveButton(salvarconteudo: () async => onSubmit),
           ],
         ),
       ),

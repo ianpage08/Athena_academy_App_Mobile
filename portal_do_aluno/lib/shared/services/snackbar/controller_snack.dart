@@ -7,8 +7,8 @@ class SubmitStateListener {
   static VoidCallback attach({
     required BuildContext context,
     required ValueNotifier<SubmitState> state,
-    
-    
+    VoidCallback? onSuccess,
+    VoidCallback? onError,
   }) {
     SubmitState? lastState;
     void listener() {
@@ -21,28 +21,28 @@ class SubmitStateListener {
       if (currentState == lastState) {
         return;
       }
-      
+
       lastState = currentState;
 
       switch (currentState) {
         case (SubmitSuccess()):
-          
           AppSnackbar.show(
             context: context,
-            message: currentState.message ,
+            message: currentState.message,
             type: SnackType.success,
           );
+          onSuccess?.call();
           break;
         case (SubmitError()):
-          
-
           AppSnackbar.show(
             context: context,
-            message: currentState.message.message ,
+            message: currentState.message.message,
             type: SnackType.error,
           );
+          onError?.call();
+
           break;
-          case (SubmitLoading()):
+        case (SubmitLoading()):
           // loading não dispara snackbar por design
           break;
 
