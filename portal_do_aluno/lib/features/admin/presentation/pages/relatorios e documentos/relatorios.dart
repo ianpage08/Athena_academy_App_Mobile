@@ -110,7 +110,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
                   },
                 ),
                 FirestoreCollectionCount(
-                  collectionPath: 'usuarios',
+                  collectionPath: 'usuarios', 
                   fieldName: 'type',
                   fieldValue: 'teacher',
                   builder: (context, snapshot, total) {
@@ -235,7 +235,7 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
 
             // Ações Rápidas
             const Text(
-              '⚡ Ações Rápidas',
+              ' Ações Rápidas',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),

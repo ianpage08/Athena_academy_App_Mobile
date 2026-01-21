@@ -15,6 +15,7 @@ import 'package:portal_do_aluno/core/notifications/notification_service_local.da
 
 import 'package:provider/provider.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

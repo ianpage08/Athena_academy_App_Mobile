@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets/info_chip.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets/stream_alunos_contagem.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
+
 
 class TurmaCard extends StatelessWidget {
   final Map<String, dynamic> data;
   final Function() onDelete;
 
-  const TurmaCard({
-    super.key,
-    required this.data,
-    required this.onDelete,
-  });
+  const TurmaCard({super.key, required this.data, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     final String turno = data['turno'] ?? '';
     final String professor = data['professor'] ?? '';
-    final int qtdAlunos = data['qtdAlunos'] ?? 0;
+
     final String serie = data['serie'] ?? '';
 
     return Card(
@@ -69,9 +67,28 @@ class TurmaCard extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      InfoChip(icon:   Icons.person, title:  professor),
-                      InfoChip(icon:   Icons.schedule,title:   turno),
-                      InfoChip(icon:   Icons.group,title:   '$qtdAlunos alunos'),
+                      InfoChip(icon: Icons.person, title: professor),
+                      InfoChip(icon: Icons.schedule, title: turno),
+                      StreamBuilder<Map<String, int>>(
+                        stream: alunosPorTurma(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const InfoChip(
+                              icon: Icons.people,
+                              title: '0 alunos',
+                            );
+                          }
+
+                          final mapa = snapshot.data!;
+                          final turmaId = data['id'];
+                          final quantidade = mapa[turmaId] ?? 5;
+
+                          return InfoChip(
+                            icon: Icons.people,
+                            title: '$quantidade alunos',
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ],
