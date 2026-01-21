@@ -10,25 +10,25 @@ class ClearButton extends StatefulWidget {
 
 class _ClearButtonState extends State<ClearButton> {
   bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.primary;
+
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
+      child: OutlinedButton.icon(
         icon: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
+            ? SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2, color: color),
               )
-            : const Icon(Icons.save),
-        label: isLoading ? const Text('Limpando...') : const Text('Limpar'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(255, 194, 0, 26),
-          foregroundColor: Colors.white,
+            : const Icon(Icons.clear),
+        label: Text(isLoading ? 'Limpando...' : 'Limpar'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: color,
+          side: BorderSide(color: color),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -40,10 +40,11 @@ class _ClearButtonState extends State<ClearButton> {
                 setState(() => isLoading = true);
                 try {
                   await widget.limparconteudo();
-                } catch (e) {
-                  return debugPrint('Erro ao Limpar: $e');
+                } finally {
+                  if (mounted) {
+                    setState(() => isLoading = false);
+                  }
                 }
-                setState(() => isLoading = false);
               },
       ),
     );
