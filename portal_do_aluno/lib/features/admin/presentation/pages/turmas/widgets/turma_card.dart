@@ -5,7 +5,6 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/turmas/widgets
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 
-
 class TurmaCard extends StatelessWidget {
   final Map<String, dynamic> data;
   final Function() onDelete;
@@ -81,7 +80,7 @@ class TurmaCard extends StatelessWidget {
 
                           final mapa = snapshot.data!;
                           final turmaId = data['id'];
-                          final quantidade = mapa[turmaId] ?? 5;
+                          final quantidade = mapa[turmaId] ?? 0;
 
                           return InfoChip(
                             icon: Icons.people,

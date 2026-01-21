@@ -17,21 +17,7 @@ class _TurmaPageState extends State<TurmaPage> {
   final Stream<QuerySnapshot> _streamTurma = FirebaseFirestore.instance
       .collection('turmas')
       .snapshots();
-    Stream<Map<String, int>> alunosPorTurma() {
-  return FirebaseFirestore.instance
-      .collection('alunos')
-      .snapshots()
-      .map((snapshot) {
-    final Map<String, int> contagem = {};
-
-    for (var doc in snapshot.docs) {
-      final turmaId = doc['turmaId'];
-      contagem[turmaId] = (contagem[turmaId] ?? 0) + 1;
-    }
-
-    return contagem;
-  });
-}
+    
 
 
   @override
