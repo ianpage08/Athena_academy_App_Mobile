@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/turma.dart';
-import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/cadastro%20turma/controller/cadastro_turma_controller.dart';
+import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
-import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
@@ -15,67 +13,23 @@ class CadastroTurma extends StatefulWidget {
 }
 
 class _CadastroTurmaState extends State<CadastroTurma> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final CadastroTurmaService cadastrarNovaTurma = CadastroTurmaService();
+  
+  final CadastroTurmaController controller = CadastroTurmaController();
+  late final VoidCallback _submitListener;
 
-  final Map<String, TextEditingController> _mapController = {
-    'serie': TextEditingController(),
-    'turno': TextEditingController(),
-    'qtdAlunos': TextEditingController(),
-    'professorTitular': TextEditingController(),
-  };
-
-  List<TextEditingController> get _allControllers =>
-      _mapController.values.toList();
-
-  Future<void> _cadastroTurma() async {
-    if (!FormHelper.isFormValid(
-      formKey: _formKey,
-      listControllers: _allControllers,
-    )) {
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Preencha todos os campos corretamente.',
-        cor: Colors.red,
-      );
-      return;
-    }
-
-    final novaTurma = ClasseDeAula(
-      id: '',
-      serie: _mapController['serie']!.text,
-      turno: _mapController['turno']!.text,
-      qtdAlunos: int.parse(_mapController['qtdAlunos']!.text),
-      professorTitular: _mapController['professorTitular']!.text,
+  @override
+  void initState() {
+    super.initState();
+    _submitListener = SubmitStateListener.attach(
+      context: context,
+      state: controller.submitState,
     );
-
-    try {
-      await cadastrarNovaTurma.cadatrarNovaTurma(novaTurma);
-
-      if (!mounted) return;
-
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Turma cadastrada com sucesso! 🎉',
-        cor: Colors.green,
-      );
-
-      FormHelper.limparControllers(controllers: _allControllers);
-    } catch (_) {
-      if (!mounted) return;
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Erro ao cadastrar turma. Tente novamente.',
-        cor: Colors.red,
-      );
-    }
   }
 
   @override
   void dispose() {
-    for (var controller in _allControllers) {
-      controller.dispose();
-    }
+    _submitListener();
+    controller.dispose();
     super.dispose();
   }
 
@@ -102,7 +56,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
               ],
             ),
             child: Form(
-              key: _formKey,
+              key: controller.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -120,7 +74,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
 
                   // CAMPOS
                   CustomTextFormField(
-                    controller: _mapController['professorTitular']!,
+                    controller: controller.professorTitularController,
                     prefixIcon: Icons.person,
                     label: 'Professor titular',
                     hintText: 'Ex: Maria Silva',
@@ -129,7 +83,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   const SizedBox(height: 16),
 
                   CustomTextFormField(
-                    controller: _mapController['turno']!,
+                    controller: controller.turnoController,
                     prefixIcon: Icons.schedule,
                     label: 'Turno',
                     hintText: 'Matutino / Vespertino',
@@ -138,7 +92,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   const SizedBox(height: 16),
 
                   CustomTextFormField(
-                    controller: _mapController['serie']!,
+                    controller: controller.serieController,
                     prefixIcon: Icons.class_,
                     label: 'Série',
                     hintText: '9º Ano',
@@ -147,7 +101,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   const SizedBox(height: 16),
 
                   CustomTextFormField(
-                    controller: _mapController['qtdAlunos']!,
+                    controller: controller.qtdAlunosController,
                     prefixIcon: Icons.group,
                     label: 'Quantidade de alunos',
                     hintText: 'Ex: 25',
@@ -159,7 +113,11 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   // BOTÃO
                   SizedBox(
                     width: double.infinity,
-                    child: SaveButton(salvarconteudo: _cadastroTurma),
+                    child: SaveButton(
+                      salvarconteudo: () async {
+                        controller.submit();
+                      },
+                    ),
                   ),
                 ],
               ),
