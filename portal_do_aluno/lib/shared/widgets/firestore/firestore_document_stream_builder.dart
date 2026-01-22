@@ -21,7 +21,8 @@ class FirestoreDocumentStreamBuilder extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot,
-  ) builder;
+  )
+  builder;
 
   const FirestoreDocumentStreamBuilder({
     super.key,
@@ -31,28 +32,40 @@ class FirestoreDocumentStreamBuilder extends StatefulWidget {
   });
 
   @override
-  State<FirestoreDocumentStreamBuilder> createState() => _FirestoreDocumentStreamBuilderState();
+  State<FirestoreDocumentStreamBuilder> createState() =>
+      _FirestoreDocumentStreamBuilderState();
 }
 
-class _FirestoreDocumentStreamBuilderState extends State<FirestoreDocumentStreamBuilder> {
+class _FirestoreDocumentStreamBuilderState
+    extends State<FirestoreDocumentStreamBuilder> {
+  late final Stream<DocumentSnapshot<Map<String, dynamic>>> _stream;
+
   @override
-  Widget build(BuildContext context) {
-    final stream = FirebaseFirestore.instance
+  void initState() {
+    super.initState();
+    _stream = FirebaseFirestore.instance
         .collection(widget.collectionPath)
         .doc(widget.documentId)
         .snapshots();
 
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: stream,
+      stream: _stream,
       builder: (context, snapshot) {
-        // ⏳ Enquanto carrega
+        //  Enquanto carrega
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // ❌ Erro ao carregar
+        //  Erro ao carregar
         if (snapshot.hasError) {
-          debugPrint('Erro no FirestoreDocumentStreamBuilder: ${snapshot.error}');
+          debugPrint(
+            'Erro no FirestoreDocumentStreamBuilder: ${snapshot.error}',
+          );
           return const Center(
             child: Text(
               'Erro ao carregar os dados',
@@ -61,7 +74,7 @@ class _FirestoreDocumentStreamBuilderState extends State<FirestoreDocumentStream
           );
         }
 
-        // 📄 Documento inexistente
+        //  Documento inexistente
         if (!snapshot.hasData || !(snapshot.data?.exists ?? false)) {
           return const Center(
             child: Text(
