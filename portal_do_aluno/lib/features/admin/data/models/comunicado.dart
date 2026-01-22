@@ -37,7 +37,7 @@ class Comunicado {
     id: json['id'] as String? ?? '',
     titulo: json['titulo'] as String? ?? '',
     mensagem: json['mensagem'] as String? ?? '',
-    dataPublicacao: DateTime.parse(json['dataPublicacao'] as String? ?? ''),
+    dataPublicacao: json['dataPublicacao'] is Timestamp ? (json['dataPublicacao'] as Timestamp).toDate() : DateTime.now(),
     destinatario: json['destinatario'] != null
         ? Destinatario.values.byName(json['destinatario'] as String)
         : Destinatario.todos,
