@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/lesson_record.dart';
 

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
 
-import 'package:portal_do_aluno/core/notifications/enviar_notication.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/notifications/enviar_notification.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart';

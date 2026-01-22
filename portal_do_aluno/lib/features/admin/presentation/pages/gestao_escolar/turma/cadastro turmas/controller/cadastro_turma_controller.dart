@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/turma.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';

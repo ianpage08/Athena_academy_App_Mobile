@@ -4,7 +4,7 @@ import 'package:portal_do_aluno/core/theme/dark_theme.dart';
 import 'package:portal_do_aluno/core/theme/light_theme.dart';
 import 'package:portal_do_aluno/core/theme/theme_provider.dart';
 import 'package:portal_do_aluno/navigation/app_route.dart';
-import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/navigation_service.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';

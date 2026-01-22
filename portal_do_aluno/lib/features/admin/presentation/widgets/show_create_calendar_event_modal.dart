@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
 
 import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';

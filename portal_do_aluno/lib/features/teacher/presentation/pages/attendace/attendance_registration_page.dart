@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/controller/attedance_controller.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/controller/attendance_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/widgets/attendance_aluno_list.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';

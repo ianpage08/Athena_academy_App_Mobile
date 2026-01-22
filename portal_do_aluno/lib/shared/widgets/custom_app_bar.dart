@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_poup.dart';
-import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/navigation_service.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/services/secure_auth_storage.dart';

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/calendario/controller/calendar_event_controller.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_card.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/show_create_calendar_event_modal.dart';
 
-import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/navigation/navigation_service.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';

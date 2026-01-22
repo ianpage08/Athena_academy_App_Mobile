@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/cadastro%20disciplina/controller/cadastro_disciplina_controller.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';

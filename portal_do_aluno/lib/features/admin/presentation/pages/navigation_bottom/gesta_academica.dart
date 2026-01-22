@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/calendario/calendar_event_creation_page.dart';
 
 import 'package:flutter/cupertino.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/diciplinas_page_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20lista/matriculas_list_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/diciplinas_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_lista/matriculas_list_page.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/turma_page.dart';
 

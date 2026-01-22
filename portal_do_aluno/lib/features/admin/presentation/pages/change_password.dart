@@ -3,8 +3,8 @@ import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
-import 'package:portal_do_aluno/features/auth/data/datasouces/cadastro_service.dart';
-import 'package:portal_do_aluno/navigation/navigation_sevice.dart';
+import 'package:portal_do_aluno/features/auth/data/datasources/cadastro_service.dart';
+import 'package:portal_do_aluno/navigation/navigation_service.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 

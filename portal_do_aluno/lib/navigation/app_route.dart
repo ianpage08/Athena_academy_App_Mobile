@@ -4,7 +4,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/admin_dashboar
 import 'package:portal_do_aluno/features/admin/presentation/pages/change_password.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/sucess_page.dart';
 import 'package:portal_do_aluno/core/notifications/pages/notification_page.dart';
-import 'package:portal_do_aluno/features/presetention/pages/splash_page.dart';
+import 'package:portal_do_aluno/features/presentation/pages/splash_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/academic_calendar_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/exercicios_aluno_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/grade/grade_entry_page.dart';
@@ -12,19 +12,19 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/cadastro%20turmas/cadastro_turma_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/lesson_content.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes%20alunos/detalhes_do_aluno_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_alunos/detalhes_do_aluno_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise/exercise_assignment_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/attendance_registration_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gesta_academica.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado%20institucional/gestao_de_comunicados_e_avisos.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado_institucional/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/gestao_de_usuarios.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista%20de%20usuarios/lista_de_usuarios_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula%20cadastro/matricula_cadastro.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/lista_de_usuarios/lista_de_usuarios_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_cadastro/matricula_cadastro.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios%20e%20documentos/relatorios.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios_e_documentos/relatorios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_permissoes.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
-import 'package:portal_do_aluno/features/presetention/pages/login/login_page.dart';
+import 'package:portal_do_aluno/features/presentation/pages/login/login_page.dart';
 
 import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';

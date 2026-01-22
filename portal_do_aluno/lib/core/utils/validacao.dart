@@ -11,8 +11,10 @@ String? validarCpf(String? value) {
     return 'CPF deve conter 11 dígitos';
   }
 
+
   return null;
 }
+
 
 String? validarSenha(String? value) {
   if (value == null || value.isEmpty) {

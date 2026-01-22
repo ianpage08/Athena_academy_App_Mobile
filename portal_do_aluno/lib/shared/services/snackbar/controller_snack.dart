@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/submit%20state/submit_states.dart';
+import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/enum_snack_type.dart';
 

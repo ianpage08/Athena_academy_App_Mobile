@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:portal_do_aluno/core/notifications/notification_chanel.dart';
+import 'package:portal_do_aluno/core/notifications/notification_channel.dart';
 
 class NotificationService {
   static final NotificationService _notificationService =
