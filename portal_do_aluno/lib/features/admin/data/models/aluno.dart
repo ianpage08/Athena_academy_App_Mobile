@@ -31,12 +31,12 @@ class DadosAluno {
 
   factory DadosAluno.fromJson(Map<String, dynamic> json) {
     return DadosAluno(
-      id: json['id'] as String,
-      nome: json['nome'] as String,
-      cpf: json['cpf'] as String,
-      sexo: json['sexo'] as String,
-      naturalidade: json['naturalidade'] as String,
-      dataNascimento: (json['dataNascimento'] as Timestamp).toDate(),
+      id: json['id'] as String? ?? '',
+      nome: json['nome'] as String? ?? '',
+      cpf: json['cpf'] as String? ?? '',
+      sexo: json['sexo'] as String? ?? '',
+      naturalidade: json['naturalidade'] as String? ?? '',
+      dataNascimento: json['dataNascimento'] is Timestamp ? (json['dataNascimento'] as Timestamp).toDate() : DateTime.now(),
       
     );
   }
@@ -217,13 +217,13 @@ class DadosAcademicos {
 
   factory DadosAcademicos.fromJson(Map<String, dynamic> json) =>
       DadosAcademicos(
-        numeroMatricula: json['numeroMatricula'] as String,
-        turma: json['turma'] as String,
-        anoLetivo: json['anoLetivo'] as String,
-        turno: json['turno'] as String,
-        situacao: json['situacao'] as String,
-        dataMatricula: (json['dataMatricula'] as Timestamp).toDate(),
-        classId: json['classId'] as String,
+        numeroMatricula: json['numeroMatricula'] as String? ?? '',
+        turma: json['turma'] as String? ?? '',
+        anoLetivo: json['anoLetivo'] as String? ?? '',
+        turno: json['turno'] as String? ?? '',
+        situacao: json['situacao'] as String? ?? '',
+        dataMatricula:json['dataMatricula'] is Timestamp ? (json['dataMatricula'] as Timestamp).toDate(): DateTime.now(),
+        classId: json['classId'] as String? ?? '',
       );
 
   DadosAcademicos copyWith({
