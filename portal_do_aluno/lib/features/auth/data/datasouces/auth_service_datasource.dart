@@ -36,7 +36,7 @@ class AuthServico {
   }
   String _gerarToken(){
     const char = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = Random();
+    final random = Random.secure();
     return List.generate(32, (index) => char[random.nextInt(char.length)]).join();
 
   }
