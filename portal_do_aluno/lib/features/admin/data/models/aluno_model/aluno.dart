@@ -7,8 +7,8 @@ class DadosAluno {
   final String sexo;
   final DateTime dataNascimento;
   final String naturalidade;
-  final String? nomeMae;
-  final String? nomePai;
+  final String nomeMae;
+  final String nomePai;
 
   DadosAluno({
     this.id,
@@ -17,8 +17,8 @@ class DadosAluno {
     required this.sexo,
     required this.naturalidade,
     required this.dataNascimento,
-    this.nomeMae,
-    this.nomePai,
+    required this.nomeMae,
+    required this.nomePai,
   });
 
   Map<String, dynamic> toJson() => {
@@ -54,6 +54,8 @@ class DadosAluno {
     String? sexo,
     String? naturalidade,
     DateTime? dataNascimento,
+    String? nomeMae,
+    String? nomePai,
   }) {
     return DadosAluno(
       id: id ?? this.id,
@@ -62,6 +64,8 @@ class DadosAluno {
       sexo: sexo ?? this.sexo,
       naturalidade: naturalidade ?? this.naturalidade,
       dataNascimento: dataNascimento ?? this.dataNascimento,
+      nomeMae: nomeMae ?? this.nomeMae,
+      nomePai: nomePai ?? this.nomePai,
     );
   }
 

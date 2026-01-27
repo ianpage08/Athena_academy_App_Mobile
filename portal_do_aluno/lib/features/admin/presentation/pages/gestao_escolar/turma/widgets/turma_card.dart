@@ -14,8 +14,7 @@ class TurmaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String turno = data['turno'] ?? '';
-    final String professor = data['professor'] ?? '';
-
+    final String professor = data['professorTitular'] ?? '';
     final String serie = data['serie'] ?? '';
 
     return Card(
@@ -77,11 +76,9 @@ class TurmaCard extends StatelessWidget {
                               title: '0 alunos',
                             );
                           }
-
                           final mapa = snapshot.data!;
                           final turmaId = data['id'];
                           final quantidade = mapa[turmaId] ?? 0;
-
                           return InfoChip(
                             icon: Icons.people,
                             title: '$quantidade alunos',
@@ -112,7 +109,7 @@ class TurmaCard extends StatelessWidget {
                     );
 
                     if (confirmar == true) {
-                      onDelete;
+                      onDelete();
                     }
                   },
                 ),

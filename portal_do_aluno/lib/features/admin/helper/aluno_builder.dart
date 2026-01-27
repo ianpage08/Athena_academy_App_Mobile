@@ -71,6 +71,8 @@ class AlunoBuilder {
       sexo: sexoSelecionado ?? '',
       naturalidade: naturalidadeController.text,
       dataNascimento: dataSelecionada,
+      nomeMae: nomeResposavelController.text,
+      nomePai: nomePaiController.text,
     );
 
     final enderecoAluno = EnderecoAluno(

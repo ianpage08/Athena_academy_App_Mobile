@@ -37,7 +37,7 @@ class _CustomDatePickerFieldState extends State<CustomDatePickerField> {
             final DateTime? data = await showDatePicker(
               context: context,
               initialDate: DateTime.now(),
-              firstDate: DateTime(2025),
+              firstDate: DateTime(2010),
               lastDate: DateTime(2030),
             );
 

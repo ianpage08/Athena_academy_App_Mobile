@@ -17,8 +17,13 @@ class _TurmaPageState extends State<TurmaPage> {
   final Stream<QuerySnapshot> _streamTurma = FirebaseFirestore.instance
       .collection('turmas')
       .snapshots();
-    
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getTurmaById(String classId) {
+    return FirebaseFirestore.instance
+        .collection('turmas')
+        .doc(classId)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {

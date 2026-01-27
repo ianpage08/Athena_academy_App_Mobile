@@ -33,10 +33,11 @@ class _MatriculaFormState extends State<MatriculaForm> {
     'bairro': TextEditingController(),
     'cidade': TextEditingController(),
     'estado': TextEditingController(),
+    'nomeMae': TextEditingController(),
+    'nomePai': TextEditingController(),
     'nomeResponsavel': TextEditingController(),
     'cpfDoResponsavel': TextEditingController(),
     'telefoneResponsavel': TextEditingController(),
-    
   };
   final Map<String, TextEditingController> _mapControllerMedico = {
     'alergias': TextEditingController(),
@@ -87,6 +88,8 @@ class _MatriculaFormState extends State<MatriculaForm> {
       sexo: sexoSelecionado.value!,
       naturalidade: _mapController['naturalidade']!.text,
       dataNascimento: dataSelecionada.value!,
+      nomeMae: _mapController['nomeMae']!.text,
+      nomePai: _mapController['nomePai']!.text,
     );
     final enderecoAluno = EnderecoAluno(
       cep: _mapController['cep']!.text,
@@ -99,7 +102,7 @@ class _MatriculaFormState extends State<MatriculaForm> {
     final responsaveisAluno = ResponsavelFinanceiro(
       nome: _mapController['nomeResponsavel']!.text,
       cpf: _mapController['cpfDoResponsavel']!.text,
-      telefone: '',
+      telefone: _mapController['telefoneResponsavel']!.text,
     );
     final dadosAcademicos = DadosAcademicos(
       classId: turmaId.value!,
@@ -110,13 +113,14 @@ class _MatriculaFormState extends State<MatriculaForm> {
       alergia: _mapControllerMedico['alergias']!.text,
       medicacao: _mapControllerMedico['medicamentos']!.text,
       observacoes: _mapControllerMedico['observacoes']!.text,
+      numeroEmergencia: _mapControllerMedico['telefoneEmergencia']!.text,
     );
 
     try {
       await _matriculaService.cadastrarAlunoCompleto(
         dadosAluno: dadosAluno,
         enderecoAluno: enderecoAluno,
-        responsaveisAluno: responsaveisAluno,
+        responsavelFinanceiro: responsaveisAluno,
         dadosAcademicos: dadosAcademicos,
         informacoesMedicasAluno: informacoesMedicasAluno,
         turmaId: turmaId.value!,

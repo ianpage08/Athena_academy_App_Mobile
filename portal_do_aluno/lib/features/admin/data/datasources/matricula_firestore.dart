@@ -16,34 +16,37 @@ class MatriculaService {
     'matriculas',
   );
 
- Future<void> cadastrarAlunoCompleto({
-  required DadosAluno dadosAluno,
-  required EnderecoAluno enderecoAluno,
-  required ResponsavelFinanceiro responsaveisAluno,
-  required DadosAcademicos dadosAcademicos,
-  required InformacoesMedicasAluno informacoesMedicasAluno,
-  required String turmaId, 
-}) async {
-  // Usamos o ID da turma passada
-  final dadoAcademico = dadosAcademicos.copyWith(classId: turmaId);
+  Future<void> cadastrarAlunoCompleto({
+    required DadosAluno dadosAluno,
+    required EnderecoAluno enderecoAluno,
+    required ResponsavelFinanceiro responsavelFinanceiro,
+    required DadosAcademicos dadosAcademicos,
+    required InformacoesMedicasAluno informacoesMedicasAluno,
+    required String turmaId,
+  }) async {
+    // Usamos o ID da turma passada
+    final dadoAcademico = dadosAcademicos.copyWith(classId: turmaId);
 
-  // Gerar ID do aluno
-  final alunoId = matriculasColletion.doc().id;
-  final novoAluno = dadosAluno.copyWith(id: alunoId);
+    // Gerar ID do aluno
+    final alunoId = matriculasColletion.doc().id;
+    final novoAluno = dadosAluno.copyWith(id: alunoId);
 
-  final alunoJson = {
-    'dadosAluno': novoAluno.toJson(),
-    'enderecoAluno': enderecoAluno.toJson(),
-    'responsaveisAluno': responsaveisAluno.toJson(),
-    'dadosAcademicos': dadoAcademico.toJson(),
-    'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
-  };
+    final alunoJson = {
+      'dadosAluno': novoAluno.toJson(),
+      'enderecoAluno': enderecoAluno.toJson(),
+      'responsavelFinaceiro': responsavelFinanceiro.toJson(),
+      'dadosAcademicos': dadoAcademico.toJson(),
+      'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
+    };
 
-  await matriculasColletion.doc(alunoId).set(alunoJson);
-}
-
+    await matriculasColletion.doc(alunoId).set(alunoJson);
+  }
 
   Future<void> excluirMatricula(String matriculaId) async {
     await matriculasColletion.doc(matriculaId).delete();
+  }
+
+  Stream<int> getMatriculasCount() {
+    return matriculasColletion.snapshots().map((doc) => doc.docs.length);
   }
 }

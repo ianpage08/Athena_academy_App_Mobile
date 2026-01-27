@@ -102,15 +102,13 @@ class _RelatoriosGerenciaisState extends State<RelatoriosGerenciais> {
               childAspectRatio: 1.4,
               children: [
                 FirestoreCollectionCount(
-                  collectionPath: 'usuarios',
-                  fieldName: 'type',
-                  fieldValue: 'student',
+                  collectionPath: 'matriculas',
                   builder: (context, snapshot, total) {
                     return _buildCardMetrica('👥 Alunos', total, Colors.blue);
                   },
                 ),
                 FirestoreCollectionCount(
-                  collectionPath: 'usuarios', 
+                  collectionPath: 'usuarios',
                   fieldName: 'type',
                   fieldValue: 'teacher',
                   builder: (context, snapshot, total) {

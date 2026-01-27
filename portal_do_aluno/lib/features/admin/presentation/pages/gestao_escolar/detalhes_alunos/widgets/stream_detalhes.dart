@@ -87,7 +87,6 @@ class StreamDetalhes extends StatelessWidget {
                                   ),
                             ),
                             const SizedBox(height: 4),
-                           
                           ],
                         ),
                       ),
@@ -117,25 +116,15 @@ class StreamDetalhes extends StatelessWidget {
                 title: 'Acadêmico',
                 icon: Icons.school,
                 children: [
-                  
                   InfoRowDetalhes(label: 'Série', value: dadosAcademicos.turma),
-                  
-                  
                 ],
               ),
               CardSectionDetalhes(
-                title: 'Pais/Responsáveis',
+                title: 'Responsável Financeiro',
                 icon: Icons.family_restroom,
                 children: [
-                  InfoRowDetalhes(
-                    label: 'Responsavel Financeiro',
-                    value: dadosPais.nome ,
-                  ),
-                  InfoRowDetalhes(
-                    label: 'Cpf',
-                    value: dadosPais.cpf ,
-                  ),
-                 
+                  InfoRowDetalhes(label: 'Nome', value: dadosPais.nome),
+                  InfoRowDetalhes(label: 'CPF', value: dadosPais.cpf),
                 ],
               ),
               CardSectionDetalhes(
