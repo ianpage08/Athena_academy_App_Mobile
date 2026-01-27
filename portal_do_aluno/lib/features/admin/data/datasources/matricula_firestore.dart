@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/informacoes_medicas.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsavel_finaceiro.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -15,7 +19,7 @@ class MatriculaService {
  Future<void> cadastrarAlunoCompleto({
   required DadosAluno dadosAluno,
   required EnderecoAluno enderecoAluno,
-  required ResponsaveisAluno responsaveisAluno,
+  required ResponsavelFinanceiro responsaveisAluno,
   required DadosAcademicos dadosAcademicos,
   required InformacoesMedicasAluno informacoesMedicasAluno,
   required String turmaId, 

@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsavel_finaceiro.dart';
 
 class ContratoPdfService {
   Future<Uint8List> gerarContratoPdf({
     required DadosAluno dadosPdfAluno,
     required DadosAcademicos dadosPdfAcademicos,
-    required ResponsaveisAluno dadosPdfResponsavel,
+    required ResponsavelFinanceiro dadosPdfResponsavel,
     required EnderecoAluno dadosPdfEndereco,
   }) async {
     final pdf = pw.Document();
@@ -38,13 +41,13 @@ class ContratoPdfService {
                   estilo: estiloTextoPdf,
                 ),
                 paragrafo(
-                  'CONTRATANTE: ${dadosPdfResponsavel.nomeMae}, CPF nº ${dadosPdfResponsavel.cpfMae}, residente em ${dadosPdfEndereco.cidade}/${dadosPdfEndereco.estado}, na qualidade de responsável pelo(a) aluno(a) ${dadosPdfAluno.nome}, CPF nº ${dadosPdfAluno.cpf}, matrícula nº ${dadosPdfAcademicos.numeroMatricula}, doravante denominado(a) ALUNO(A).',
+                  'CONTRATANTE: ${dadosPdfResponsavel.nome}, CPF nº ${dadosPdfResponsavel.cpf}, residente em ${dadosPdfEndereco.cidade}/${dadosPdfEndereco.estado}, na qualidade de responsável pelo(a) aluno(a) ${dadosPdfAluno.nome}, CPF nº ${dadosPdfAluno.cpf}, Turma ${dadosPdfAcademicos.turma}, doravante denominado(a) ALUNO(A).',
                   estilo: estiloTextoPdf,
                 ),
 
                 titulo('CLÁUSULA 1 – OBJETO'),
                 paragrafo(
-                  'O presente contrato tem por objeto a prestação de serviços educacionais pela ESCOLA ao ALUNO(A), referente ao ano letivo de ${dadosPdfAcademicos.anoLetivo}, na turma ${dadosPdfAcademicos.turma}, turno ${dadosPdfAcademicos.turno}, conforme proposta pedagógica e regimento interno da instituição.',
+                  'O presente contrato tem por objeto a prestação de serviços educacionais pela ESCOLA ao ALUNO(A), referente ao ano letivo de ${dadosPdfAcademicos.dataMatricula.year}, na turma ${dadosPdfAcademicos.turma}, conforme proposta pedagógica e regimento interno da instituição.',
                   estilo: estiloTextoPdf,
                 ),
 

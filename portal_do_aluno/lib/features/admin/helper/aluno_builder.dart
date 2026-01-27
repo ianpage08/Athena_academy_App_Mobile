@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/informacoes_medicas.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsavel_finaceiro.dart';
 
 
 class AlunoCompleto {
   final String turmaId;
   final DadosAluno dadosAluno;
   final EnderecoAluno enderecoAluno;
-  final ResponsaveisAluno responsaveisAluno;
+  final ResponsavelFinanceiro responsaveisAluno;
   final DadosAcademicos dadosAcademicos;
   final InformacoesMedicasAluno informacoesMedicas;
 
@@ -42,8 +46,8 @@ class AlunoBuilder {
     required TextEditingController estadoController,
 
     // Responsáveis
-    required TextEditingController nomeMaeController,
-    required TextEditingController cpfMaeController,
+    required TextEditingController nomeResposavelController,
+    required TextEditingController cpfDoResponsavelController,
     required TextEditingController telefoneMaeController,
     required TextEditingController nomePaiController,
     required TextEditingController cpfPaiController,
@@ -78,21 +82,15 @@ class AlunoBuilder {
       estado: estadoController.text,
     );
 
-    final responsaveisAluno = ResponsaveisAluno(
-      nomeMae: nomeMaeController.text,
-      cpfMae: cpfMaeController.text,
-      telefoneMae: telefoneMaeController.text,
-      nomePai: nomePaiController.text,
-      cpfPai: cpfPaiController.text,
-      telefonePai: telefonePaiController.text,
+    final responsaveisAluno = ResponsavelFinanceiro(
+      nome: nomeResposavelController.text,
+      cpf: cpfDoResponsavelController.text,
+      telefone: telefoneMaeController.text,
+      
     );
 
     final dadosAcademicos = DadosAcademicos(
-      numeroMatricula: numeroMatriculaController.text,
       turma: turmaController.text,
-      anoLetivo: anoLetivoController.text,
-      turno: turnoSelecionado ?? '',
-      situacao: situacaoController.text,
       dataMatricula: DateTime.now(),
       classId: turmaId,
     );

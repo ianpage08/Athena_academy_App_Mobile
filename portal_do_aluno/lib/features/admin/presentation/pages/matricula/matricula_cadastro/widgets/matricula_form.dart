@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/matricula_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/informacoes_medicas.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsavel_finaceiro.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_cadastro/sections/dados_academicos_section.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_cadastro/sections/dados_aluno_section.dart';
@@ -29,12 +33,8 @@ class _MatriculaFormState extends State<MatriculaForm> {
     'bairro': TextEditingController(),
     'cidade': TextEditingController(),
     'estado': TextEditingController(),
-    'nomeMae': TextEditingController(),
-    'cpfMae': TextEditingController(),
-    'telefoneMae': TextEditingController(),
-    'nomePai': TextEditingController(),
-    'cpfPai': TextEditingController(),
-    'telefonePai': TextEditingController(),
+    'nomeResponsavel': TextEditingController(),
+    'cpfDoResponsavel': TextEditingController(),
     'numeroMatricula': TextEditingController(),
     'anoLetivo': TextEditingController(),
   };
@@ -95,21 +95,15 @@ class _MatriculaFormState extends State<MatriculaForm> {
       cidade: _mapController['cidade']!.text,
       estado: _mapController['estado']!.text,
     );
-    final responsaveisAluno = ResponsaveisAluno(
-      nomeMae: _mapController['nomeMae']!.text,
-      cpfMae: _mapController['cpfMae']!.text,
-      telefoneMae: _mapController['telefoneMae']!.text,
-      nomePai: _mapController['nomePai']!.text,
-      cpfPai: _mapController['cpfPai']!.text,
-      telefonePai: _mapController['telefonePai']!.text,
+    final responsaveisAluno = ResponsavelFinanceiro(
+      nome: _mapController['nomeResponsavel']!.text,
+      cpf: _mapController['cpfDoResponsavel']!.text,
+      telefone: '',
+      
     );
     final dadosAcademicos = DadosAcademicos(
       classId: turmaId.value!,
-      numeroMatricula: _mapController['numeroMatricula']!.text,
       turma: turmaNome.value!,
-      anoLetivo: _mapController['anoLetivo']!.text,
-      turno: turnoSelecionado.value!,
-      situacao: 'Matriculado',
       dataMatricula: DateTime.now(),
     );
     final informacoesMedicasAluno = InformacoesMedicasAluno(

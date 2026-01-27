@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/contrato_pdf_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/informacoes_medicas.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsavel_finaceiro.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_alunos/widgets/card_section_detalhes.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_alunos/widgets/info_row_detalhes.dart';
 import 'package:printing/printing.dart';
@@ -33,7 +37,7 @@ class StreamDetalhes extends StatelessWidget {
         final dadosAcademicos = DadosAcademicos.fromJson(
           docMatricula['dadosAcademicos'],
         );
-        final dadosPais = ResponsaveisAluno.fromJson(
+        final dadosPais = ResponsavelFinanceiro.fromJson(
           docMatricula['responsaveisAluno'] ?? {},
         );
         final dadosEndereco = EnderecoAluno.fromJson(
@@ -75,7 +79,7 @@ class StreamDetalhes extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              dadosAcademicos.numeroMatricula,
+                              dadosAcademicos.turma,
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: Colors.blue,
@@ -83,10 +87,7 @@ class StreamDetalhes extends StatelessWidget {
                                   ),
                             ),
                             const SizedBox(height: 4),
-                            Text(
-                              '${dadosAcademicos.turma}º Ano - ${dadosAcademicos.turno}',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                           
                           ],
                         ),
                       ),
@@ -116,16 +117,10 @@ class StreamDetalhes extends StatelessWidget {
                 title: 'Acadêmico',
                 icon: Icons.school,
                 children: [
-                  InfoRowDetalhes(
-                    label: 'Matrícula',
-                    value: dadosAcademicos.numeroMatricula,
-                  ),
+                  
                   InfoRowDetalhes(label: 'Série', value: dadosAcademicos.turma),
-                  InfoRowDetalhes(label: 'Turno', value: dadosAcademicos.turno),
-                  InfoRowDetalhes(
-                    label: 'Situação',
-                    value: dadosAcademicos.situacao,
-                  ),
+                  
+                  
                 ],
               ),
               CardSectionDetalhes(
@@ -133,29 +128,14 @@ class StreamDetalhes extends StatelessWidget {
                 icon: Icons.family_restroom,
                 children: [
                   InfoRowDetalhes(
-                    label: 'Mãe',
-                    value: dadosPais.nomeMae ?? '---',
+                    label: 'Responsavel Financeiro',
+                    value: dadosPais.nome ,
                   ),
                   InfoRowDetalhes(
                     label: 'Cpf',
-                    value: dadosPais.cpfMae ?? '---',
+                    value: dadosPais.cpf ,
                   ),
-                  InfoRowDetalhes(
-                    label: 'Telefone',
-                    value: dadosPais.telefoneMae ?? '---',
-                  ),
-                  InfoRowDetalhes(
-                    label: 'Pai',
-                    value: dadosPais.nomePai ?? '---',
-                  ),
-                  InfoRowDetalhes(
-                    label: 'Cpf',
-                    value: dadosPais.cpfPai ?? '---',
-                  ),
-                  InfoRowDetalhes(
-                    label: 'Telefone',
-                    value: dadosPais.telefonePai ?? '---',
-                  ),
+                 
                 ],
               ),
               CardSectionDetalhes(

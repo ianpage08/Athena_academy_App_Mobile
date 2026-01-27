@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:portal_do_aluno/features/admin/data/datasources/contrato_pdf_firestore.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsavel_finaceiro.dart';
 import 'package:portal_do_aluno/shared/widgets/select_student_button.dart';
 import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
 import 'package:printing/printing.dart';
-import 'package:portal_do_aluno/features/admin/data/models/aluno.dart';
+import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 
 class GerarDocumentosPage extends StatefulWidget {
@@ -344,7 +347,7 @@ class _GerarDocumentosPageState extends State<GerarDocumentosPage> {
         dados['dadosAcademicos'] ?? {},
       );
       final dadosAluno = DadosAluno.fromJson(dados['dadosAluno'] ?? {});
-      final dadosResponsavel = ResponsaveisAluno.fromJson(
+      final dadosResponsavel = ResponsavelFinanceiro.fromJson(
         dados['responsaveisAluno'] ?? {},
       );
       final dadosEndereco = EnderecoAluno.fromJson(
