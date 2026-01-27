@@ -28,6 +28,12 @@ class DadosMedicosSection extends StatelessWidget {
         prefixIcon: CupertinoIcons.text_bubble_fill,
         obrigatorio: false,
       ),
+      CustomTextFormField(controller: mapController['telefoneEmergencia']!,
+      label: 'Telefone de emergência ',
+      
+      prefixIcon: CupertinoIcons.phone_fill,
+      obrigatorio: false,
+      )
     ]);
   }
 }

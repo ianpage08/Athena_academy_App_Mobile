@@ -35,13 +35,14 @@ class _MatriculaFormState extends State<MatriculaForm> {
     'estado': TextEditingController(),
     'nomeResponsavel': TextEditingController(),
     'cpfDoResponsavel': TextEditingController(),
-    'numeroMatricula': TextEditingController(),
-    'anoLetivo': TextEditingController(),
+    'telefoneResponsavel': TextEditingController(),
+    
   };
   final Map<String, TextEditingController> _mapControllerMedico = {
     'alergias': TextEditingController(),
     'medicamentos': TextEditingController(),
     'observacoes': TextEditingController(),
+    'telefoneEmergencia': TextEditingController(),
   };
   List<TextEditingController> get _allControllers =>
       _mapController.values.toList();
@@ -50,7 +51,7 @@ class _MatriculaFormState extends State<MatriculaForm> {
   final ValueNotifier<DateTime?> dataSelecionada = ValueNotifier<DateTime?>(
     null,
   );
-  final ValueNotifier<String?> turnoSelecionado = ValueNotifier<String?>(null);
+
   final ValueNotifier<String?> turmaNome = ValueNotifier<String?>(null);
   final ValueNotifier<String?> turmaId = ValueNotifier<String?>(null);
   final MatriculaService _matriculaService = MatriculaService();
@@ -99,7 +100,6 @@ class _MatriculaFormState extends State<MatriculaForm> {
       nome: _mapController['nomeResponsavel']!.text,
       cpf: _mapController['cpfDoResponsavel']!.text,
       telefone: '',
-      
     );
     final dadosAcademicos = DadosAcademicos(
       classId: turmaId.value!,
@@ -135,7 +135,6 @@ class _MatriculaFormState extends State<MatriculaForm> {
       setState(() {
         sexoSelecionado.value = null;
         dataSelecionada.value = null;
-        turnoSelecionado.value = null;
         turmaNome.value = null;
         turmaId.value = null;
       });
@@ -164,7 +163,7 @@ class _MatriculaFormState extends State<MatriculaForm> {
           const SizedBox(height: 16),
           DadosAcademicosSection(
             mapController: _mapController,
-            turnoSelecionado: turnoSelecionado,
+
             turmaName: turmaNome,
             turmaId: turmaId,
           ),
