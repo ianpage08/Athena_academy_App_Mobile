@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/core/utils/formatter/cep_formatter.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_cadastro/widgets/card_section.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
@@ -18,6 +20,11 @@ class DadosEnderecoSection extends StatelessWidget {
           label: 'CEP',
           controller: mapController['cep']!,
           prefixIcon: CupertinoIcons.map_pin_ellipse,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(8),
+            CepInputFormatter(),
+          ],
         ),
         CustomTextFormField(
           label: 'Rua',
