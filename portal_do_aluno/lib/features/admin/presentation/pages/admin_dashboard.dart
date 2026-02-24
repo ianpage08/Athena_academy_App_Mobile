@@ -207,6 +207,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       NavigatorService.navigateTo(RouteNames.studentSettings);
                     },
                   ),
+                  NavigationMenuCard(
+                    icon: Icons.report,
+                    title: 'Relatorios',
+                    subtitle: 'Relatorios de aula',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.adminReport);
+                    },
+                  ),
                 ],
               ),
             ),

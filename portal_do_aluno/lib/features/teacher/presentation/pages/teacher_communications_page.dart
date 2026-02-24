@@ -26,7 +26,7 @@ class _TeacherCommunicationsPageState extends State<TeacherCommunicationsPage> {
         .collection('comunicados')
         .where('destinatario', whereIn: ['professores', 'todos']);
 
-    if (filtroSelecionado != null) {
+    if (filtroSelecionado  != null) {
       comunicadosQuery = comunicadosQuery.where(
         'prioridade',
         isEqualTo: filtroSelecionado,

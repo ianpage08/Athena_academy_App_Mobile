@@ -52,6 +52,7 @@ class RouteNames {
   static const String adminDetalhesAlunos = '/admin_detalhes_alunos';
   static const String adminMatriculaCadastro = '/admin_matricula_cadastro';
   static const String adminCalendar = '/admin_calendar';
+  static const String adminReport = '/admin_report';
 
   static const String comunicadosProfessor = '/comunicados_professor';
   // paginas de detalhes
