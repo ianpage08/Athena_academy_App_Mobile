@@ -8,6 +8,7 @@ class LessonRecord {
   final DateTime data;
   final Presenca presenca;
   final String? observacoes;
+  final List<String> anexo;
   
 
   LessonRecord({
@@ -17,6 +18,7 @@ class LessonRecord {
     required this.data,
     this.observacoes,
     this.presenca = Presenca.presente,
+    this.anexo = const [],
   });
 
   Map<String, dynamic> toJson() => {
@@ -26,7 +28,7 @@ class LessonRecord {
     'data': data,
     'observacoes': observacoes,
     'presenca': presenca.name,
-
+    'anexo': anexo,
   };
   factory LessonRecord.fromJson(Map<String, dynamic> json) =>
       LessonRecord(
@@ -36,6 +38,7 @@ class LessonRecord {
         data: (json['data'] as Timestamp).toDate(),
         observacoes: json['observacoes'],
         presenca: json['presenca'],
+        anexo: json['anexo'] as List<String>,
       );
 
   LessonRecord copyWith({
@@ -45,6 +48,7 @@ class LessonRecord {
     DateTime? data,
     String? observacoes,
     Presenca? presenca,
+    List<String>? anexo,
   }) {
     return LessonRecord(
       id: id ?? this.id,
@@ -53,6 +57,7 @@ class LessonRecord {
       data: data ?? this.data,
       observacoes: observacoes ?? this.observacoes,
       presenca: presenca ?? this.presenca,
+      anexo: anexo ?? this.anexo,
     );
   }
 }

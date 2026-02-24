@@ -12,7 +12,6 @@ import 'package:portal_do_aluno/navigation/navigation_service.dart';
 
 import '../../../../core/app_constants/app_constants.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -202,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 24),
 
                       // Usuários de Teste
-                      /*Container(
+                      Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 95, 100, 122),
@@ -238,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
-                      ),*/
+                      ),
                     ],
                   ),
                 ),
@@ -285,7 +284,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // ✅ MÉTODO DENTRO DA CLASSE
-  /*Widget _buildTestUser(String tipo, String cpf, String senha) {
+  Widget _buildTestUser(String tipo, String cpf, String senha) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -306,7 +305,7 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
-  }*/
+  }
 
   void _handleForgotPassword() {
     showAppSnackBar(

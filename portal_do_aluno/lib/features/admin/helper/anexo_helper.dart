@@ -33,6 +33,22 @@ Future<List<XFile>> getImage() async {
   return [];
 }
 
+Future<List<String>> uploadImagensReport(List<XFile> images, String teacherId) async {
+  List<String> urlImage = [];
+  if (images.isEmpty) return [];
+
+  for (var image in images) {
+    final file = File(image.path);
+    final ref = FirebaseStorage.instance.ref().child(
+      'classReport/$teacherId/${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+    final uploadImage = await ref.putFile(file);
+    final url = await uploadImage.ref.getDownloadURL();
+    urlImage.add(url);
+  }
+  return urlImage;
+}
+
 Future<List<String>> uploadImagensExercicio(
   List<XFile> imagens,
   String exerciciosId,
