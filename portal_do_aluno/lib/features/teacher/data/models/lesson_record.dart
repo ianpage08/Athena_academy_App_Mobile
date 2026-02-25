@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class LessonRecord {
   final String id;
@@ -32,13 +33,13 @@ class LessonRecord {
   };
   factory LessonRecord.fromJson(Map<String, dynamic> json) =>
       LessonRecord(
-        id: json['id'],
-        classId: json['classId'],
-        conteudo: json['conteudo'],
-        data: (json['data'] as Timestamp).toDate(),
-        observacoes: json['observacoes'],
+        id: JsonParsingHelper.optionalString(json['id']) ?? '',
+        classId: JsonParsingHelper.requiredString(json, 'classId'),
+        conteudo: JsonParsingHelper.requiredString(json, 'conteudo'),
+        data: JsonParsingHelper.requiredDate(json['data']),
+        observacoes: JsonParsingHelper.optionalString(json['observacoes']),
         presenca: json['presenca'],
-        anexo: json['anexo'] as List<String>,
+        anexo: JsonParsingHelper.stringListOrEmpty(json['anexo']),
       );
 
   LessonRecord copyWith({

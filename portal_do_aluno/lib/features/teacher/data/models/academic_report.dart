@@ -1,4 +1,5 @@
 import 'package:portal_do_aluno/features/teacher/data/models/grade_record.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class AcademicReport {
   final String id;
@@ -24,15 +25,15 @@ class AcademicReport {
   };
 
   factory AcademicReport.fromJson(Map<String, dynamic> json) => AcademicReport(
-    id: json['id'] as String? ?? '',
-    alunoId: json['alunoId'] as String? ?? '',
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    alunoId: JsonParsingHelper.requiredString(json, 'alunoId'),
     disciplinas:
         (json['disciplinas'] as List<dynamic>?)
             ?.map((e) => GradeRecord.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [],
-    mediageral: json['mediageral'] as double? ?? 0.0,
-    situacao: json['situacao'] as String? ?? '',
+    mediageral: JsonParsingHelper.optionalDouble(json['mediageral']) ?? 0.0,
+    situacao: JsonParsingHelper.requiredString(json, 'situacao')
   );
 
   AcademicReport copyWith({

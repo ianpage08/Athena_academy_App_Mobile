@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 enum Presenca { presente, falta, justificativa }
 
@@ -25,10 +26,10 @@ class ClassAttendance {
     'presenca': presenca.name,
   };
   factory ClassAttendance.fromJson(Map<String, dynamic> json) => ClassAttendance(
-    id: json['id'] as String,
-    alunoId: json['alunoId'] as String,
-    classId: json['classId'] as String,
-    data: (json['data'] as Timestamp).toDate(),
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    alunoId: JsonParsingHelper.requiredString(json, 'alunoId'),
+    classId: JsonParsingHelper.requiredString(json, 'classId'),
+    data: JsonParsingHelper.requiredDate(json['data']),
 
     presenca: json['presenca'] != null
         ? Presenca.values.byName(json['presenca'] as String)

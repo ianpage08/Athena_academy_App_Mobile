@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class EntregaDeAtividade {
   final String alunoId;
@@ -24,10 +25,10 @@ class EntregaDeAtividade {
 
   factory EntregaDeAtividade.fromJson(Map<String, dynamic> json) =>
       EntregaDeAtividade(
-        alunoId: json ['alunoId'] as String,
-        exercicioId: json ['exercicioId'] as String,
-        dataEntrega: json ['dataEntrega'] as Timestamp,
-        anexos: json ['anexos'] as List<String>,
+        alunoId: JsonParsingHelper.requiredString(json, 'alunoId'),
+        exercicioId: JsonParsingHelper.requiredString(json, 'exercicioId'),
+        dataEntrega: JsonParsingHelper.requiredDate(json['dataEntrega']) as Timestamp,
+        anexos: JsonParsingHelper.stringListOrEmpty(json['anexos']),
       );
 
 }

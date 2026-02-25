@@ -1,3 +1,5 @@
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
+
 class Visualizacao {
   final String id;
   final String alunoId;
@@ -17,8 +19,8 @@ class Visualizacao {
 
   factory Visualizacao.fromJson(Map<String, dynamic> json) =>
       Visualizacao(
-        id: json ['id'] as String, 
-        alunoId: json['alunoId'] as String, 
+        id: JsonParsingHelper.optionalString(json['id']) ?? '', 
+        alunoId: JsonParsingHelper.requiredString(json, 'alunoId'),
         visualiado: json  ['visualiado'] as bool,
       ) ;
 

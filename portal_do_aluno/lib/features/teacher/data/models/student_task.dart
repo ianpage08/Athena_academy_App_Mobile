@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class StudentTask {
   final String id;
@@ -36,15 +37,21 @@ class StudentTask {
   };
 
   factory StudentTask.fromJson(Map<String, dynamic> json) => StudentTask(
-    id: json['id'] as String,
-    titulo: json['titulo'] as String,
-    professorId: json['professorId'] as String,
-    nomeDoProfessor: json['nomeDoProfessor'] as String,
-    turmaId: json['turmaId'] as String,
-    conteudoDoExercicio: json['conteudoDoExercicio'] as String,
-    dataDeEnvio: json['dataDeEnvio'] as Timestamp,
-    dataDeEntrega: json['dataDeEntrega'] as Timestamp,
-    dataDeExpiracao: json['dataDeExpiracao'] as Timestamp,
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    titulo: JsonParsingHelper.requiredString(json, 'titulo'),
+    professorId: JsonParsingHelper.requiredString(json, 'professorId'),
+    nomeDoProfessor: JsonParsingHelper.requiredString(json, 'nomeDoProfessor'),
+    turmaId: JsonParsingHelper.requiredString(json, 'turmaId'),
+    conteudoDoExercicio: JsonParsingHelper.requiredString(
+      json,
+      'conteudoDoExercicio',
+    ),
+    dataDeEnvio:
+        JsonParsingHelper.requiredDate(json['dataDeEnvio']) as Timestamp,
+    dataDeEntrega:
+        JsonParsingHelper.requiredDate(json['dataDeEntrega']) as Timestamp,
+    dataDeExpiracao:
+        JsonParsingHelper.requiredDate(json['dataDeExpiracao']) as Timestamp,
   );
 
   StudentTask copyWith({

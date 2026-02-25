@@ -1,3 +1,5 @@
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
+
 class ClasseDeAula {
   final String id;
   final String serie;
@@ -22,11 +24,11 @@ class ClasseDeAula {
   };
 
   factory ClasseDeAula.fromJson(Map<String, dynamic> json) => ClasseDeAula(
-    id: json['id'] as String? ?? '',
-    serie: json['serie'] as String? ?? '',
-    turno: json['turno'] as String? ?? '',
-    qtdAlunos: (json['qtdAlunos'] as num?)?.toInt() ?? 0,
-    professorTitular: json['professorTitular'] as String? ?? '',
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    serie: JsonParsingHelper.requiredString(json, 'serie'),
+    turno: JsonParsingHelper.requiredString(json, 'turno'),
+    qtdAlunos: JsonParsingHelper.requiredInt(json, 'qtdAlunos'),
+    professorTitular: JsonParsingHelper.requiredString(json, 'professorTitular')
   );
 
   ClasseDeAula copyWith({
