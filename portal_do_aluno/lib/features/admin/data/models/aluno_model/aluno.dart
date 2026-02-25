@@ -19,7 +19,8 @@ class DadosAluno {
     required this.dataNascimento,
     required this.nomeMae,
     required this.nomePai,
-  });
+  }) : assert(nome.trim().isNotEmpty, 'Nome não pode ser vazio'), assert(cpf.trim().isNotEmpty, 'CPF não pode ser vazio');
+
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -41,7 +42,7 @@ class DadosAluno {
       naturalidade: json['naturalidade'] as String? ?? '',
       dataNascimento: json['dataNascimento'] is Timestamp
           ? (json['dataNascimento'] as Timestamp).toDate()
-          : DateTime.now(),
+          : Timestamp.now().toDate(),
       nomeMae: json['nomeMae'] as String? ?? '',
       nomePai: json['nomePai'] as String? ?? '',
     );
