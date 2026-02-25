@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/cadastro%20disciplina/controller/cadastro_disciplina_controller.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/cadastro_disciplina/controller/cadastro_disciplina_controller.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';

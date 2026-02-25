@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/cadastro%20turmas/controller/cadastro_turma_controller.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/cadastro_turmas/controller/cadastro_turma_controller.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';

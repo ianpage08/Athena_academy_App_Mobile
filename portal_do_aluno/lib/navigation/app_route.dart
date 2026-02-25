@@ -9,8 +9,8 @@ import 'package:portal_do_aluno/features/presentation/pages/splash_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/academic_calendar_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/exercicios_aluno_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/grade/grade_entry_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/cadastro%20disciplina/cadastrar_disciplina_page.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/cadastro%20turmas/cadastro_turma_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/cadastro_disciplina/cadastrar_disciplina_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/cadastro_turmas/cadastro_turma_page.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/lesson_content.dart';
 
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/detalhes_alunos/detalhes_do_aluno_page.dart';

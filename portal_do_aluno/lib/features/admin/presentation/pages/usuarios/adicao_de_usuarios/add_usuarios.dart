@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o_de_usuarios/controller/add_usuario_controller.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/controller/add_usuario_controller.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o_de_usuarios/widgets/admin/admin_section.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o_de_usuarios/widgets/form_validators.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o_de_usuarios/widgets/password_tips_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/admin/admin_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/form_validators.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/password_tips_section.dart';
 
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o_de_usuarios/widgets/professor/professor_cadastro_section.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/professor/professor_cadastro_section.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/clear_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';

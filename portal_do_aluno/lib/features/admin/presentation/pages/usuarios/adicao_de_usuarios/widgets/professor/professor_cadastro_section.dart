@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/core/utils/formatters.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adi%C3%A7%C3%A3o_de_usuarios/widgets/form_validators.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/form_validators.dart';
 
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 

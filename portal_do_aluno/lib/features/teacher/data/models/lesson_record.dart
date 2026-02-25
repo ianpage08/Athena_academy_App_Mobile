@@ -34,7 +34,7 @@ class LessonRecord {
       LessonRecord(
         id: json['id'],
         classId: json['classId'],
-        conteudo: json['onteudo'],
+        conteudo: json['conteudo'],
         data: (json['data'] as Timestamp).toDate(),
         observacoes: json['observacoes'],
         presenca: json['presenca'],
