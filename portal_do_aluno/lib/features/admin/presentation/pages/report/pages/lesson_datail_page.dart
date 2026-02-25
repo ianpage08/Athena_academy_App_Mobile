@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
+import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 
 class LessonDetailPage extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -18,6 +20,42 @@ class LessonDetailPage extends StatelessWidget {
         title: const Text('Detalhes do conteúdo'),
         centerTitle: true,
         elevation: 0,
+      ),
+      bottomSheet: GestureDetector(
+        onTap: () async {
+          final result = await showAppConfirmationDialog(
+            context: context,
+            title: 'Excluir Relatório',
+            confirmText: 'Excluir',
+            cancelText: 'Cancelar',
+            content: 'Essa ação não pode ser desfeita.',
+          );
+          if (result == true) {
+            ConteudoPresencaService().excluirConteudoPresenca(data['id']);
+            Navigator.pop(context);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(16),
+          ),
+
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Excluir Relatório',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),

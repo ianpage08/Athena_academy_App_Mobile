@@ -116,6 +116,8 @@ class LessonController {
     }
   }
 
+  
+
   void dispose() {
     conteudoController.dispose();
     observacoesController.dispose();

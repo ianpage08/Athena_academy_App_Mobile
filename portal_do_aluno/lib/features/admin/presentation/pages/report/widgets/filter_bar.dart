@@ -69,9 +69,14 @@ class FilterBar extends StatelessWidget {
                 return DropdownButtonFormField<String>(
                   value: filtroTurmaId, //  não é initialValue
                   isExpanded: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Turma',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 16,
+                    ),
+                    fillColor: Theme.of(context).cardColor,
                     isDense: true,
                   ),
                   items: docs.map((doc) {

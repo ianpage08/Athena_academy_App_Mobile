@@ -1,66 +1,76 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/pages/lesson_datail_page.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/filter_bar.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/report_card.dart';
 import 'package:portal_do_aluno/shared/widgets/chip_filtro.dart';
 
-class ReportStreamBuilder extends StatelessWidget {
+class ReportStreamBuilder extends StatefulWidget {
   const ReportStreamBuilder({super.key});
 
   @override
+  State<ReportStreamBuilder> createState() => _ReportStreamBuilderState();
+}
+
+class _ReportStreamBuilderState extends State<ReportStreamBuilder> {
+  String? filtroTurmaId; //  fica no STATE (não no build)
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> _reportsStream() {
+    final base = FirebaseFirestore.instance
+        .collection('conteudoPresenca')
+        .orderBy('data', descending: true);
+
+    //aplica filtro quando existir
+    if (filtroTurmaId != null) {
+      return base.where('classId', isEqualTo: filtroTurmaId).snapshots();
+    }
+    return base.snapshots();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String? filtroSelecionado;
+    final theme = Theme.of(context);
 
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardTheme.color,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ChipFiltro(
-                title: 'Todos',
-                value: null,
-                filtroSelected: filtroSelecionado,
-                onSelected: (value) {
-                  filtroSelecionado = value;
-                },
-                
-              ),
-              Dropdown
-              ChipFiltro(title: '', value: value, filtroSelected: filtroSelected, onSelected: onSelected)
-            ],
-          ),
+        FilterBar(
+          filtroTurmaId: filtroTurmaId,
+          onSelectAll: () => setState(() => filtroTurmaId = null),
+          onSelectTurma: (value) {
+            setState(() => filtroTurmaId = value);
+            debugPrint('filtroTurmaId: $filtroTurmaId');
+          },
         ),
 
+        const SizedBox(height: 12),
+
         Expanded(
-          child: StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('conteudoPresenca')
-                .orderBy('data', descending: true)
-                .snapshots(),
+          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream: _reportsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const Center(child: Text('Nenhum Arquivo encontrado'));
+              if (snapshot.hasError) {
+                debugPrint('erorororororororo ${snapshot.error.toString()}');
+                return const Center(child: Text('Erro ao carregar relatórios'));
+              }
+              final docs = snapshot.data?.docs ?? [];
+              if (docs.isEmpty) {
+                return const Center(child: Text('Nenhum arquivo encontrado'));
               }
 
-              final docs = snapshot.data!.docs;
               return ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 itemCount: docs.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final data = docs[index].data();
                   final anexos = List<String>.from(data['anexo'] ?? []);
 
-                  return InkWell(
-                    borderRadius: BorderRadius.circular(16),
+                  return ReportCard(
+                    data: data,
+                    anexosCount: anexos.length,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -70,111 +80,6 @@ class ReportStreamBuilder extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Theme.of(context).cardColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// Ícone lateral
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.menu_book_rounded,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-
-                          const SizedBox(width: 16),
-
-                          /// Conteúdo
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data['conteudo'] ?? '',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  data['observacoes'] ?? '',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-
-                                /// Badge anexos
-                                if (anexos.isNotEmpty)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.attach_file,
-                                          size: 16,
-                                          color: Colors.blue,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '${anexos.length} anexo(s)',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          /// Seta lateral
-                          const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                        ],
-                      ),
-                    ),
                   );
                 },
               );
