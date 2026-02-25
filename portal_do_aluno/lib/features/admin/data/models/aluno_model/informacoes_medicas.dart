@@ -1,3 +1,5 @@
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
+
 class InformacoesMedicasAluno {
   final String? alergia;
   final String? medicacao;
@@ -15,10 +17,10 @@ class InformacoesMedicasAluno {
 
   factory InformacoesMedicasAluno.fromJson(Map<String, dynamic> json) =>
       InformacoesMedicasAluno(
-        alergia: json['alergia'] as String? ?? '',
-        medicacao: json['medicacao'] as String? ?? '',
-        observacoes: json['observacoes'] as String? ?? '',
-        numeroEmergencia: json['numeroEmergencia'] as String? ?? '',
+        alergia: JsonParsingHelper.optionalString(json['alergia']),
+        medicacao: JsonParsingHelper.optionalString(json['medicacao']),
+        observacoes: JsonParsingHelper.optionalString(json['observacoes']),
+        numeroEmergencia: JsonParsingHelper.optionalString(json['numeroEmergencia']),
       );
 
   InformacoesMedicasAluno copyWith({

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 enum Destinatario { todos, alunos, professores, responsaveis }
 
@@ -34,15 +35,16 @@ class Comunicado {
   };
 
   factory Comunicado.fromJson(Map<String, dynamic> json) => Comunicado(
-    id: json['id'] as String? ?? '',
-    titulo: json['titulo'] as String? ?? '',
-    mensagem: json['mensagem'] as String? ?? '',
-    dataPublicacao: json['dataPublicacao'] is Timestamp ? (json['dataPublicacao'] as Timestamp).toDate() : DateTime.now(),
-    destinatario: json['destinatario'] != null
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    titulo: JsonParsingHelper.requiredString(json, 'titulo'),
+    mensagem: JsonParsingHelper.requiredString(json, 'mensagem'),
+    dataPublicacao: JsonParsingHelper.requiredDate(json['dataPublicacao']),
+    destinatario: JsonParsingHelper.optionalString(json['destinatario']) != null
         ? Destinatario.values.byName(json['destinatario'] as String)
         : Destinatario.todos,
-    prioridade: json['prioridade'] as String? ?? '',
-    dataDeExpiracao: json['dataDeExpiracao'] as Timestamp,
+    prioridade: JsonParsingHelper.optionalString(json['prioridade']),
+    dataDeExpiracao:
+        JsonParsingHelper.requiredDate(json['dataDeExpiracao']) as Timestamp,
   );
 
   Comunicado copyWith({

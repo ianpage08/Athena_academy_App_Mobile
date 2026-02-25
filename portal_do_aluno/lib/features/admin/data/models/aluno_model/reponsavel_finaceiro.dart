@@ -1,3 +1,5 @@
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
+
 class ResponsavelFinanceiro {
   final String nome;
   final String cpf;
@@ -17,9 +19,9 @@ class ResponsavelFinanceiro {
 
   factory ResponsavelFinanceiro.fromJson(Map<String, dynamic> json) {
     return ResponsavelFinanceiro(
-      nome: json['nome'],
-      cpf: json['cpf'],
-      telefone: json['telefone'],
+      nome: JsonParsingHelper.requiredString(json, 'nome'),
+      cpf: JsonParsingHelper.requiredString(json, 'cpf'),
+      telefone: JsonParsingHelper.requiredString(json, 'telefone'),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class Calendario {
   final String id;
@@ -7,7 +8,6 @@ class Calendario {
   final DateTime data;
   final int? tipo;
   final Timestamp dataDeExpiracao;
-  
 
   Calendario({
     required this.id,
@@ -16,8 +16,6 @@ class Calendario {
     required this.data,
     required this.tipo,
     required this.dataDeExpiracao,
-    
-    
   });
 
   Map<String, dynamic> toJson() => {
@@ -27,17 +25,15 @@ class Calendario {
     'data': data,
     'tipo': tipo,
     'dataDeExpiracao': dataDeExpiracao,
-    
   };
 
   factory Calendario.fromJson(Map<String, dynamic> json) => Calendario(
-    id: json['id'] as String,
-    titulo: json['titulo'] as String,
-    descricao: json['descricao'] as String,
-    data: (json['data'] as Timestamp).toDate(),
-    tipo: json['tipo'] as int,
-    dataDeExpiracao: json['dataDeExpiracao'] as Timestamp,
-    
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    titulo: JsonParsingHelper.requiredString(json, 'titulo'),
+    descricao: JsonParsingHelper.optionalString(json['descricao']),
+    data: JsonParsingHelper.requiredDate(json['data']),
+    tipo: JsonParsingHelper.optionalInt(json['tipo']),
+    dataDeExpiracao: JsonParsingHelper.requiredDate(json['dataDeExpiracao']) as Timestamp,
   );
 
   Calendario copyWith({
@@ -47,7 +43,6 @@ class Calendario {
     DateTime? data,
     int? tipo,
     Timestamp? dataDeExpiracao,
-    
   }) {
     return Calendario(
       id: id ?? this.id,

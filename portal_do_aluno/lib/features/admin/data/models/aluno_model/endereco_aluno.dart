@@ -1,3 +1,5 @@
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
+
 class EnderecoAluno {
   final String cep;
   final String rua;
@@ -25,12 +27,12 @@ class EnderecoAluno {
   };
 
   factory EnderecoAluno.fromJson(Map<String, dynamic> json) => EnderecoAluno(
-    cep: json['cep'] as String? ?? '',
-    rua: json['rua'] as String? ?? '',
-    cidade: json['cidade'] as String? ?? '',
-    estado: json['estado'] as String? ?? '',
-    bairro: json['bairro'] as String? ?? '',
-    numero: json['numero'] as String? ?? '',
+    cep: JsonParsingHelper.optionalString(json['cep']) ?? '',
+    rua: JsonParsingHelper.optionalString(json['rua']) ?? '',
+    cidade: JsonParsingHelper.optionalString(json['cidade']) ?? '',
+    estado: JsonParsingHelper.optionalString(json['estado']) ?? '',
+    bairro: JsonParsingHelper.optionalString(json['bairro']) ?? '',
+    numero: JsonParsingHelper.optionalString(json['numero']) ?? '',
   );
 
   EnderecoAluno copyWith({

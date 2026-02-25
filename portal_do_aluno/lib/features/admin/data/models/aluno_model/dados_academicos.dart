@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class DadosAcademicos {
   final String turma;
@@ -19,11 +20,9 @@ class DadosAcademicos {
 
   factory DadosAcademicos.fromJson(Map<String, dynamic> json) =>
       DadosAcademicos(
-        turma: json['turma'] as String? ?? '',
-        dataMatricula: json['dataMatricula'] is Timestamp
-            ? (json['dataMatricula'] as Timestamp).toDate()
-            : DateTime.now(),
-        classId: json['classId'] as String? ?? '',
+        turma: JsonParsingHelper.requiredString(json, 'turma'),
+        dataMatricula: JsonParsingHelper.requiredDate(json['dataMatricula']),
+        classId: JsonParsingHelper.optionalString(json['classId']),
       );
 
   DadosAcademicos copyWith({

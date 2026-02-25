@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 class DadosAluno {
   final String? id;
@@ -19,8 +20,8 @@ class DadosAluno {
     required this.dataNascimento,
     required this.nomeMae,
     required this.nomePai,
-  }) : assert(nome.trim().isNotEmpty, 'Nome não pode ser vazio'), assert(cpf.trim().isNotEmpty, 'CPF não pode ser vazio');
-
+  }) : assert(nome.trim().isNotEmpty, 'Nome não pode ser vazio'),
+       assert(cpf.trim().isNotEmpty, 'CPF não pode ser vazio');
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -35,16 +36,14 @@ class DadosAluno {
 
   factory DadosAluno.fromJson(Map<String, dynamic> json) {
     return DadosAluno(
-      id: json['id'] as String? ?? '',
-      nome: json['nome'] as String? ?? '',
-      cpf: json['cpf'] as String? ?? '',
-      sexo: json['sexo'] as String? ?? '',
-      naturalidade: json['naturalidade'] as String? ?? '',
-      dataNascimento: json['dataNascimento'] is Timestamp
-          ? (json['dataNascimento'] as Timestamp).toDate()
-          : Timestamp.now().toDate(),
-      nomeMae: json['nomeMae'] as String? ?? '',
-      nomePai: json['nomePai'] as String? ?? '',
+      id: JsonParsingHelper.optionalString(json['id']),
+      nome: JsonParsingHelper.requiredString(json, 'nome'),
+      cpf: JsonParsingHelper.requiredString(json, 'cpf'),
+      sexo: JsonParsingHelper.requiredString(json, 'sexo'),
+      naturalidade: JsonParsingHelper.requiredString(json, 'naturalidade'),
+      dataNascimento: JsonParsingHelper.requiredDate(json['dataNascimento']),
+      nomeMae: JsonParsingHelper.requiredString(json, 'nomeMae'),
+      nomePai: JsonParsingHelper.requiredString(json, 'nomePai'),
     );
   }
 
@@ -86,4 +85,3 @@ class DadosAluno {
         '${dataNascimento.year}';
   }
 }
-
