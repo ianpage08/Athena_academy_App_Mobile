@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
 import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 

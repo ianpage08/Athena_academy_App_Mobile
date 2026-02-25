@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
 enum Presenca { presente, falta, justificativa }
