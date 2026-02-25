@@ -3,6 +3,7 @@ import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/helper/anexo_helper.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/controller/lesson_controller.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/attach_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_context_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_info_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/section_title.dart';
@@ -77,7 +78,7 @@ class _LessonContentState extends State<LessonContent> {
                     LessonContentSection(controller: controller),
 
                     const SizedBox(height: 16),
-                    _AttachSection(
+                    AttachSection(
                       attachedCount: controller.imgSelected.length,
                       onAttach: () => _onAttachPressed(context),
                     ),
@@ -142,44 +143,4 @@ class _LessonContentState extends State<LessonContent> {
   }
 }
 
-class _AttachSection extends StatelessWidget {
-  final int attachedCount;
-  final VoidCallback onAttach;
 
-  const _AttachSection({required this.attachedCount, required this.onAttach});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasFile = attachedCount > 0;
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).primaryColor),
-        color: Theme.of(context).cardColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                hasFile
-                    ? '$attachedCount arquivo(s) anexado(s)'
-                    : 'Anexe um arquivo ou imagem',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 8),
-            IconButton(
-              onPressed: onAttach,
-              icon: const Icon(Icons.attach_file),
-              tooltip: 'Anexar arquivo',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
