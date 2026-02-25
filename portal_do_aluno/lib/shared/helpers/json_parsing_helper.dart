@@ -62,4 +62,62 @@ class JsonParsingHelper {
     }
     return value;
   }
+
+  static bool? optionalBool(dynamic key) {
+    if (key == null) {
+      return null;
+    }
+    if (key is bool) {
+      return key;
+    }
+    if (key is String) {
+      final boo = key.toLowerCase().trim();
+      if (boo == 'true' || boo == '1') {
+        return true;
+      }
+      if (boo == 'false' || boo == '0') {
+        return false;
+      }
+    }
+    return null;
+  }
+
+  static double? optionalDouble(dynamic key) {
+    if (key == null) {
+      return null;
+    }
+    if (key is double) {
+      return key;
+    }
+    return double.tryParse(key.toString());
+  }
+
+  static double requiredDouble(Map<String, dynamic> json, String key) {
+    final value = optionalDouble(json[key]);
+    if (value == null) {
+      throw FormatException('O campo "$key" é obrigatório');
+    }
+    return value;
+  }
+
+  static bool requiredBool(Map<String, dynamic> json, String key) {
+    final value = optionalBool(json[key]);
+    if (value == null) {
+      throw Exception('O campo "$key" é obrigatório');
+    }
+    return value;
+  }
+
+  static List<String> stringListOrEmpty(dynamic key) {
+    if (key == null) {
+      return [];
+    }
+    if (key is List<String>) {
+      return key;
+    }
+    if (key is List<dynamic>) {
+      return key.map((i) => i.toString()).toList();
+    }
+    return [];
+  }
 }
