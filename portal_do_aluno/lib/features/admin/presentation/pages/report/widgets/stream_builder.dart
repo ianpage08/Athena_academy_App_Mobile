@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/pages/lesson_datail_page.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/filter_bar.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/report_card.dart';
-import 'package:portal_do_aluno/shared/widgets/chip_filtro.dart';
+
 
 class ReportStreamBuilder extends StatefulWidget {
   const ReportStreamBuilder({super.key});
@@ -29,7 +29,7 @@ class _ReportStreamBuilderState extends State<ReportStreamBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    
 
     return Column(
       children: [

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/empty_attachments_card.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/full_screen.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/report_meta_tag.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 
@@ -124,14 +127,14 @@ class LessonDetailPage extends StatelessWidget {
 
                   Row(
                     children: [
-                      _InfoChip(
+                      ReportMetaTag(
                         icon: Icons.attach_file,
                         label: anexos.isEmpty
                             ? 'Sem anexos'
                             : '${anexos.length} anexo(s)',
                       ),
                       const SizedBox(width: 8),
-                      _InfoChip(
+                      const ReportMetaTag(
                         icon: Icons.check_circle_outline_rounded,
                         label: 'Registrado',
                       ),
@@ -166,7 +169,7 @@ class LessonDetailPage extends StatelessWidget {
             const SizedBox(height: 12),
 
             if (anexos.isEmpty)
-              _EmptyAttachmentsCard(theme: theme)
+              EmptyAttachmentsCard(theme: theme)
             else
               GridView.builder(
                 shrinkWrap: true,
@@ -258,91 +261,8 @@ class LessonDetailPage extends StatelessWidget {
   }
 }
 
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
 
-  const _InfoChip({required this.icon, required this.label});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: Colors.grey.withOpacity(0.12),
-        border: Border.all(color: Colors.grey.withOpacity(0.18)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: Colors.black54),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
-class _EmptyAttachmentsCard extends StatelessWidget {
-  final ThemeData theme;
-  const _EmptyAttachmentsCard({required this.theme});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.6)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Colors.grey.withOpacity(0.12),
-            ),
-            child: Icon(Icons.inbox_rounded, color: Colors.grey.shade600),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'Sem anexos para este conteúdo.',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
-class FullscreenImagePage extends StatelessWidget {
-  final String url;
-  const FullscreenImagePage({super.key, required this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(child: InteractiveViewer(child: Image.network(url))),
-    );
-  }
-}
