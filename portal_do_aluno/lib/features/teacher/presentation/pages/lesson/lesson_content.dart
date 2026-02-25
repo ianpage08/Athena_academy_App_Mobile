@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/helper/anexo_helper.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
+import 'package:portal_do_aluno/features/student/presentation/widgets/animated_overlay.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/controller/lesson_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/attach_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_context_section.dart';
@@ -22,6 +23,7 @@ class LessonContent extends StatefulWidget {
 
 class _LessonContentState extends State<LessonContent> {
   final LessonController controller = LessonController();
+  bool _isLoading = false;
 
   VoidCallback? _detachSubmitListener;
 
@@ -48,71 +50,81 @@ class _LessonContentState extends State<LessonContent> {
   Widget build(BuildContext context) {
     final userId = context.read<UserProvider>().userId;
 
-    return Scaffold(
-      appBar: const CustomAppBar(title: 'Conteúdo ministrado'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SectionTitle('Informações da aula'),
-                    const SizedBox(height: 20),
-                    LessonInfoSection(controller: controller),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: const CustomAppBar(title: 'Conteúdo ministrado'),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SectionTitle('Informações'),
+                        const SizedBox(height: 20),
+                        LessonInfoSection(controller: controller),
 
-                    const SizedBox(height: 32),
-                    const Divider(),
-                    const SizedBox(height: 32),
+                        const SizedBox(height: 32),
+                        const Divider(),
+                        const SizedBox(height: 32),
 
-                    const SectionTitle('Conteúdo ministrado'),
-                    const SizedBox(height: 16),
-                    LessonContentSection(controller: controller),
+                        const SectionTitle('Conteúdo ministrado'),
+                        const SizedBox(height: 16),
+                        LessonContentSection(controller: controller),
 
-                    const SizedBox(height: 16),
-                    AttachSection(
-                      attachedCount: controller.imgSelected.length,
-                      onAttach: () => _onAttachPressed(context),
+                        const SizedBox(height: 16),
+                        AttachSection(
+                          attachedCount: controller.imgSelected.length,
+                          onAttach: () => _onAttachPressed(context),
+                        ),
+
+                        const SizedBox(height: 28),
+                        ValueListenableBuilder<SubmitState>(
+                          valueListenable: controller.submitState,
+                          builder: (context, state, _) {
+                            return SizedBox(
+                              width: double.infinity,
+                              child: SaveButton(
+                                salvarconteudo: () async {
+                                  if (userId == null) {
+                                    showAppSnackBar(
+                                      context: context,
+                                      mensagem: 'Usuário não identificado.',
+                                      cor: Colors.red,
+                                    );
+                                    return;
+                                  }
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  await controller.submit(userId);
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-
-                    const SizedBox(height: 28),
-                    ValueListenableBuilder<SubmitState>(
-                      valueListenable: controller.submitState,
-                      builder: (context, state, _) {
-                        return SizedBox(
-                          width: double.infinity,
-                          child: SaveButton(
-                            salvarconteudo: () async {
-                              if (userId == null) {
-                                showAppSnackBar(
-                                  context: context,
-                                  mensagem: 'Usuário não identificado.',
-                                  cor: Colors.red,
-                                );
-                                return;
-                              }
-
-                              await controller.submit(userId);
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+        if (_isLoading == true) const AnimatedOverlay(),
+      ],
     );
   }
 
@@ -142,5 +154,3 @@ class _LessonContentState extends State<LessonContent> {
     );
   }
 }
-
-

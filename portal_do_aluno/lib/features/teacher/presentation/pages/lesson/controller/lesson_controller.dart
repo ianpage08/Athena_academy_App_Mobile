@@ -24,7 +24,7 @@ class LessonController {
     if (data['type'] != 'teacher') {
       throw Exception('Usuario não é professor');
     }
-    
+
     return snapshot.id;
   }
 
@@ -45,8 +45,7 @@ class LessonController {
     return turmaId != null &&
         disciplinaId != null &&
         dataSelecionada != null &&
-        conteudoController.text.isNotEmpty &&
-        observacoesController.text.isNotEmpty;
+        conteudoController.text.isNotEmpty;
   }
 
   void clear() {
@@ -115,8 +114,6 @@ class LessonController {
       );
     }
   }
-
-  
 
   void dispose() {
     conteudoController.dispose();
