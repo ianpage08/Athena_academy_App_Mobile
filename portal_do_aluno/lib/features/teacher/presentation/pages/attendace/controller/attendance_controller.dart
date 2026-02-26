@@ -30,6 +30,7 @@ class AttendanceRegistrationController  {
         .where('dadosAcademicos.classId', isEqualTo: turmaId)
         .snapshots();
   }
+  
 
   Future<SubmitState> salvar(BuildContext context) async {
 
