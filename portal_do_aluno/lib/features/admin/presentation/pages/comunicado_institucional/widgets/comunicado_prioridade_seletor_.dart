@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 
 class ComunicadoPrioridadeSelector extends StatelessWidget {

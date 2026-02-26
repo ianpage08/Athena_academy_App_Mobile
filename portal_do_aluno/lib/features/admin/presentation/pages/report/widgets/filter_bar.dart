@@ -67,7 +67,7 @@ class FilterBar extends StatelessWidget {
                 }
 
                 return DropdownButtonFormField<String>(
-                  value: filtroTurmaId, //  não é initialValue
+                  initialValue: filtroTurmaId, //  não é initialValue
                   isExpanded: true,
                   decoration: InputDecoration(
                     labelText: 'Turma',

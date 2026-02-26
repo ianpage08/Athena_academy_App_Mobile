@@ -188,7 +188,7 @@ class AnnouncementCard extends StatelessWidget {
             TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.blueGrey,
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
               ),
               onPressed: () => Navigator.pop(context),
               child: const Text('Fechar'),
