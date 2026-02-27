@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/teacher/data/repository/attendance_repository.dart';
 
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/controller/attendance_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/widgets/attendance_aluno_list.dart';
@@ -20,11 +21,15 @@ class _AttendanceRegistrationPageState
     extends State<AttendanceRegistrationPage> {
   final controller = AttendanceRegistrationController();
   final ValueNotifier<String?> turmaSelecionada = ValueNotifier(null);
+  final ValueNotifier<String?> turmaIdSelecionada = ValueNotifier(null);
   late final VoidCallback _submitCurrente;
+  final AttendanceRepository _repository = AttendanceRepository();
 
   @override
   void dispose() {
     _submitCurrente();
+    turmaSelecionada.dispose();
+    turmaIdSelecionada.dispose();
 
     super.dispose();
   }
@@ -64,6 +69,7 @@ class _AttendanceRegistrationPageState
               turmaSelecionada: turmaSelecionada,
               onTurmaSelecionada: (id, nome) {
                 controller.turmaId = id;
+                turmaIdSelecionada.value = id;
                 turmaSelecionada.value = nome;
                 debugPrint(controller.turmaId);
               },
@@ -74,12 +80,17 @@ class _AttendanceRegistrationPageState
               onDate: (data) => controller.dataSelecionada = data,
             ),
             const SizedBox(height: 20),
-            if (controller.turmaId != null)
-              AttendanceStudentList(
-                stream: controller.alunosPorTurma(controller.turmaId!),
-              )
-            else
-              const Text('Selecione uma turma acima'),
+            ValueListenableBuilder(
+              valueListenable: turmaIdSelecionada,
+              builder: (context, value, child) {
+                if (value == null) {
+                  return const Center(child: Text('Selecione uma turma'));
+                }
+                return AttendanceStudentList(
+                  stream: _repository.alunosPorTurma(controller.turmaId!),
+                );
+              },
+            ),
           ],
         ),
       ),
