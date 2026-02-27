@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
-import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/stream_alunos_contagem.dart';
 import 'package:portal_do_aluno/features/teacher/data/repository/attendance_repository.dart';
 
 class AttendanceRegistrationController {
