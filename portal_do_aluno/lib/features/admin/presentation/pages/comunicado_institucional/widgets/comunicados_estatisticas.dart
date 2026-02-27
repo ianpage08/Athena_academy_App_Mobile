@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 
 class ComunicadoEstatisticas extends StatelessWidget {
-  final ComunicadoService service;
+  final VoidCallback? att;
 
-  const ComunicadoEstatisticas({super.key, required this.service});
+  const ComunicadoEstatisticas({super.key, this.att});
 
   @override
   Widget build(BuildContext context) {
+    final ComunicadoService service = ComunicadoService();
+
     return StreamBuilder<int>(
       stream: service.calcularQuantidadeDeCominicados().asStream(),
       builder: (context, snapshot) {
@@ -27,6 +29,7 @@ class ComunicadoEstatisticas extends StatelessWidget {
     );
   }
 }
+
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final String label;

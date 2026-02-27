@@ -69,7 +69,7 @@ class _ComunicacaoInstitucionalPageState
 
                     const SizedBox(height: 16),
 
-                    ComunicadoEstatisticas(service: controller.service),
+                    ComunicadoEstatisticas(att: () {}),
 
                     const SizedBox(height: 16),
 

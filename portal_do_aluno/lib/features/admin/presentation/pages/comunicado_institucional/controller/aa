@@ -2,14 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
+import 'package:portal_do_aluno/core/notifications/enviar_notification.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
+
+import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 import 'package:portal_do_aluno/features/admin/data/repositories/statement_repository.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
+import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart';
 
 class ComunicacaoInstitucionalController {
   // Persistência
-  
+  final ComunicadoService service = ComunicadoService();
 
   // Estado de envio
   final submitState = ValueNotifier<SubmitState>(Initial());
@@ -27,7 +31,20 @@ class ComunicacaoInstitucionalController {
   // Validação extra
   bool get isFormularioValido => prioridade != null && destinatario != null;
 
-  
+  // Monta o comunicado
+  Comunicado buildComunicado() {
+    return Comunicado(
+      id: '',
+      titulo: tituloController.text.trim(),
+      mensagem: mensagemController.text.trim(),
+      prioridade: prioridade!.name,
+      destinatario: Destinatario.values.byName(destinatario!.toLowerCase()),
+      dataPublicacao: DateTime.now(),
+      dataDeExpiracao: Timestamp.fromDate(
+        DateTime.now().add(const Duration(days: 7)),
+      ),
+    );
+  }
 
   // Envio principal
   Future<void> enviar() async {
@@ -65,6 +82,7 @@ class ComunicacaoInstitucionalController {
 
       await _repository.statementNotification(
         destinatario: destinatario!,
+        title: tituloController.text.trim(),
         message: mensagemController.text.trim(),
       );
       clear();
@@ -88,6 +106,20 @@ class ComunicacaoInstitucionalController {
     }
   }
 
+  // Notificação push
+  Future<void> notificarDestinatarios() async {
+    if (destinatario == null) return;
+
+    final tokens = await service.getTokensDestinatario(
+      Destinatario.values.byName(destinatario!.toLowerCase()).name,
+    );
+
+    final resumo = limitarCampo(mensagemController.text.trim(), 40);
+
+    for (final token in tokens) {
+      enviarNotification(token, 'Novo comunicado disponível', resumo);
+    }
+  }
 
   // Limpa formulário
   void clear() {
