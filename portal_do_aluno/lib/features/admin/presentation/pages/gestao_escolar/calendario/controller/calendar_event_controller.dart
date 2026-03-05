@@ -2,56 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
-import 'package:portal_do_aluno/core/notifications/enviar_notification.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/calendario_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/calendario.dart';
+import 'package:portal_do_aluno/features/admin/data/repositories/calendar_repository.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
-import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
 
 class CalendarEventController {
-  final CalendarioService _service = CalendarioService();
   final submitState = ValueNotifier<SubmitState>(Initial());
-
-  final formKey = GlobalKey<FormState>();
-  final tituloController = TextEditingController();
-  final descricaoController = TextEditingController();
-  final ComunicadoService _comunicadoService = ComunicadoService();
+  final CalendarRepository _repository = CalendarRepository();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController tituloController = TextEditingController();
+  final TextEditingController descricaoController = TextEditingController();
 
   DateTime? dataSelecionada;
-
-  int tipoParaInt(CalendarEventType tipo) {
-    switch (tipo) {
-      case CalendarEventType.avaliacao:
-        return 1;
-      case CalendarEventType.reuniao:
-        return 2;
-      case CalendarEventType.eventoEscolar:
-        return 3;
-      case CalendarEventType.outro:
-        return 4;
-    }
-  }
-
-  Calendario _buildEvent(CalendarEventType tipo) {
-    return Calendario(
-      id: '',
-      titulo: tituloController.text.trim(),
-      data: dataSelecionada!,
-      tipo: tipoParaInt(tipo),
-      descricao: descricaoController.text.trim(),
-      dataDeExpiracao: Timestamp.fromDate(
-        dataSelecionada!.add(const Duration(days: 30)),
-      ),
-    );
-  }
 
   Future<void> salvar(CalendarEventType tipo) async {
     if (!FormHelper.isFormValid(
       formKey: formKey,
-      listControllers: [tituloController, descricaoController],
+      listControllers: [tituloController],
     )) {
       submitState.value = SubmitError(
         AppError(
@@ -72,11 +40,16 @@ class CalendarEventController {
     debugPrint('Salvando evento...');
 
     try {
-      await _service.cadastrarCalendario(_buildEvent(tipo));
-      clear();
+      await _repository.createEvent(
+        titulo: tituloController.text.trim(),
+        descricao: descricaoController.text.trim(),
+        tipo: tipo,
+        dataSelecionada: dataSelecionada!,
+      );
 
       submitState.value = SubmitSuccess('Evento criado com sucesso!');
       debugPrint('Evento criado com sucesso!');
+      clear();
     } on FirebaseException {
       submitState.value = SubmitError(
         AppError(
@@ -92,27 +65,9 @@ class CalendarEventController {
     }
   }
 
-  Future<void> notificarUsuarios() async {
-    debugPrint('Notificando usuários...');
-    final tokens = await _comunicadoService.getTokensDestinatario('todos');
-    debugPrint('Tokens: ${tokens.length}');
-
-    final descricao = limitarCampo(descricaoController.text.trim(), 40);
-
-    for (final token in tokens) {
-      await enviarNotification(
-        token,
-        'Novo Evento: ${tituloController.text}',
-        descricao,
-      );
-      debugPrint('Notificação enviada para $token');
-    }
-  }
-
   void clear() {
     tituloController.clear();
     descricaoController.clear();
-    dataSelecionada = null;
   }
 
   void dispose() {

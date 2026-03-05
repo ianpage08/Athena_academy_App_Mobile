@@ -23,8 +23,6 @@ void showCreateCalendarEventModal({
       return ValueListenableBuilder<SubmitState>(
         valueListenable: submitState,
         builder: (context, state, _) {
-          
-
           return Stack(
             children: [
               Padding(
@@ -61,7 +59,7 @@ void showCreateCalendarEventModal({
                           CustomTextFormField(
                             controller: controllers['descricao']!,
                             label: 'Descrição do Evento',
-                            hintText: 'Digite a descrição do evento (opcional)',
+                            hintText: 'Digite a descrição do evento',
                             prefixIcon: Icons.description,
                           ),
                         ],
