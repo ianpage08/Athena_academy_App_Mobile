@@ -2,44 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
-
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/diciplinas.dart';
+import 'package:portal_do_aluno/features/admin/data/repositories/cadastro_disciplina_repository.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 
 class CadastroDisciplinaController {
   final submitState = ValueNotifier<SubmitState>(Initial());
-  final DisciplinaService _service = DisciplinaService();
+  final CadastroDisciplinaRepository _repository =
+      CadastroDisciplinaRepository();
 
-  final formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController nomeDisciplinaController =
       TextEditingController();
-  final TextEditingController nomeProfessorController =
-      TextEditingController();
+  final TextEditingController nomeProfessorController = TextEditingController();
   final TextEditingController aulasPrevistasController =
       TextEditingController();
-  final TextEditingController cargaHorariaController =
-      TextEditingController();
+  final TextEditingController cargaHorariaController = TextEditingController();
 
   List<TextEditingController> get _controllers => [
-        nomeDisciplinaController,
-        nomeProfessorController,
-        aulasPrevistasController,
-        cargaHorariaController,
-      ];
-
-  Disciplina buildDisciplina() {
-    return Disciplina(
-      id: '',
-      nome: nomeDisciplinaController.text.trim(),
-      professor: nomeProfessorController.text.trim(),
-      aulaPrevistas:
-          int.tryParse(aulasPrevistasController.text) ?? 0,
-      cargaHoraria:
-          int.tryParse(cargaHorariaController.text) ?? 0,
-    );
-  }
+    nomeDisciplinaController,
+    nomeProfessorController,
+    aulasPrevistasController,
+    cargaHorariaController,
+  ];
 
   void clear() {
     for (final c in _controllers) {
@@ -66,10 +51,14 @@ class CadastroDisciplinaController {
     submitState.value = SubmitLoading();
 
     try {
-      await _service.cadastrarNovaDisciplina(buildDisciplina());
+      await _repository.cadastrarNovaDisciplina(
+        nameTeacher: nomeProfessorController.text.trim(),
+        discipline: nomeDisciplinaController.text.trim(),
+        numberClasses: aulasPrevistasController.text.trim(),
+        hours: cargaHorariaController.text.trim(),
+      );
       clear();
-      submitState.value =
-          SubmitSuccess('Disciplina cadastrada com sucesso!');
+      submitState.value = SubmitSuccess('Disciplina cadastrada com sucesso!');
     } catch (_) {
       submitState.value = SubmitError(
         AppError(
