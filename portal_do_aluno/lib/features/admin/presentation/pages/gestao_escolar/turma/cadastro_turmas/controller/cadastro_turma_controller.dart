@@ -3,36 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/errors/app_error.dart';
 import 'package:portal_do_aluno/core/errors/app_error_type.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
-import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_turma_firestore.dart';
-import 'package:portal_do_aluno/features/admin/data/models/turma.dart';
+import 'package:portal_do_aluno/features/admin/data/repositories/resgistration_class_repository.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 
 class CadastroTurmaController {
   final submitState = ValueNotifier<SubmitState>(Initial());
-  final CadastroTurmaService _cadastroTurmaService = CadastroTurmaService();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final ResgistrationClassRepository _resgistrationClassRepository =
+      ResgistrationClassRepository();
   final TextEditingController serieController = TextEditingController();
   final TextEditingController turnoController = TextEditingController();
   final TextEditingController qtdAlunosController = TextEditingController();
   final TextEditingController professorTitularController =
       TextEditingController();
 
-  void clear() {
-    serieController.clear();
-    turnoController.clear();
-    qtdAlunosController.clear();
-    professorTitularController.clear();
-  }
-
-  ClasseDeAula buildTurma() {
-    return ClasseDeAula(
-      id: '',
-      serie: serieController.text.trim(),
-      turno: turnoController.text.trim(),
-      qtdAlunos: int.tryParse(qtdAlunosController.text) ?? 0,
-      professorTitular: professorTitularController.text.trim(),
-    );
-  }
+  
 
   Future<void> submit() async {
     if (!FormHelper.isFormValid(
@@ -54,8 +39,12 @@ class CadastroTurmaController {
     }
     submitState.value = SubmitLoading();
     try {
-      final turma = buildTurma();
-      await _cadastroTurmaService.cadatrarNovaTurma(turma);
+      await _resgistrationClassRepository.cadastrarClasse(
+        amountStudents: qtdAlunosController.text,
+        nameTeacher: professorTitularController.text,
+        serie: serieController.text,
+        shift: turnoController.text,
+      );
       clear();
       submitState.value = SubmitSuccess('Turma cadastrada com sucesso! ');
     } on FirebaseException {
@@ -73,6 +62,12 @@ class CadastroTurmaController {
         ),
       );
     }
+  }
+  void clear() {
+    serieController.clear();
+    turnoController.clear();
+    qtdAlunosController.clear();
+    professorTitularController.clear();
   }
 
   void dispose() {
