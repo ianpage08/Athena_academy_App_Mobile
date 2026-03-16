@@ -169,6 +169,7 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
                         ),
                         const SizedBox(height: 6),
                         FirestoreDropdownField(
+
                           tipo: 'disciplina',
                           titulo: 'Selecione uma Disciplina',
                           stream: getDisciplinas(),
@@ -195,6 +196,7 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
                         ),
                         const SizedBox(height: 6),
                         CustomDropdownField(
+                          
                           itens: unidades,
                           selecionado: selected['unidade'],
                           titulo: 'Selecione uma Unidade',
@@ -217,6 +219,7 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
                         ),
                         const SizedBox(height: 6),
                         CustomDropdownField(
+                          
                           itens: avaliacao,
                           selecionado: selected['tipoAvaliacao'],
                           titulo: 'Selecione um Tipo de Avaliação',
@@ -225,6 +228,7 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
                             setState(() => selected['tipoAvaliacao'] = valor);
                           },
                           habilitado: selected['unidade'] != null,
+                          
                         ),
 
                         const SizedBox(height: 16),
@@ -248,8 +252,8 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
                               ? 'Digite a nota'
                               : null,
                           fillColor: selected['tipoAvaliacao'] != null
-                              ? Colors.white
-                              : Colors.grey[200],
+                              ? Theme.of(context).cardColor
+                              : const Color.fromARGB(162, 192, 192, 192),
                         ),
                       ],
                     ),

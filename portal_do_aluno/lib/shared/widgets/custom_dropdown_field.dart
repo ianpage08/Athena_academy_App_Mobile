@@ -59,7 +59,7 @@ class _CustomDropdownFieldState extends State<CustomDropdownField> {
                             children: widget.itens.map((item) {
                               return Card(
                                 elevation: 0,
-                                color: Colors.grey.shade100,
+                                color: Theme.of(context).cardTheme.color,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),

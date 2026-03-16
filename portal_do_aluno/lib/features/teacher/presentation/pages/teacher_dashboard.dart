@@ -102,7 +102,9 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Admin: ${dadosUsuario.name}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        'Prof: ${dadosUsuario.name}',
                                         style: Theme.of(
                                           context,
                                         ).textTheme.titleMedium,

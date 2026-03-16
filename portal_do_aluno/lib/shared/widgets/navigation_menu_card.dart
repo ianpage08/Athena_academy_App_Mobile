@@ -60,6 +60,8 @@ class NavigationMenuCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: highlight ? FontWeight.w700 : FontWeight.w600,
@@ -68,6 +70,8 @@ class NavigationMenuCard extends StatelessWidget {
               if (subtitle.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   subtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.hintColor,
