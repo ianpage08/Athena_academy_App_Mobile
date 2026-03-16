@@ -26,11 +26,14 @@ class StreamDetalhes extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.hasError || !snapshot.hasData) {
-          return const Center(child: Text('Aluno Não Encontrado'));
+        if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+          return const Center(child: Text('Aluno não encontrado'));
         }
 
-        final docMatricula = snapshot.data!.data() as Map<String, dynamic>;
+        final docMatricula = snapshot.data!.data() as Map<String, dynamic>?;
+        if (docMatricula == null) {
+          return const Center(child: Text('Aluno não encontrado'));
+        }
         final dadosAluno = DadosAluno.fromJson(
           docMatricula['dadosAluno'] ?? {},
         );
@@ -38,7 +41,9 @@ class StreamDetalhes extends StatelessWidget {
           docMatricula['dadosAcademicos'],
         );
         final dadosPais = ResponsavelFinanceiro.fromJson(
-          docMatricula['responsaveisAluno'] ?? {},
+          docMatricula['responsaveisAluno'] ??
+              docMatricula['responsavelFinanceiro'] ??
+              {},
         );
         final dadosEndereco = EnderecoAluno.fromJson(
           docMatricula['enderecoAluno'] ?? {},

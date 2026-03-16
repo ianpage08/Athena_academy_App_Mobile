@@ -7,16 +7,14 @@ import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
 import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 
 class StreamListMatriculas extends StatelessWidget {
-  final MatriculaService  matriculaService;
+  final MatriculaService matriculaService;
 
   const StreamListMatriculas({super.key, required this.matriculaService});
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream:  FirebaseFirestore.instance
-      .collection('matriculas')
-      .snapshots(),
+      stream: FirebaseFirestore.instance.collection('matriculas').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -32,9 +30,11 @@ class StreamListMatriculas extends StatelessWidget {
         return ListView.builder(
           itemCount: docMatriculas.length,
           itemBuilder: (context, index) {
-            final data = docMatriculas[index].data();
+            final matriculaDoc = docMatriculas[index];
+            final data = matriculaDoc.data();
             final dadosAluno = data['dadosAluno'] ?? {};
-            final alunoId = dadosAluno['id'];
+            final matriculaId = matriculaDoc.id;
+
             final dadosAcademicos = data['dadosAcademicos'] ?? {};
 
             return Padding(
@@ -104,7 +104,7 @@ class StreamListMatriculas extends StatelessWidget {
 
                     // Menu de ações
                     ActionMenuButton(
-                      id: alunoId,
+                      id: matriculaId,
                       items: [
                         MenuItemConfig(
                           value: 'detalhes',

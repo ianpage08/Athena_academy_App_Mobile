@@ -55,7 +55,10 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.adminComunicacaoInstiticional: (context) =>
       const ComunicacaoInstitucionalPage(),
   RouteNames.adminDetalhesAlunos: (context) {
-    final argumentos = ModalRoute.of(context)!.settings.arguments as String;
+    final argumentos = ModalRoute.of(context)?.settings.arguments as String;
+    if (argumentos.isEmpty) {
+      return const Scaffold(body: Center(child: Text('Aluno não encontrado')));
+    }
     return DetalhesAluno(alunoId: argumentos);
   },
   RouteNames.helpAppPage: (context) => const HelpPage(),
@@ -89,7 +92,7 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
 
   RouteNames.teacherCalendar: (context) => const AcademicCalendarPage(),
-  
+
   RouteNames.comunicadosProfessor: (context) =>
       const TeacherCommunicationsPage(),
   RouteNames.teacherExercicios: (context) => const ExerciseAssignmentPage(),
