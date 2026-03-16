@@ -187,6 +187,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       );
                     },
                   ),
+                  NavigationMenuCard(
+                    icon: Icons.report,
+                    title: 'Registros de Aula',
+                    subtitle: 'Anotações do professor',
+                    onTap: () {
+                      NavigatorService.navigateTo(RouteNames.adminReport);
+                    },
+                  ),
 
                   NavigationMenuCard(
                     icon: CupertinoIcons.lock_shield,
@@ -205,14 +213,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     subtitle: 'Preferências do sistema',
                     onTap: () {
                       NavigatorService.navigateTo(RouteNames.studentSettings);
-                    },
-                  ),
-                  NavigationMenuCard(
-                    icon: Icons.report,
-                    title: 'Relatorios',
-                    subtitle: 'Relatorios de aula',
-                    onTap: () {
-                      NavigatorService.navigateTo(RouteNames.adminReport);
                     },
                   ),
                 ],
