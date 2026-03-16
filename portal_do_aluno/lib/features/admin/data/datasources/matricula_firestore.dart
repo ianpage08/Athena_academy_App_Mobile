@@ -35,6 +35,7 @@ class MatriculaService {
       'dadosAluno': novoAluno.toJson(),
       'enderecoAluno': enderecoAluno.toJson(),
       'responsavelFinaceiro': responsavelFinanceiro.toJson(),
+      'responsavelFinanceiro': responsavelFinanceiro.toJson(),
       'dadosAcademicos': dadoAcademico.toJson(),
       'informacoesMedicasAluno': informacoesMedicasAluno.toJson(),
     };

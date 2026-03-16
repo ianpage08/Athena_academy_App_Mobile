@@ -42,7 +42,7 @@ class StreamDetalhes extends StatelessWidget {
         );
         final dadosPais = ResponsavelFinanceiro.fromJson(
           docMatricula['responsaveisAluno'] ??
-              docMatricula['responsavelFinanceiro'] ??
+              docMatricula['responsavelFinanceiro'] ?? docMatricula['responsavelFinaceiro'] ??
               {},
         );
         final dadosEndereco = EnderecoAluno.fromJson(
