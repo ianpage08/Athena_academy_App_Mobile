@@ -11,34 +11,10 @@ class GradeRecord {
   }) : notas =
            notas ??
            {
-             1: {
-               'teste': null,
-               'prova': null,
-               'trabalho': null,
-               'extra': null,
-               
-             },
-             2: {
-               'teste': null,
-               'prova': null,
-               'trabalho': null,
-               'extra': null,
-               
-             },
-             3: {
-               'teste': null,
-               'prova': null,
-               'trabalho': null,
-               'extra': null,
-               
-             },
-             4: {
-               'teste': null,
-               'prova': null,
-               'trabalho': null,
-               'extra': null,
-               
-             },
+             1: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
+             2: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
+             3: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
+             4: {'teste': null, 'prova': null, 'trabalho': null, 'extra': null},
            };
 
   final Map<int, Map<String, double?>> notas;
@@ -54,11 +30,22 @@ class GradeRecord {
     return valores.reduce((a, b) => a + b) / valores.length;
   }
 
+  double? unidadeTotal(int unidade) {
+    final unit = notas[unidade];
+    if (unit == null) return null;
+
+    // Considera todas as notas (teste, prova, trabalho, extra)
+    final valores = unit.values.whereType<double>().toList();
+    if (valores.isEmpty) return null;
+
+    return valores.reduce((a, b) => a + b) / 2;
+  }
+
   Map<int, double> calcularMediaPorUnidade() {
     final resuldado = <int, double>{};
 
     for (var unidade in notas.keys) {
-      final media = calcularMedia(unidade);
+      final media = unidadeTotal(unidade);
       if (media != null) {
         resuldado[unidade] = media;
       }

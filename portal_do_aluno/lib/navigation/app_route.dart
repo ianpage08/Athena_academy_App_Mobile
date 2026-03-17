@@ -27,7 +27,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_pe
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presentation/pages/login/login_page.dart';
 
-import 'package:portal_do_aluno/features/student/presentation/pages/boletim_page_aluno.dart';
+import 'package:portal_do_aluno/features/student/presentation/pages/boletim/boletim_page_aluno.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/aluno_comunicados_page.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/student_dashboard.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/teacher_communications_page.dart';
