@@ -1,4 +1,3 @@
-
 import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
 import 'package:portal_do_aluno/shared/helpers/json_parsing_helper.dart';
 
@@ -10,7 +9,7 @@ class LessonRecord {
   final Presenca presenca;
   final String? observacoes;
   final List<String> anexo;
-  
+  final String teacherId;
 
   LessonRecord({
     required this.id,
@@ -20,6 +19,7 @@ class LessonRecord {
     this.observacoes,
     this.presenca = Presenca.presente,
     this.anexo = const [],
+    required this.teacherId,
   });
 
   Map<String, dynamic> toJson() => {
@@ -30,17 +30,18 @@ class LessonRecord {
     'observacoes': observacoes,
     'presenca': presenca.name,
     'anexo': anexo,
+    'teacherId': teacherId,
   };
-  factory LessonRecord.fromJson(Map<String, dynamic> json) =>
-      LessonRecord(
-        id: JsonParsingHelper.optionalString(json['id']) ?? '',
-        classId: JsonParsingHelper.requiredString(json, 'classId'),
-        conteudo: JsonParsingHelper.requiredString(json, 'conteudo'),
-        data: JsonParsingHelper.requiredDate(json['data']),
-        observacoes: JsonParsingHelper.optionalString(json['observacoes']),
-        presenca: json['presenca'],
-        anexo: JsonParsingHelper.stringListOrEmpty(json['anexo']),
-      );
+  factory LessonRecord.fromJson(Map<String, dynamic> json) => LessonRecord(
+    id: JsonParsingHelper.optionalString(json['id']) ?? '',
+    classId: JsonParsingHelper.requiredString(json, 'classId'),
+    conteudo: JsonParsingHelper.requiredString(json, 'conteudo'),
+    data: JsonParsingHelper.requiredDate(json['data']),
+    observacoes: JsonParsingHelper.optionalString(json['observacoes']),
+    presenca: json['presenca'],
+    anexo: JsonParsingHelper.stringListOrEmpty(json['anexo']),
+    teacherId: JsonParsingHelper.requiredString(json, 'teacherId'),
+  );
 
   LessonRecord copyWith({
     String? id,
@@ -50,6 +51,7 @@ class LessonRecord {
     String? observacoes,
     Presenca? presenca,
     List<String>? anexo,
+    String? teacherId,
   }) {
     return LessonRecord(
       id: id ?? this.id,
@@ -59,6 +61,8 @@ class LessonRecord {
       observacoes: observacoes ?? this.observacoes,
       presenca: presenca ?? this.presenca,
       anexo: anexo ?? this.anexo,
+      teacherId: teacherId ?? this.teacherId,
     );
+    
   }
 }

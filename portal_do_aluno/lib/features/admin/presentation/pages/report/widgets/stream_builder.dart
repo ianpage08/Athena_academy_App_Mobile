@@ -52,7 +52,7 @@ class _ReportStreamBuilderState extends State<ReportStreamBuilder> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) {
-                debugPrint('erorororororororo ${snapshot.error.toString()}');
+                debugPrint('error ${snapshot.error.toString()}');
                 return const Center(child: Text('Erro ao carregar relatórios'));
               }
               final docs = snapshot.data?.docs ?? [];
@@ -76,7 +76,7 @@ class _ReportStreamBuilderState extends State<ReportStreamBuilder> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              LessonDetailPage(data: data, anexos: anexos),
+                              LessonDetailPage(reportData: data, attachments: anexos),
                         ),
                       );
                     },

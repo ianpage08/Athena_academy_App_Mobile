@@ -24,6 +24,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matr
 import 'package:portal_do_aluno/features/admin/presentation/pages/navigation_bottom/relatorios_e_documentos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/relatorios_e_documentos/relatorios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/seguranca_e_permissoes.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/report/report_teacher.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/features/presentation/pages/login/login_page.dart';
 
@@ -75,6 +76,10 @@ Map<String, WidgetBuilder> get routes => {
 
   RouteNames.addOqueFoiDado: (context) => const LessonContent(),
 
+
+
+
+
   // rotas do Aluno
   RouteNames.studentDashboard: (context) => const StudentDashboard(),
 
@@ -88,14 +93,19 @@ Map<String, WidgetBuilder> get routes => {
   RouteNames.studentExercicios: (context) => const ExerciciosAlunoPage(),
   // rotas de detalhes
 
+
+
+
   // rotas do Professor
   RouteNames.teacherDashboard: (context) => const TeacherDashboard(),
 
   RouteNames.teacherCalendar: (context) => const AcademicCalendarPage(),
-
+  RouteNames.teacherReport: (context) => const ReportTeacher(),
   RouteNames.comunicadosProfessor: (context) =>
       const TeacherCommunicationsPage(),
   RouteNames.teacherExercicios: (context) => const ExerciseAssignmentPage(),
+
+
 };
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {

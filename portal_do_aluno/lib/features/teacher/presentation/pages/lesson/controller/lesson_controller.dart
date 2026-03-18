@@ -53,7 +53,7 @@ class LessonController {
     observacoesController.clear();
   }
 
-  LessonRecord buildLesson(List<String> urls) {
+  LessonRecord buildLesson(List<String> urls, String teacherId) {
     return LessonRecord(
       id: '',
       classId: turmaId!,
@@ -61,6 +61,7 @@ class LessonController {
       data: dataSelecionada!,
       observacoes: observacoesController.text,
       anexo: urls,
+      teacherId: teacherId,
     );
   }
 
@@ -92,7 +93,7 @@ class LessonController {
 
       await _serviceConteudo.cadastrarPresencaConteudoProfessor(
         turmaId: turmaId!,
-        conteudoPresenca: buildLesson(uploadUrls),
+        conteudoPresenca: buildLesson(uploadUrls, userId),
       );
 
       clear();
