@@ -44,6 +44,6 @@ class BuildHeaderReport extends StatelessWidget {
           ),
         ),
       ],
-    );;
+    );
   }
 }
