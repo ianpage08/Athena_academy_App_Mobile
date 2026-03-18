@@ -11,6 +11,8 @@ class LessonRecord {
   final List<String> anexo;
   final String teacherId;
 
+  final String feedback;
+
   LessonRecord({
     required this.id,
     required this.classId,
@@ -20,6 +22,7 @@ class LessonRecord {
     this.presenca = Presenca.presente,
     this.anexo = const [],
     required this.teacherId,
+    this.feedback = '',
   });
 
   Map<String, dynamic> toJson() => {
@@ -31,6 +34,7 @@ class LessonRecord {
     'presenca': presenca.name,
     'anexo': anexo,
     'teacherId': teacherId,
+    'feedback': feedback,
   };
   factory LessonRecord.fromJson(Map<String, dynamic> json) => LessonRecord(
     id: JsonParsingHelper.optionalString(json['id']) ?? '',
@@ -41,6 +45,7 @@ class LessonRecord {
     presenca: json['presenca'],
     anexo: JsonParsingHelper.stringListOrEmpty(json['anexo']),
     teacherId: JsonParsingHelper.requiredString(json, 'teacherId'),
+    feedback: JsonParsingHelper.optionalString(json['feedback']) ?? '',
   );
 
   LessonRecord copyWith({
@@ -52,6 +57,7 @@ class LessonRecord {
     Presenca? presenca,
     List<String>? anexo,
     String? teacherId,
+    String? feedback,
   }) {
     return LessonRecord(
       id: id ?? this.id,
@@ -62,6 +68,7 @@ class LessonRecord {
       presenca: presenca ?? this.presenca,
       anexo: anexo ?? this.anexo,
       teacherId: teacherId ?? this.teacherId,
+      feedback: feedback ?? this.feedback,
     );
     
   }

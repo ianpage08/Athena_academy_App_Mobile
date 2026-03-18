@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/empty_attachments_card.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/excluir_realtorios.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/full_screen.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/report_meta_tag.dart';
-import 'package:portal_do_aluno/features/teacher/data/datasources/conteudo_service.dart';
-import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/review_coodernador.dart';
 
 /// Tela de detalhes do conteúdo enviado pelo professor
 /// Exibe:
@@ -32,6 +32,7 @@ class LessonDetailPage extends StatelessWidget {
     // Tratamento seguro dos dados vindos do Firestore
     final title = (reportData['conteudo'] ?? '').toString().trim();
     final notes = (reportData['observacoes'] ?? '').toString().trim();
+    final feedback = (reportData['feedback'] ?? '').toString().trim();
 
     return Scaffold(
       appBar: AppBar(
@@ -45,45 +46,12 @@ class LessonDetailPage extends StatelessWidget {
           ? SafeArea(
               minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
 
-              child: FilledButton.icon(
-                onPressed: () async {
-                  // Exibe confirmação antes de excluir
-                  final confirmed = await showAppConfirmationDialog(
-                    context: context,
-                    title: 'Excluir Relatório',
-                    confirmText: 'Excluir',
-                    cancelText: 'Cancelar',
-                    content: 'Essa ação não pode ser desfeita.',
-                  );
-
-                  if (confirmed == true) {
-                    // Chama o service para excluir no Firestore
-                    await ConteudoPresencaService().excluirConteudoPresenca(
-                      reportData['id'],
-                    );
-
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  }
-                },
-
-                icon: const Icon(Icons.delete_outline_rounded),
-                label: const Text('Excluir Relatório'),
-
-                // Estilo visual do botão
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 54),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+              child: Row(
+                children: [
+                  Expanded(child: ReviewCoordenador(reportData: reportData)),
+                  const SizedBox(width: 12),
+                  Expanded(child: ExcluirRelatorios(reportData: reportData)),
+                ],
               ),
             )
           : const SizedBox.shrink(),
@@ -214,6 +182,63 @@ class LessonDetailPage extends StatelessWidget {
                 ],
               ),
             ),
+
+            const SizedBox(height: 20),
+            if (feedback.isNotEmpty) ...[
+              const SizedBox(height: 18),
+
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: Colors.blue.withValues(alpha: 0.18),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.feedback_outlined,
+                            color: Colors.blue,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Feedback da coordenação',
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.blue.shade800,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      feedback,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1.45,
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else
+              const SizedBox(height: 20),
 
             const SizedBox(height: 20),
 

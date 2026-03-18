@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-// Widget responsável por exibir um "card" de planejamento/relatório
-// Estrutura pensada para lista (provavelmente ListView)
+/// Widget responsável por exibir um card de planejamento/relatório
 class ReportCard extends StatelessWidget {
-  // Mapa genérico vindo provavelmente do Firestore
-  // ⚠️ Aqui já temos um ponto de melhoria (tipagem forte depois)
+  /// Dados do relatório vindos do Firestore
   final Map<String, dynamic> data;
 
-  // Quantidade de anexos vinculados ao planejamento
+  /// Quantidade de anexos vinculados ao conteúdo
   final int anexosCount;
 
-  // Callback ao clicar no card (navegação ou detalhes)
+  /// Callback acionado ao tocar no card
   final VoidCallback onTap;
 
   const ReportCard({
@@ -22,154 +20,163 @@ class ReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Pega o tema global 
     final theme = Theme.of(context);
 
-    // Extrai o conteúdo do mapa com fallback seguro
-    final titulo = (data['conteudo'] ?? '').toString().trim();
-
-    // Observações adicionais do planejamento
-    final obs = (data['observacoes'] ?? '').toString().trim();
+    // Extrai os dados com fallback seguro
+    final String titulo = (data['conteudo'] ?? '').toString().trim();
+    final String observacoes = (data['observacoes'] ?? '').toString().trim();
+    final bool hasAttachments = anexosCount > 0;
 
     return Material(
       color: Colors.transparent,
-
-      // InkWell dá feedback de clique (ripple)
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(22),
         onTap: onTap,
-
-        // Ink permite aplicar decoração + ripple corretamente
         child: Ink(
-          padding: const EdgeInsets.all(16),
-
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-
-            // Cor do card baseada no tema (dark/light ready 🔥)
             color: theme.cardColor,
-
-            // Borda leve para separação visual
+            borderRadius: BorderRadius.circular(22),
             border: Border.all(
-              color: theme.dividerColor.withValues(alpha: 0.6),
+              color: theme.dividerColor.withValues(alpha: 0.55),
             ),
-
-            // Sombra suave (efeito moderno)
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha:  0.05),
-                blurRadius: 12,
-                offset: const Offset(0, 7),
+                color: Colors.black.withValues(alpha: 0.045),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
-
-          // Layout principal horizontal
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Ícone lateral (identidade visual do item)
+              /// Bloco do ícone principal
               Container(
-                width: 44,
-                height: 44,
-                alignment: Alignment.center,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-
-                  // Fundo com opacidade da cor primária
-                  color: theme.primaryColor.withValues(alpha:  0.10),
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      theme.primaryColor.withValues(alpha: 0.16),
+                      theme.primaryColor.withValues(alpha: 0.08),
+                    ],
+                  ),
                 ),
-                child: Icon(Icons.menu_book_rounded, color: theme.primaryColor),
+                child: Icon(
+                  Icons.menu_book_rounded,
+                  color: theme.primaryColor,
+                  size: 24,
+                ),
               ),
 
               const SizedBox(width: 14),
 
-              // Conteúdo principal ocupa o espaço restante
+              /// Conteúdo textual do card
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Título do planejamento
+                    /// Título
                     Text(
                       titulo.isEmpty ? 'Conteúdo sem título' : titulo,
-
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-
-                      // Destaque visual forte
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    // Observações (descrição secundária)
-                    Text(
-                      obs.isEmpty ? 'Sem observações.' : obs,
-
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-
-                      // Texto mais suave (hierarquia visual)
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
-                        height: 1.25,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        height: 1.2,
                       ),
                     ),
 
-                    // Exibe badge de anexos somente se existir
-                    if (anexosCount > 0) ...[
-                      const SizedBox(height: 12),
+                    const SizedBox(height: 8),
 
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 7,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(999),
-
-                          // Badge leve azul (call to action visual)
-                          color: Colors.blue.withValues(alpha: 0.10),
-                        ),
-
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Ícone de anexo
-                            const Icon(
-                              Icons.attach_file,
-                              size: 16,
-                              color: Colors.blue,
-                            ),
-
-                            const SizedBox(width: 6),
-
-                            // Texto com quantidade de anexos
-                            Text(
-                              '$anexosCount anexo(s)',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
+                    /// Observações
+                    Text(
+                      observacoes.isEmpty
+                          ? 'Sem observações cadastradas.'
+                          : observacoes,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey.shade700,
+                        height: 1.35,
                       ),
-                    ],
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    /// Linha inferior com meta info
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: hasAttachments
+                                ? Colors.blue.withValues(alpha: 0.10)
+                                : Colors.grey.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: hasAttachments
+                                  ? Colors.blue.withValues(alpha: 0.18)
+                                  : Colors.grey.withValues(alpha: 0.16),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                hasAttachments
+                                    ? Icons.attach_file_rounded
+                                    : Icons.info_outline_rounded,
+                                size: 15,
+                                color: hasAttachments
+                                    ? Colors.blue
+                                    : Colors.grey.shade700,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                hasAttachments
+                                    ? '$anexosCount anexo(s)'
+                                    : 'Sem anexos',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: hasAttachments
+                                      ? Colors.blue
+                                      : Colors.grey.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
 
-              // Ícone de navegação (indica que é clicável)
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 16,
-                color: Colors.grey.shade500,
+              /// Ícone final de navegação
+              Container(
+                width: 34,
+                height: 34,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: Colors.grey.shade600,
+                ),
               ),
             ],
           ),

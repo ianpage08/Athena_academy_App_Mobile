@@ -24,6 +24,12 @@ class ConteudoPresencaService {
     await docRef.set(novoConteudoPresenca.toJson());
   }
 
+  Future<void> reviewCoodenador ({required String conteudoPresencaId, required String feedback})async {
+    final docRef = _firestore.collection('conteudoPresenca').doc(conteudoPresencaId);
+    await docRef.update({'feedback': feedback});
+
+  }
+
   Future<void> excluirConteudoPresenca(String conteudoPresencaId) {
     return _firestore.collection('conteudoPresenca').doc(conteudoPresencaId).delete();
   }

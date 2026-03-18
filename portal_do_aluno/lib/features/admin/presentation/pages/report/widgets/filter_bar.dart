@@ -2,19 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/shared/widgets/chip_filtro.dart';
 
-// Barra de filtros para listar conteúdos/relatórios por turma.
-// Permite:
-// - selecionar "Todos"
-// - selecionar uma turma específica via dropdown
+/// Barra de filtros para listar conteúdos/relatórios por turma.
+/// Permite:
+/// - selecionar "Todos"
+/// - selecionar uma turma específica via dropdown
 class FilterBar extends StatelessWidget {
-  // ID da turma atualmente selecionada no filtro.
-  // Quando for null, significa que o filtro está em "Todos".
+  /// ID da turma atualmente selecionada no filtro.
+  /// Quando for null, significa que o filtro está em "Todos".
   final String? filtroTurmaId;
 
-  // Callback acionado ao selecionar o filtro "Todos".
+  /// Callback acionado ao selecionar o filtro "Todos".
   final VoidCallback onSelectAll;
 
-  // Callback acionado ao selecionar uma turma específica.
+  /// Callback acionado ao selecionar uma turma específica.
   final ValueChanged<String?> onSelectTurma;
 
   const FilterBar({
@@ -29,119 +29,196 @@ class FilterBar extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      // Espaçamento externo da barra em relação à tela/lista
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-
-      // Espaçamento interno dos elementos da barra
-      padding: const EdgeInsets.all(12),
-
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        // Cor do container baseada no tema atual
         color: theme.cardColor,
-
-        // Bordas arredondadas para visual mais moderno
-        borderRadius: BorderRadius.circular(16),
-
-        // Borda sutil para destacar a área do filtro
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.6)),
-
-        // Sombra leve para dar profundidade
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.55)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 6),
+            blurRadius: 14,
+            offset: const Offset(0, 7),
           ),
         ],
       ),
-
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Chip fixo para limpar o filtro e exibir todos os itens
-          ChipFiltro(
-            title: 'Todos',
-            value: null,
-            filtroSelected: filtroTurmaId,
-            onSelected: (_) => onSelectAll(),
+          /// Cabeçalho da barra
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  Icons.filter_alt_outlined,
+                  color: theme.primaryColor,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Filtrar relatórios',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(width: 12),
+          const SizedBox(height: 14),
 
-          // Dropdown ocupa o restante da linha
-          Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              // Escuta em tempo real a coleção de turmas no Firestore
-              stream: FirebaseFirestore.instance
-                  .collection('turmas')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                // Estado de carregamento inicial
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
-                    height: 48,
-                    child: Center(
-                      child: SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+          /// Linha principal dos filtros
+          Row(
+            children: [
+              ChipFiltro(
+                title: 'Todos',
+                value: null,
+                filtroSelected: filtroTurmaId,
+                onSelected: (_) => onSelectAll(),
+              ),
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('turmas')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Container(
+                        height: 54,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.red.withValues(alpha: 0.14),
+                          ),
+                        ),
+                        child: Text(
+                          'Erro ao carregar turmas',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.red.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        height: 54,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: theme.dividerColor.withValues(alpha: 0.45),
+                          ),
+                        ),
+                        child: const Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2.2),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final docs = snapshot.data?.docs ?? [];
+
+                    if (docs.isEmpty) {
+                      return Container(
+                        height: 54,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: theme.dividerColor.withValues(alpha: 0.45),
+                          ),
+                        ),
+                        child: Text(
+                          'Nenhuma turma encontrada',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      );
+                    }
+
+                    return DropdownButtonFormField<String>(
+                      initialValue: filtroTurmaId,
+                      isExpanded: true,
+                      icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                      decoration: InputDecoration(
+                        labelText: 'Turma',
+                        prefixIcon: Icon(
+                          Icons.school_outlined,
+                          color: Colors.grey.shade700,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.withValues(alpha: 0.06),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: theme.dividerColor.withValues(alpha: 0.55),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: theme.dividerColor.withValues(alpha: 0.55),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: theme.primaryColor.withValues(alpha: 0.65),
+                            width: 1.4,
+                          ),
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        isDense: true,
                       ),
-                    ),
-                  );
-                }
+                      items: docs.map((doc) {
+                        final data = doc.data();
+                        final label = (data['serie'] ?? 'Turma').toString();
 
-                // Lista de documentos retornados
-                final docs = snapshot.data?.docs ?? [];
-
-                // Caso não existam turmas cadastradas
-                if (docs.isEmpty) {
-                  return const Text('Nenhuma turma encontrada');
-                }
-
-                return DropdownButtonFormField<String>(
-                  // Valor inicial atualmente selecionado
-                  initialValue: filtroTurmaId,
-
-                  // Faz o dropdown ocupar toda a largura disponível
-                  isExpanded: true,
-
-                  decoration: InputDecoration(
-                    labelText: 'Turma',
-                    border: const OutlineInputBorder(),
-
-                    // Espaçamento interno do campo
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 16,
-                    ),
-
-                    // Cor de fundo baseada no card atual
-                    fillColor: Theme.of(context).cardColor,
-
-                    // Reduz a densidade vertical do campo
-                    isDense: true,
-                  ),
-
-                  // Monta os itens do dropdown a partir das turmas vindas do Firestore
-                  items: docs.map((doc) {
-                    final data = doc.data();
-
-                    // Usa o campo "serie" como rótulo da turma
-                    final label = (data['serie'] ?? 'Turma').toString();
-
-                    return DropdownMenuItem<String>(
-                      // ID do documento é o valor real do item selecionado
-                      value: doc.id,
-                      child: Text(label, overflow: TextOverflow.ellipsis),
+                        return DropdownMenuItem<String>(
+                          value: doc.id,
+                          child: Text(
+                            label,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: onSelectTurma,
                     );
-                  }).toList(),
-
-                  // Dispara callback quando o usuário escolhe uma turma
-                  onChanged: (value) {
-                    onSelectTurma(value);
                   },
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
