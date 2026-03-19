@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise/controller/create_exercise_controller.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/exercise/widgets/exercise_form.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/send_exercise/controller/create_exercise_controller.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/send_exercise/widgets/exercise_form.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
