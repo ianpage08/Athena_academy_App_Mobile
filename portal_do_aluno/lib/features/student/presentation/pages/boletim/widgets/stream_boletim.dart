@@ -5,9 +5,7 @@ import 'package:portal_do_aluno/features/student/presentation/pages/boletim/widg
 import 'package:portal_do_aluno/features/teacher/data/models/grade_record.dart';
 
 class StreamBoletim extends StatelessWidget {
-  final Stream<DocumentSnapshot<Map<String, dynamic>>> 
-  stream;
-  
+  final Stream<DocumentSnapshot<Map<String, dynamic>>> stream;
 
   const StreamBoletim({super.key, required this.stream});
 
@@ -28,7 +26,41 @@ class StreamBoletim extends StatelessWidget {
         }
 
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          return const Center(child: Text('Boletim não encontrado.'));
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.description_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'Nenhum boletim disponível',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    'As notas ainda não foram lançadas para este aluno.\n'
+                    'Assim que o professor registrar as avaliações, o boletim aparecerá aqui.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
 
         final data = snapshot.data!.data();

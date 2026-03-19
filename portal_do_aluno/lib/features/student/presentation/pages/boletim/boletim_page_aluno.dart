@@ -57,7 +57,6 @@ class _BoletimPageState extends State<BoletimPage> {
         .snapshots();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +89,8 @@ class _BoletimPageState extends State<BoletimPage> {
 
             return SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'Boletim do Aluno',
@@ -107,10 +107,4 @@ class _BoletimPageState extends State<BoletimPage> {
       ),
     );
   }
-
-  
-
-  
-
-  
 }
