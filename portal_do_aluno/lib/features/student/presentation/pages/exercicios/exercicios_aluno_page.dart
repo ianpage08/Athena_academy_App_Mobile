@@ -60,8 +60,6 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
     });
   }
 
-  
-
   final ValueNotifier<bool> showModalNotifier = ValueNotifier(false);
 
   @override
@@ -84,6 +82,46 @@ class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
 
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasData && data!.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.assignment_outlined,
+                        size: 64,
+                        color: Colors.grey.shade400,
+                      ),
+                      const SizedBox(height: 16),
+
+                      const Text(
+                        'Nenhuma tarefa disponível',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'Ainda não há atividades cadastradas para esta turma.\n'
+                        'Assim que uma tarefa for criada, ela aparecerá aqui.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             }
             return ListView.builder(
               itemCount: data?.length,

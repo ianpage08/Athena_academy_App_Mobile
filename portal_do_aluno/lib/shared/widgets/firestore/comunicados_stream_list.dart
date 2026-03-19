@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/widgets/announcement_card.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
+import 'package:portal_do_aluno/shared/widgets/empty_state_widget.dart';
 
 /// Widget responsável por exibir comunicados em tempo real via Stream
 class ComunicadosStreamList extends StatefulWidget {
@@ -25,7 +26,12 @@ class _ComunicadosStreamListState extends State<ComunicadosStreamList> {
           return const Center(child: CircularProgressIndicator());
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('Nenhum comunicado disponível'));
+          return const EmptyStateWidget(
+            icon: Icons.campaign_outlined,
+            title: 'Nenhum comunicado disponível',
+            description:
+                'Ainda não há comunicados publicados no momento. \nQuando um novo aviso for enviado, ele aparecerá aqui.',
+          );
         }
 
         // Error

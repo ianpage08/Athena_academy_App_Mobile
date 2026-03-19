@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_card.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
 import 'package:portal_do_aluno/features/student/presentation/ui/calendar_event_type_style.dart';
+import 'package:portal_do_aluno/shared/widgets/empty_state_widget.dart';
 
 class AcademicCalendarPage extends StatefulWidget {
   const AcademicCalendarPage({super.key});
@@ -86,8 +87,12 @@ class _AcademicCalendarPageState extends State<AcademicCalendarPage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(
-                      child: Text("Nenhum usuário encontrado"),
+                    return const EmptyStateWidget(
+                      icon: Icons.calendar_today_outlined,
+                      title: 'Nenhum evento no calendário',
+                      description:
+                          'Ainda não há eventos cadastrados no calendário.\n'
+                          'Assim que atividades, provas ou eventos forem adicionados, eles aparecerão aqui.',
                     );
                   }
                   final docs = snapshot.data!.docs;
