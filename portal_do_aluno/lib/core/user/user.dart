@@ -4,11 +4,11 @@ class Usuario {
   final String id;
   final String? turmaId;
   final String? alunoId;
+  final String? schoolId;
   final String cpf;
   final String name;
   final String password;
   final UserType type;
-  
 
   Usuario({
     required this.id,
@@ -18,9 +18,9 @@ class Usuario {
     required this.cpf,
     this.turmaId,
     this.alunoId,
+    this.schoolId,
   });
 
-  
   //Para que: Enviar dados para API, salvar no banco
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -30,6 +30,7 @@ class Usuario {
     'type': type.name, // Converte enum em string
     'turmaId': turmaId,
     'alunoId': alunoId,
+    'schoolId': schoolId,
   };
   /*factory = Construtor  que pode retornar instância existente
   Converte Map em objeto Usuario
@@ -47,6 +48,7 @@ class Usuario {
         : UserType.student, // fallback se type for null
     turmaId: json['turmaId'] as String? ?? '',
     alunoId: json['alunoId'] as String? ?? '',
+    schoolId: json['schoolId'] as String?,
   );
 
   Usuario copyWith({
@@ -57,6 +59,7 @@ class Usuario {
     UserType? type,
     String? turmaId,
     String? alunoId,
+    String? schoolId,
   }) => Usuario(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -65,6 +68,7 @@ class Usuario {
     type: type ?? this.type,
     turmaId: turmaId ?? this.turmaId,
     alunoId: alunoId ?? this.alunoId,
+    schoolId: schoolId ?? this.schoolId,
   );
   @override
   bool operator ==(Object other) =>
@@ -84,6 +88,7 @@ Por que id: ID é único, então serve como hash */
       'type': type.name,
       'turmaId': turmaId,
       'alunoId': alunoId,
+      'schoolId': schoolId,
       // senha não incluída por segurança
     };
   }

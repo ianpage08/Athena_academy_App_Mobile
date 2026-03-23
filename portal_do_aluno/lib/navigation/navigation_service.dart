@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/school/school_context.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
@@ -14,12 +15,14 @@ class NavigatorService {
 
   static void setCurrentUser(Usuario user) {
     _currentUser = user;
+    SchoolContext.setSchool(user.schoolId);
   }
 
   static Usuario? get currentUser => _currentUser;
 
   static void clearUser() {
     _currentUser = null;
+    SchoolContext.clear();
   }
 
   // ---------- Util helpers ----------
@@ -190,6 +193,10 @@ class NavigatorService {
 
   static Future<void> navigateToDashboard([Usuario? user]) async {
   final userToUse = user ?? _currentUser;
+
+  if (userToUse != null) {
+    setCurrentUser(userToUse);
+  }
 
   if (userToUse == null) {
     await navigateAndRemoveUntil(RouteNames.login);

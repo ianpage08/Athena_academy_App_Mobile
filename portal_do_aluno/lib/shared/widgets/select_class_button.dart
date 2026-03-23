@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/school/school_firestore_path.dart';
 
 class SelectClassButton extends StatefulWidget {
   final ValueNotifier<String?> turmaSelecionada;
@@ -25,7 +26,7 @@ class _SelectClassButtonState extends State<SelectClassButton> {
       valueListenable: widget.turmaSelecionada,
       builder: (context, value, _) {
         return StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('turmas').snapshots(),
+          stream: SchoolFirestorePath().collection('turmas').snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const CupertinoActivityIndicator();
