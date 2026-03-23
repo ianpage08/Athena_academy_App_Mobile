@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portal_do_aluno/core/school/school_firestore_path.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno_model/aluno.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno_model/dados_academicos.dart';
 import 'package:portal_do_aluno/features/admin/data/models/aluno_model/endereco_aluno.dart';
@@ -8,13 +9,14 @@ import 'package:portal_do_aluno/features/admin/data/models/aluno_model/reponsave
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class MatriculaService {
-  Stream<QuerySnapshot> getMatriculas() {
-    return _firestore.collection('matriculas').snapshots();
+  final SchoolFirestorePath _schoolPath = SchoolFirestorePath(firestore: _firestore);
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getMatriculas() {
+    return _schoolPath.collection('matriculas').snapshots();
   }
 
-  final CollectionReference matriculasColletion = _firestore.collection(
-    'matriculas',
-  );
+  CollectionReference<Map<String, dynamic>> get matriculasColletion =>
+      _schoolPath.collection('matriculas');
 
   Future<void> cadastrarAlunoCompleto({
     required DadosAluno dadosAluno,

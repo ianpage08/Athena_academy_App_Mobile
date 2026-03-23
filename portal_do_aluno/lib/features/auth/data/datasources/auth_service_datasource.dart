@@ -3,20 +3,30 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:portal_do_aluno/core/school/school_context.dart';
 import 'package:portal_do_aluno/shared/services/secure_auth_storage.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class AuthServico {
   /// Login usando CPF + senha (validação com BCrypt)
-  Future<Usuario> loginCpfsenha(String cpf, String senha) async {
+  Future<Usuario> loginCpfsenha(
+    String cpf,
+    String senha, {
+    String? schoolId,
+  }) async {
     final cpfLimpo = cpf.replaceAll(RegExp(r'\D'), '');
 
-    final consulta = await _firestore
+    Query<Map<String, dynamic>> query = _firestore
         .collection('usuarios')
-        .where('cpf', isEqualTo: cpfLimpo)
-        .limit(1)
-        .get();
+        .where('cpf', isEqualTo: cpfLimpo);
+
+    final escolaSelecionada = schoolId ?? SchoolContext.currentSchoolId;
+    if (escolaSelecionada != null && escolaSelecionada.isNotEmpty) {
+      query = query.where('schoolId', isEqualTo: escolaSelecionada);
+    }
+
+    final consulta = await query.limit(1).get();
 
     if (consulta.docs.isEmpty) {
       throw Exception('CPF não encontrado');
@@ -30,9 +40,13 @@ class AuthServico {
     }
     final token = _gerarToken();
 
+    final usuario = Usuario.fromJson(data);
+
     await SecureAuthStorage().saveToken(token);
-    await SecureAuthStorage().saveUsuario(Usuario.fromJson(data));
-    return Usuario.fromJson(data);
+    await SecureAuthStorage().saveUsuario(usuario);
+    SchoolContext.setSchool(usuario.schoolId);
+
+    return usuario;
   }
   String _gerarToken(){
     const char = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

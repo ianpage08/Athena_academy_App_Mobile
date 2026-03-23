@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
+import 'package:portal_do_aluno/core/school/school_firestore_path.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/frequencia_firestore.dart';
 import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
@@ -17,7 +18,7 @@ class AttendanceRepository {
   final FirebaseFirestore _firestore;
   
   Stream<QuerySnapshot<Map<String, dynamic>>> alunosPorTurma(String turmaId) {
-    return _firestore
+    return SchoolFirestorePath(firestore: _firestore)
         .collection('matriculas')
         .where('dadosAcademicos.classId', isEqualTo: turmaId)
         .snapshots();

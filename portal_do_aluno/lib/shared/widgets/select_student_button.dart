@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/school/school_firestore_path.dart';
 
 class SelectStudentButton extends StatefulWidget {
   final ValueNotifier<String?> alunoSelecionado;
@@ -38,8 +39,7 @@ class _SelectStudentButtonState extends State<SelectStudentButton> {
       valueListenable: widget.alunoSelecionado,
       builder: (context, value, child) {
         return StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('matriculas')
+          stream: SchoolFirestorePath().collection('matriculas')
               .where('dadosAcademicos.classId', isEqualTo: widget.turmaId)
               .snapshots(),
           builder: (context, snapshot) {
