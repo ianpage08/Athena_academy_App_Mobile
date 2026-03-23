@@ -14,9 +14,13 @@ class ExerciseDeliveryController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<String> getAlunoId(String userId) async {
-    final snap =
-        await _firestore.collection('usuarios').doc(userId).get();
+    final snap = await _firestore.collection('usuarios').doc(userId).get();
     return snap.data()!['alunoId'];
+  }
+
+  Future<String> getStudentName(String userId) async {
+    final snap = await _firestore.collection('usuarios').doc(userId).get();
+    return snap.data()!['name'];
   }
 
   Future<void> selecionarImagens() async {
@@ -38,6 +42,8 @@ class ExerciseDeliveryController {
 
     try {
       final alunoId = await getAlunoId(userId);
+      final studentName = await getStudentName(userId);
+
 
       final urls = await uploadImagensExercicio(
         imagensSelecionadas.value,
@@ -50,6 +56,7 @@ class ExerciseDeliveryController {
         exercicioId: exercicioId,
         dataEntrega: Timestamp.now(),
         anexos: urls,
+        studentName: studentName,
       );
 
       await _service.entregarExercicio(
@@ -64,9 +71,9 @@ class ExerciseDeliveryController {
           .collection('exercicios_status')
           .doc(exercicioId)
           .update({
-        'status': true,
-        'dataDeEntrega': FieldValue.serverTimestamp(),
-      });
+            'status': true,
+            'dataDeEntrega': FieldValue.serverTimestamp(),
+          });
 
       imagensSelecionadas.value = [];
     } finally {

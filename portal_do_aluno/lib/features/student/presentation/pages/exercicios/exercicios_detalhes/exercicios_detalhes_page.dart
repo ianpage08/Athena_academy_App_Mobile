@@ -33,6 +33,14 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
     return snapshot.data()!['alunoId'];
   }
 
+  Future<String> getStudentName(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc(userId)
+        .get();
+    return snapshot.data()!['name'];
+  }
+
   Future<void> atualizarStatus(String userId, String exerciciosId) async {
     final statusFeito = FirebaseFirestore.instance
         .collection('usuarios')
@@ -50,12 +58,14 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
     String alunoId,
     String exerciciosId,
     List<String> urls,
+    String studentName,
   ) async {
     final entrega = EntregaDeAtividade(
       alunoId: alunoId,
       exercicioId: exerciciosId,
       dataEntrega: Timestamp.now(),
       anexos: urls,
+      studentName: studentName,
     );
     try {
       if (urls.isEmpty && mounted) {
@@ -200,6 +210,10 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
                                     });
                                     try {
                                       final alunoId = await getAlunoId(userId!);
+                                      final studentName = await getStudentName(
+                                        userId,
+                                      );
+
                                       final exerciciosId = widget.exercicios.id;
 
                                       final urls = await uploadImagensExercicio(
@@ -211,6 +225,7 @@ class _ExerciciosDetalhesPageState extends State<ExerciciosDetalhesPage> {
                                         alunoId,
                                         exerciciosId,
                                         urls,
+                                        studentName,
                                       );
                                       await atualizarStatus(
                                         userId,

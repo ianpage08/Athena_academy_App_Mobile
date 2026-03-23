@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(height: 12),
                             _buildTestUser(
                               'Aluno',
-                              '888.888.888-88',
+                              '000.000.000-00',
                               '@Maciel2003',
                             ),
                             _buildTestUser(
