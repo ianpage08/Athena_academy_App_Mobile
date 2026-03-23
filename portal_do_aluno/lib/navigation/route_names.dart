@@ -27,7 +27,10 @@ class RouteNames {
   static const String teacherSettings = '/teacher_settings';
   static const String teacherExercicios = '/teacher_exercicios';
   static const String teacherReport = '/teacher_report';
-  
+  static const String teacherSubmission = '/teacher_submission';
+  static const String teacherSubimissionDetail = '/teacher_subimission_detail';
+
+
 
   // Funcionalidades do Administrador
   static const String adminFrequencia = '/admin_frequencia';

@@ -206,7 +206,17 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                     ),
                     NavigationMenuCard(
                       icon: Icons.report,
-                      title: 'Relatorios',
+                      title: 'correção exercicio',
+                      subtitle: 'relatorios',
+                      onTap: () {
+                        NavigatorService.navigateTo(
+                          RouteNames.teacherSubmission,
+                        );
+                      },
+                    ),
+                    NavigationMenuCard(
+                      icon: Icons.report,
+                      title: 'Registros de Aula',
                       subtitle: 'relatorios',
                       onTap: () {
                         NavigatorService.navigateTo(RouteNames.teacherReport);
