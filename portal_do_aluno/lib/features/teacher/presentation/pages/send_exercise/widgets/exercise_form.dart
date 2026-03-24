@@ -6,7 +6,6 @@ import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
 
-// 👉 MUDANÇA (ARQUITETURA): Supondo que você salvou o seu helper de UI aqui.
 // Se o nome ou caminho for diferente, basta ajustar!
 // import 'package:portal_do_aluno/shared/widgets/athena_section_card.dart';
 
@@ -15,52 +14,7 @@ class ExerciseForm extends StatelessWidget {
 
   const ExerciseForm({super.key, required this.controller});
 
-  // Helper local temporário caso você ainda não tenha importado o global.
-  // 👉 MUDANÇA: O Card gigante e os Dividers viraram blocos independentes.
-  Widget _buildSection({
-    required BuildContext context,
-    required String title,
-    required Widget child,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.dividerColor.withValues(alpha: isDark ? 0.05 : 0.1),
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromARGB(8, 0, 0, 0),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title.toUpperCase(),
-            style: theme.textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: theme.colorScheme.primary.withValues(alpha: 0.8),
-              letterSpacing: 1.2,
-            ),
-          ),
-          const SizedBox(height: 20),
-          child,
-        ],
-      ),
-    );
-  }
-
-  // 👉 MUDANÇA: Helper de label para os inputs
   Widget _buildInputLabel(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, left: 4),
@@ -109,7 +63,7 @@ class ExerciseForm extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 👉 MUDANÇA (UX): Inserido 'label' no CustomTextFormField
+              
               CustomTextFormField(
                 prefixIcon: CupertinoIcons.text_cursor, // Ícones Apple-like
                 controller: controller.tituloController,
@@ -123,7 +77,7 @@ class ExerciseForm extends StatelessWidget {
                 label: 'Instruções',
                 hintText:
                     'Ex: Resolver os exercícios da página 10 a 20 e anexar a foto do caderno.',
-                minLines: 3, // 👉 MUDANÇA: Nasce com cara de área de texto
+                minLines: 3, 
                 maxLines: 5,
               ),
             ],
