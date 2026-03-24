@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/features/admin/helper/limitar_tamanho_texto.dart';
+
+/// Componente de Card para Exercícios do Athena Academy.
 
 class CardExercicio extends StatelessWidget {
   final String titulo;
@@ -8,67 +9,138 @@ class CardExercicio extends StatelessWidget {
   final String nomeProfessor;
   final String userId;
   final String exerciciosId;
-  final Future<bool> Function(String userId, String exerciciosId) getStatusEntregue;
+  final Future<bool> Function(String userId, String exerciciosId)
+  getStatusEntregue;
 
-  const CardExercicio({super.key, required this.titulo, required this.conteudo, required this.nomeProfessor, required this.userId, required this.exerciciosId, required this.getStatusEntregue});
+  const CardExercicio({
+    super.key,
+    required this.titulo,
+    required this.conteudo,
+    required this.nomeProfessor,
+    required this.userId,
+    required this.exerciciosId,
+    required this.getStatusEntregue,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return FutureBuilder<bool>(
       future: getStatusEntregue(userId, exerciciosId),
       builder: (context, snapshot) {
-        final status = snapshot.data ?? false;
-        return Container(
+        final bool entregue = snapshot.data ?? false;
+        final bool carregando =
+            snapshot.connectionState == ConnectionState.waiting;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(vertical: 8),
           width: double.infinity,
+          height: 100,
           decoration: BoxDecoration(
-            border: Border.all(color: const Color.fromARGB(55, 88, 87, 87)),
-            borderRadius: BorderRadius.circular(12),
-            color: Theme.of(context).cardTheme.color,
-          ),
-          height: 82,
+            borderRadius: BorderRadius.circular(16),
 
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        limitarCampo('Exercicio de: $titulo', 30),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(limitarCampo(conteudo, 30)),
-                      Text('Professor: $nomeProfessor'),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: 100,
-                width: 50,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(12),
-                    bottomRight: Radius.circular(12),
-                  ),
-                  color: status == true
-                      ? Colors.green
-                      : const Color.fromARGB(255, 26, 110, 236),
-                ),
-
-                child: Icon(
-                  status == true
-                      ? CupertinoIcons.check_mark
-                      : CupertinoIcons.arrow_right,
-                  size: 20,
-                  color: Colors.white,
-                ),
+            color: theme.cardTheme.color ?? theme.colorScheme.surface,
+            border: Border.all(
+              color: entregue
+                  ? Colors.green.withValues(alpha: 0.3)
+                  : theme.dividerColor.withValues(alpha: 0.1),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 6,
+                  color: carregando
+                      ? theme.hintColor.withValues(alpha: 0.2)
+                      : (entregue ? Colors.green : theme.colorScheme.primary),
+                ),
+
+                // 👉 MUDANÇA 5: Conteúdo Principal com Flex para evitar overflow
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Exercício de $titulo'.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            letterSpacing: 1.2,
+                            fontWeight: FontWeight.bold,
+                            color: theme.textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          conteudo,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        // 👉 MUDANÇA 6: Chips sutis para o nome do professor
+                        Row(
+                          children: [
+                            Icon(
+                              CupertinoIcons.person,
+                              size: 14,
+                              color: theme.hintColor,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              nomeProfessor,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.hintColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // 👉 MUDANÇA 7: Botão de Ação / Status Lateral
+                Container(
+                  width: 54,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: entregue
+                        ? Colors.green.withValues(alpha: 0.1)
+                        : theme.colorScheme.primary.withValues(alpha: 0.05),
+                  ),
+                  child: Center(
+                    child: carregando
+                        ? const CupertinoActivityIndicator(radius: 8)
+                        : Icon(
+                            entregue
+                                ? CupertinoIcons.checkmark_seal_fill
+                                : CupertinoIcons.chevron_right,
+                            color: entregue
+                                ? Colors.green
+                                : theme.colorScheme.primary,
+                            size: 22,
+                          ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

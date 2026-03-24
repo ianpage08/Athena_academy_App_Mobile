@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart'; 
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/widgets/card_exercicio.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:portal_do_aluno/features/student/presentation/pages/exercicios/exercicios_detalhes/exercicios_detalhes_page.dart';
+import 'package:portal_do_aluno/shared/widgets/empty_state_widget.dart'; 
 import 'package:provider/provider.dart';
 
 class ExerciciosAlunoPage extends StatefulWidget {
@@ -15,183 +17,159 @@ class ExerciciosAlunoPage extends StatefulWidget {
 }
 
 class _ExerciciosAlunoPageState extends State<ExerciciosAlunoPage> {
-  String? turmaId;
+  String? _turmaId;
+  bool _loadingInitialData = true;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (turmaId == null) {
-      buscarAlunoPorTurma();
+  void initState() {
+    super.initState();
+    //  Busca de dados movida para o initState para evitar rebuilds infinitos
+    _carregarDadosIniciais();
+  }
+
+  Future<void> _carregarDadosIniciais() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userId = userProvider.userId;
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(userId)
+          .get();
+
+      if (mounted) {
+        setState(() {
+          _turmaId = snapshot.data()?['turmaId'];
+          _loadingInitialData = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Erro ao buscar turma: $e');
+      if (mounted) setState(() => _loadingInitialData = false);
     }
   }
 
-  Stream<QuerySnapshot> getExerciciosPorTurma(String turmaId) {
+  Stream<QuerySnapshot> _getExerciciosStream(String turmaId) {
     return FirebaseFirestore.instance
         .collection('exercicios')
         .where('turmaId', isEqualTo: turmaId)
         .snapshots();
   }
 
-  Future<bool> getStatusEntregue(String userId, String exerciciosId) async {
+  //  Função simplificada e injetada no card
+  Future<bool> _getStatusEntregue(String userId, String exerciciosId) async {
     final doc = await FirebaseFirestore.instance
         .collection('usuarios')
         .doc(userId)
         .collection('exercicios_status')
         .doc(exerciciosId)
         .get();
-    if (!doc.exists) {
-      return false;
-    }
 
     return doc.data()?['status'] == true;
   }
 
-  void buscarAlunoPorTurma() async {
-    final userId = Provider.of<UserProvider>(context).userId;
-
-    final snapshort = await FirebaseFirestore.instance
-        .collection('usuarios')
-        .doc(userId)
-        .get();
-    debugPrint(userId);
-    debugPrint(snapshort.data().toString());
-    setState(() {
-      turmaId = snapshort.data()?['turmaId'];
-    });
-  }
-
-  final ValueNotifier<bool> showModalNotifier = ValueNotifier(false);
-
   @override
   Widget build(BuildContext context) {
-    final userId = Provider.of<UserProvider>(context).userId;
-    if (turmaId == null) {
-      return const Center(child: CircularProgressIndicator());
+    final theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+
+    if (_loadingInitialData) {
+      return const Scaffold(body: Center(child: CupertinoActivityIndicator()));
     }
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: 'Exercícios',
         nameRoute: RouteNames.studentComunicados,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: getExerciciosPorTurma(turmaId!),
-          builder: (context, snapshot) {
-            final data = snapshot.data?.docs;
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ), 
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              'Suas Atividades',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Fique em dia com seus exercícios e prazos.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.hintColor,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _getExerciciosStream(_turmaId ?? ''),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CupertinoActivityIndicator());
+                  }
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasData && data!.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.assignment_outlined,
-                        size: 64,
-                        color: Colors.grey.shade400,
-                      ),
-                      const SizedBox(height: 16),
+                  final docs = snapshot.data?.docs ?? [];
 
-                      const Text(
-                        'Nenhuma tarefa disponível',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  if (docs.isEmpty) {
+                    //  Usando o widget global de Empty State
+                    return const EmptyStateWidget(
+                      icon: Icons.assignment_turned_in_outlined,
+                      title: 'Tudo em dia!',
+                      description:
+                          'Não encontramos nenhum exercício pendente para sua turma no momento.',
+                    );
+                  }
 
-                      const SizedBox(height: 8),
+                  return ListView.separated(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    itemCount: docs.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final exercicio = docs[index];
+                      final data = exercicio.data() as Map<String, dynamic>;
 
-                      Text(
-                        'Ainda não há atividades cadastradas para esta turma.\n'
-                        'Assim que uma tarefa for criada, ela aparecerá aqui.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                          height: 1.4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-            return ListView.builder(
-              itemCount: data?.length,
-              itemBuilder: (context, index) {
-                final exercicio = data?[index];
-                final titulo = exercicio?['titulo'];
-                final conteudoDoExercicio = exercicio?['conteudoDoExercicio'];
-                final nomeProfessor = exercicio?['nomeDoProfessor'];
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 500),
-                        pageBuilder: (context, animation, secundaryAnimation) {
-                          return SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(1, 0),
-                              end: Offset.zero,
-                            ).animate(animation),
-
-                            child: ExerciciosDetalhesPage(
-                              exercicios: exercicio,
-                            ),
-                          );
-                        },
-                      ),
-                    ).then((_) {
-                      setState(() {});
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Hero(
-                            tag: exercicio!.id,
-
-                            child: Material(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(
-                                    255,
-                                    109,
-                                    87,
-                                    116,
+                      
+                      // Removido o Container roxo externo que causava os erros de borda e overflow.
+                      return Hero(
+                        tag: exercicio.id,
+                        child: Material(
+                          color: Colors
+                              .transparent, 
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  
+                                  builder: (_) => ExerciciosDetalhesPage(
+                                    exercicios: exercicio,
                                   ),
-                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: CardExercicio(
-                                  titulo: titulo,
-                                  conteudo: conteudoDoExercicio,
-                                  nomeProfessor: nomeProfessor,
-                                  userId: userId!,
-                                  exerciciosId: exercicio.id,
-                                  getStatusEntregue: getStatusEntregue,
-                                ),
-                              ),
+                              ).then((_) => setState(() {}));
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: CardExercicio(
+                              titulo: data['titulo'] ?? 'Sem título',
+                              conteudo: data['conteudoDoExercicio'] ?? '',
+                              nomeProfessor:
+                                  data['nomeDoProfessor'] ?? 'Instituição',
+                              userId: userProvider.userId!,
+                              exerciciosId: exercicio.id,
+                              getStatusEntregue: _getStatusEntregue,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
