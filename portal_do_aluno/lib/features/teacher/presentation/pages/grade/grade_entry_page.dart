@@ -1,6 +1,3 @@
-// mexer no UI completo da pagina de boletim
-// Estou sentido que está muito poluido
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +65,23 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
   }
 
   Future<void> salvarNota() async {
+    // 1. Fecha o teclado para dar foco visual ao carregamento (UX)
+    FocusScope.of(context).unfocus();
+
     if (!_formKey.currentState!.validate()) return;
+
+    
+    final stringNota = _notaController.text.replaceAll(',', '.');
+    final notaParsed = double.tryParse(stringNota);
+
+    if (notaParsed == null) {
+      showAppSnackBar(
+        context: context,
+        mensagem: 'Formato de nota inválido.',
+        cor: Theme.of(context).colorScheme.error,
+      );
+      return;
+    }
 
     try {
       await _boletimHelper.salvarNota(
@@ -78,201 +91,278 @@ class _GradeEntryPageState extends State<GradeEntryPage> {
         disciplinaId: selected['disciplinaId']!,
         unidade: selected['unidade']!,
         tipoDeNota: selected['tipoAvaliacao']!,
-        nota: double.parse(_notaController.text.replaceAll(',', '.')),
+        nota: notaParsed, // Usa o valor validado
       );
+      if (mounted) {
+        showAppSnackBar(
+          context: context,
+          mensagem: 'Nota salva com sucesso!',
 
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Nota salva com sucesso!',
-        cor: Colors.green,
-      );
+          cor: const Color(0xFF34D399),
+        );
+      }
+
       limparCampos();
     } catch (e) {
-      showAppSnackBar(
-        context: context,
-        mensagem: 'Erro ao salvar nota!',
-        cor: Colors.red,
-      );
+      // ignore: use_build_context_synchronously
+      if (mounted) {
+        showAppSnackBar(
+          context: context,
+          mensagem: 'Erro ao salvar nota!',
+          cor: Theme.of(context).colorScheme.error,
+        );
+      }
     }
+  }
+
+  // 👉 MUDANÇA: Helper para padronizar as labels dos campos (Clean Code)
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.color?.withValues(alpha: 0.8),
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard({
+    required String title,
+    required List<Widget> children,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.dividerColor.withValues(alpha: isDark ? 0.05 : 0.1),
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(8, 0, 0, 0),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: theme.colorScheme.primary.withValues(alpha: 0.8),
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ...children,
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Boletim'),
+      appBar: const CustomAppBar(title: 'Lançamento de Notas'),
+
+      // O usuário não precisa mais "rolar até o final" para salvar ou limpar.
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          MediaQuery.of(context).padding.bottom + 16,
+        ),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SaveButton(onSave: salvarNota),
+            const SizedBox(height: 12),
+            ClearButton(
+              label: 'Limpar Formulário',
+              isDestructive: true, // Usa a lógica destrutiva que criamos
+              onClear: () async {
+                setState(() {
+                  turmaSelecionada.value = null;
+                  selected['turmaId'] = null;
+                  limparCampos();
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+
       body: Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
+        child: GestureDetector(
+          // Fecha o teclado ao clicar fora
+          onTap: () => FocusScope.of(context).unfocus(),
           child: SingleChildScrollView(
+            // Adicionado padding inferior extra para não colar nos botões fixos
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
             child: Column(
               children: [
-                Card(
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                // --- SESSÃO 1: IDENTIFICAÇÃO DO ALUNO ---
+                // Chunking visual para reduzir a carga cognitiva
+                _buildSectionCard(
+                  title: '1. Identificação',
+                  children: [
+                    _buildLabel('Turma'),
+                    SelectClassButton(
+                      turmaSelecionada: turmaSelecionada,
+                      onTurmaSelecionada: (id, turmaNome) {
+                        setState(() {
+                          selected['turmaId'] = id;
+                          limparCampos();
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildLabel('Aluno'),
+                    selected['turmaId'] != null
+                        ? SelectStudentButton(
+                            alunoSelecionado: alunoSelecionado,
+                            turmaId: selected['turmaId'],
+                            onAlunoSelecionado: (id, nome, cpf) {
+                              setState(() => selected['alunoId'] = id);
+                            },
+                          )
+                        : const DisabledButton(
+                            label: 'Selecione a turma primeiro',
+                            icon: CupertinoIcons.person_fill,
+                          ),
+                  ],
+                ),
+
+                // --- SESSÃO 2: CONTEXTO DA AVALIAÇÃO ---
+                _buildSectionCard(
+                  title: '2. Detalhes da Avaliação',
+                  children: [
+                    _buildLabel('Disciplina'),
+                    FirestoreDropdownField(
+                      tipo: 'disciplina',
+                      titulo: 'Selecione a Disciplina',
+                      stream: getDisciplinas(),
+                      selecionado: selected['disciplinaNome'],
+                      icon: CupertinoIcons.book_fill, // Ícone mais Apple-like
+                      habilitado: selected['alunoId'] != null,
+                      onSelected: (id, nome) {
+                        setState(() {
+                          selected['disciplinaId'] = id;
+                          selected['disciplinaNome'] = nome;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Colocando Unidade e Tipo lado a lado para economizar espaço
+                    // já que são dropdowns de seleção curta
+                    Row(
                       children: [
-                        //------------------ TURMA ------------------
-                        const Text(
-                          'Turma',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        SelectClassButton(
-                          turmaSelecionada: turmaSelecionada,
-                          onTurmaSelecionada: (id, turmaNome) {
-                            setState(() {
-                              selected['turmaId'] = id;
-                              limparCampos();
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        //------------------ ALUNO ------------------
-                        const Text(
-                          'Aluno',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        selected['turmaId'] != null
-                            ? SelectStudentButton(
-                                alunoSelecionado: alunoSelecionado,
-                                turmaId: selected['turmaId'],
-                                onAlunoSelecionado: (id, nome, cpf) {
-                                  setState(() => selected['alunoId'] = id);
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildLabel('Unidade'),
+                              CustomDropdownField(
+                                itens: unidades,
+                                selecionado: selected['unidade'],
+                                titulo: 'Unidade',
+                                icon: CupertinoIcons.calendar,
+                                habilitado: selected['disciplinaId'] != null,
+                                onSelected: (valor) {
+                                  setState(() => selected['unidade'] = valor);
                                 },
-                              )
-                            : const DisabledButton(
-                                label: 'Selecione um Aluno',
-                                icon: CupertinoIcons.person_fill,
                               ),
-
-                        const SizedBox(height: 16),
-
-                        //------------------ DISCIPLINA ------------------
-                        const Text(
-                          'Disciplina',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        FirestoreDropdownField(
-
-                          tipo: 'disciplina',
-                          titulo: 'Selecione uma Disciplina',
-                          stream: getDisciplinas(),
-                          selecionado: selected['disciplinaNome'],
-                          icon: Icons.book,
-                          habilitado: selected['alunoId'] != null,
-                          onSelected: (id, nome) {
-                            setState(() {
-                              selected['disciplinaId'] = id;
-                              selected['disciplinaNome'] = nome;
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        //------------------ UNIDADE ------------------
-                        const Text(
-                          'Unidade',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildLabel('Tipo'),
+                              CustomDropdownField(
+                                itens: avaliacao,
+                                selecionado: selected['tipoAvaliacao'],
+                                titulo: 'Tipo',
+                                icon: CupertinoIcons.doc_text,
+                                habilitado: selected['unidade'] != null,
+                                onSelected: (valor) {
+                                  setState(
+                                    () => selected['tipoAvaliacao'] = valor,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        CustomDropdownField(
-                          
-                          itens: unidades,
-                          selecionado: selected['unidade'],
-                          titulo: 'Selecione uma Unidade',
-                          icon: Icons.note_alt,
-                          onSelected: (valor) {
-                            setState(() => selected['unidade'] = valor);
-                          },
-                          habilitado: selected['disciplinaId'] != null,
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        //------------------ TIPO AVALIAÇÃO ------------------
-                        const Text(
-                          'Tipo de Avaliação',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        CustomDropdownField(
-                          
-                          itens: avaliacao,
-                          selecionado: selected['tipoAvaliacao'],
-                          titulo: 'Selecione um Tipo de Avaliação',
-                          icon: Icons.assignment,
-                          onSelected: (valor) {
-                            setState(() => selected['tipoAvaliacao'] = valor);
-                          },
-                          habilitado: selected['unidade'] != null,
-                          
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        //------------------ NOTA ------------------
-                        const Text(
-                          'Nota',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        CustomTextFormField(
-                          controller: _notaController,
-                          hintText: 'Ex: 8.5',
-                          prefixIcon: CupertinoIcons.pencil,
-                          keyboardType: TextInputType.number,
-                          enable: selected['tipoAvaliacao'] != null,
-                          validator: (value) => (value == null || value.isEmpty)
-                              ? 'Digite a nota'
-                              : null,
-                          fillColor: selected['tipoAvaliacao'] != null
-                              ? Theme.of(context).cardColor
-                              : const Color.fromARGB(162, 192, 192, 192),
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
 
-                const SizedBox(height: 20),
+                // --- SESSÃO 3: RESULTADO ---
+                _buildSectionCard(
+                  title: '3. Resultado Final',
+                  children: [
+                    _buildLabel('Nota Alcançada'),
+                    CustomTextFormField(
+                      controller: _notaController,
+                      hintText: 'Ex: 8.5',
+                      prefixIcon: CupertinoIcons
+                          .star_fill, // Trocado pencil por star (nota)
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      enable: selected['tipoAvaliacao'] != null,
 
-                //------------------ BOTÕES ------------------
-                SaveButton(salvarconteudo: salvarNota),
-                const SizedBox(height: 10),
-                ClearButton(
-                  limparconteudo: () async {
-                    setState(() {
-                      turmaSelecionada.value = null;
-                      selected['turmaId'] = null;
-                      limparCampos();
-                    });
-                  },
+                      // cor de desabilitado. Removemos o 'fillColor' forçado.
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Digite a nota';
+                        }
+
+                        // Validação extra no front-end
+                        final val = double.tryParse(value.replaceAll(',', '.'));
+                        if (val == null) return 'Apenas números';
+                        if (val < 0 || val > 10) {
+                          return 'Nota deve ser de 0 a 10';
+                        }
+
+                        return null;
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
