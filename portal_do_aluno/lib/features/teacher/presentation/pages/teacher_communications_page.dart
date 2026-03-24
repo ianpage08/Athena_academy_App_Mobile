@@ -4,6 +4,11 @@ import 'package:portal_do_aluno/shared/widgets/chip_filtro.dart';
 import 'package:portal_do_aluno/shared/widgets/firestore/comunicados_stream_list.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 
+/// Tela de Mural de Comunicados do Professor.
+///
+/// Arquitetura e Performance:
+/// - [DRY (Don't Repeat Yourself)]: Filtros gerados dinamicamente via mapa de dados.
+
 class TeacherCommunicationsPage extends StatefulWidget {
   const TeacherCommunicationsPage({super.key});
 
@@ -13,97 +18,103 @@ class TeacherCommunicationsPage extends StatefulWidget {
 }
 
 class _TeacherCommunicationsPageState extends State<TeacherCommunicationsPage> {
-  /* Stream que busca a  coleção de comunicados do Firestore
-  
-   Filtra os documentos da coleção 'comunicados' onde o campo 'destinatario'
-   é igual a 'professor' ou 'todos', garantindo que apenas comunicados relevantes
-   sejam exibidos para os professor.*/
+  String? _filtroSelecionado;
 
-  String? filtroSelecionado;
+  // Evita que a query seja recriada a cada micro-rebuild da tela
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _comunicadosStream;
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getComunicadosStream() {
-    Query<Map<String, dynamic>> comunicadosQuery = FirebaseFirestore.instance
+  // Se amanhã a escola criar o filtro "Urgente", você adiciona só 1 linha aqui!
+  final List<Map<String, String?>> _opcoesFiltro = [
+    {'title': 'Todos', 'value': null},
+    {'title': 'Baixa', 'value': 'baixa'},
+    {'title': 'Média', 'value': 'media'},
+    {'title': 'Alta', 'value': 'alta'},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _atualizarStream(); // Inicializa o stream na montagem da tela
+  }
+
+  void _atualizarStream() {
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance
         .collection('comunicados')
         .where('destinatario', whereIn: ['professores', 'todos']);
 
-    if (filtroSelecionado  != null) {
-      comunicadosQuery = comunicadosQuery.where(
-        'prioridade',
-        isEqualTo: filtroSelecionado,
-      );
+    if (_filtroSelecionado != null) {
+      query = query.where('prioridade', isEqualTo: _filtroSelecionado);
     }
-    return comunicadosQuery.snapshots();
+
+    _comunicadosStream = query.snapshots();
+  }
+
+  void _onFiltroAlterado(String? novoFiltro) {
+    // Só atualiza se o filtro realmente mudou
+    if (_filtroSelecionado == novoFiltro) return;
+
+    setState(() {
+      _filtroSelecionado = novoFiltro;
+      _atualizarStream(); // Reconecta o Firebase com a nova query
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'Comunicados'),
-      body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardTheme.color,
-                borderRadius: BorderRadius.circular(14),
-              ),
+      body: Column(
+        children: [
+          // --- ÁREA DE FILTROS (Header Inteligente) ---
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+
+              boxShadow: [
+                BoxShadow(
+                  color: theme.shadowColor.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              // Padding nas bordas para o primeiro e último chip não colarem na tela
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ChipFiltro(
-                    title: 'Todos',
-                    value: null,
-                    filtroSelected: filtroSelecionado,
-                    onSelected: (value) {
-                      setState(() {
-                        filtroSelecionado = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  ChipFiltro(
-                    title: 'Baixa',
-                    value: 'baixa',
-                    filtroSelected: filtroSelecionado,
-                    onSelected: (value) {
-                      setState(() {
-                        filtroSelecionado = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  ChipFiltro(
-                    title: 'Média',
-                    value: 'media',
-                    filtroSelected: filtroSelecionado,
-                    onSelected: (value) {
-                      setState(() {
-                        filtroSelecionado = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                  ChipFiltro(
-                    title: 'Alta',
-                    value: 'alta',
-                    filtroSelected: filtroSelecionado,
-                    onSelected: (value) {
-                      filtroSelecionado = value;
-                    },
-                  ),
-                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: _opcoesFiltro.map((filtro) {
+                  final title = filtro['title'] as String;
+
+                  final value = filtro['value'] as String?;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 10),
+
+                    child: ChipFiltro(
+                      title: title,
+                      value: value,
+                      filtroSelected: _filtroSelecionado,
+                      onSelected: _onFiltroAlterado,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-            Expanded(
-              child: ComunicadosStreamList(
-                // Passa o stream de comunicados para o widget de visualização
-                comunicadosStream: getComunicadosStream(),
-              ),
-            ),
-          ],
-        ),
+          ),
+
+          // --- LISTA DE COMUNICADOS ---
+          Expanded(
+            child: ComunicadosStreamList(comunicadosStream: _comunicadosStream),
+          ),
+        ],
       ),
     );
   }
