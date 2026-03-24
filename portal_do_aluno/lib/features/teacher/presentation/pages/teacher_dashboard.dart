@@ -138,7 +138,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                 child: GridView.count(
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
-                  childAspectRatio: 1.45,
+                  childAspectRatio: 1.3,
                   physics: const BouncingScrollPhysics(),
                   mainAxisSpacing: 10,
                   children: [

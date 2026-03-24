@@ -62,7 +62,6 @@ class _TeacherCommunicationsPageState extends State<TeacherCommunicationsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'Comunicados'),
@@ -93,7 +92,7 @@ class _TeacherCommunicationsPageState extends State<TeacherCommunicationsPage> {
                 children: _opcoesFiltro.map((filtro) {
                   final title = filtro['title'] as String;
 
-                  final value = filtro['value'] as String?;
+                  final value = filtro['value'];
 
                   return Padding(
                     padding: const EdgeInsets.only(right: 10),
