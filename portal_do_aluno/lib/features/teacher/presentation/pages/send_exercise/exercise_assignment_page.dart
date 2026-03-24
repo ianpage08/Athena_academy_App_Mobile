@@ -60,7 +60,7 @@ class _ExerciseAssignmentPageState extends State<ExerciseAssignmentPage> {
                         ExerciseForm(controller: controller),
                         const SizedBox(height: 24),
                         SaveButton(
-                          salvarconteudo: () async {
+                          onSave: () async {
                             controller.submit(professorId);
                           },
                         ),

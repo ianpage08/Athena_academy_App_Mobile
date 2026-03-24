@@ -116,14 +116,14 @@ class _CadastrarDisciplinaState extends State<CadastrarDisciplina> {
                           SizedBox(
                             width: double.infinity,
                             child: SaveButton(
-                              salvarconteudo: () async {
+                              onSave: () async {
                                 controller.submit();
                               },
                             ),
                           ),
                           const SizedBox(height: 12),
                           ClearButton(
-                            limparconteudo: () async {
+                            onClear: () async {
                               controller.clear();
                             },
                           ),

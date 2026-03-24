@@ -175,7 +175,7 @@ class _MatriculaFormState extends State<MatriculaForm> {
           DadosMedicosSection(mapController: _mapControllerMedico),
           const SizedBox(height: 20),
           SaveButton(
-            salvarconteudo: () async {
+            onSave: () async {
               await _submit();
             },
           ),

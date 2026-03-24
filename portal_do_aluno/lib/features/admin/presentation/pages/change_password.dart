@@ -182,7 +182,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                       /// Botão Salvar
                       SaveButton(
-                        salvarconteudo: () async {
+                        onSave: () async {
                           _salvarSenha(usuarioId);
                           NavigatorService.navigateReplaceWith(
                             RouteNames.sucessResetPassword,

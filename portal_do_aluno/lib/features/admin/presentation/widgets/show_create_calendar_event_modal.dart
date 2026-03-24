@@ -72,7 +72,7 @@ void showCreateCalendarEventModal({
 
                     const SizedBox(height: 24),
 
-                    SaveButton(salvarconteudo: () => salvarconteudo(tipo)),
+                    SaveButton(onSave: () => salvarconteudo(tipo)),
                   ],
                 ),
               ),

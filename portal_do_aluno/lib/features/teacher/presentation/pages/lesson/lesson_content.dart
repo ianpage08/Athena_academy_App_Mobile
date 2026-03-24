@@ -94,7 +94,7 @@ class _LessonContentState extends State<LessonContent> {
                             return SizedBox(
                               width: double.infinity,
                               child: SaveButton(
-                                salvarconteudo: () async {
+                                onSave: () async {
                                   if (userId == null) {
                                     showAppSnackBar(
                                       context: context,

@@ -82,7 +82,7 @@ class _AttendanceRegistrationPageState
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SaveButton(
-            salvarconteudo: () async {
+            onSave: () async {
               // A delegação da ação fica 100% no controller
               controller.salvar(context);
             },

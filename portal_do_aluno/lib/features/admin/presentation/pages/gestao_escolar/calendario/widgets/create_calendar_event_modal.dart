@@ -87,7 +87,7 @@ class CreateCalendarEventModal extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Ação
-            SaveButton(salvarconteudo: () async => onSubmit),
+            SaveButton(onSave: () async => onSubmit),
           ],
         ),
       ),

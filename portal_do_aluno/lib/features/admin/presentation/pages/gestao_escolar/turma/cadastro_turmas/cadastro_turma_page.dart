@@ -114,7 +114,7 @@ class _CadastroTurmaState extends State<CadastroTurma> {
                   SizedBox(
                     width: double.infinity,
                     child: SaveButton(
-                      salvarconteudo: () async {
+                      onSave: () async {
                         controller.submit();
                       },
                     ),

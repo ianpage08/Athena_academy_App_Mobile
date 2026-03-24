@@ -215,7 +215,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                       child: SizedBox(
                         height: 48,
                         child: SaveButton(
-                          salvarconteudo: () async {
+                          onSave: () async {
                             final sucesso = await controller.salvar();
                             if (!mounted) {
                               return;
@@ -237,7 +237,7 @@ class _AddUsuarioPageState extends State<AddUsuarioPage> {
                       child: SizedBox(
                         height: 48,
                         child: ClearButton(
-                          limparconteudo: () async {
+                          onClear: () async {
                             controller.limpar();
                           },
                         ),
