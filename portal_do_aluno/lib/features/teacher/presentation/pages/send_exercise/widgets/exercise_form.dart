@@ -1,69 +1,145 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/build_section_card.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/send_exercise/controller/create_exercise_controller.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_date_picker_field.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/select_class_button.dart';
+
+// 👉 MUDANÇA (ARQUITETURA): Supondo que você salvou o seu helper de UI aqui.
+// Se o nome ou caminho for diferente, basta ajustar!
+// import 'package:portal_do_aluno/shared/widgets/athena_section_card.dart';
 
 class ExerciseForm extends StatelessWidget {
   final CreateExerciseController controller;
 
   const ExerciseForm({super.key, required this.controller});
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _section('Turma'),
-            SelectClassButton(
-              turmaSelecionada: controller.turmaSelecionada,
-              onTurmaSelecionada: (id, nome) {
-                controller.turmaId = id;
-                controller.turmaSelecionada.value = nome;
-              },
-            ),
+  // Helper local temporário caso você ainda não tenha importado o global.
+  // 👉 MUDANÇA: O Card gigante e os Dividers viraram blocos independentes.
+  Widget _buildSection({
+    required BuildContext context,
+    required String title,
+    required Widget child,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-            const SizedBox(height: 24),
-            const Divider(),
-
-            _section('Conteúdo do Exercício'),
-            CustomTextFormField(
-              prefixIcon: Icons.title,
-              controller: controller.tituloController,
-              hintText: 'Ex: Atividade para casa',
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.dividerColor.withValues(alpha: isDark ? 0.05 : 0.1),
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(8, 0, 0, 0),
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: theme.colorScheme.primary.withValues(alpha: 0.8),
+              letterSpacing: 1.2,
             ),
-            const SizedBox(height: 12),
-            CustomTextFormField(
-              prefixIcon: Icons.notes,
-              controller: controller.conteudoController,
-              maxLines: 4,
-              hintText: 'Resolver exercícios da página 10 a 20',
-            ),
+          ),
+          const SizedBox(height: 20),
+          child,
+        ],
+      ),
+    );
+  }
 
-            const SizedBox(height: 24),
-            const Divider(),
-
-            _section('Data de Entrega'),
-            CustomDatePickerField(
-              isSelecionada: controller.dataSelecionada,
-              onDate: (data) => controller.dataSelecionada = data,
-            ),
-          ],
+  // 👉 MUDANÇA: Helper de label para os inputs
+  Widget _buildInputLabel(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.color?.withValues(alpha: 0.8),
+          letterSpacing: 0.3,
         ),
       ),
     );
   }
 
-  Widget _section(String title) => Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Text(
-          title,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // --- BLOCO 1: PÚBLICO ALVO ---
+        BuildSectionCard(
+          
+          title: '1. Público Alvo',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildInputLabel(context, 'Turma Destino'),
+              SelectClassButton(
+                turmaSelecionada: controller.turmaSelecionada,
+                onTurmaSelecionada: (id, nome) {
+                  controller.turmaId = id;
+                  controller.turmaSelecionada.value = nome;
+                },
+              ),
+            ],
+          ),
         ),
-      );
+
+        // --- BLOCO 2: CONTEÚDO ---
+        BuildSectionCard(
+          
+          title: '2. Detalhes da Atividade',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 👉 MUDANÇA (UX): Inserido 'label' no CustomTextFormField
+              CustomTextFormField(
+                prefixIcon: CupertinoIcons.text_cursor, // Ícones Apple-like
+                controller: controller.tituloController,
+                label: 'Título do Exercício',
+                hintText: 'Ex: Lista de Equações do 2º Grau',
+              ),
+              const SizedBox(height: 16),
+              CustomTextFormField(
+                prefixIcon: CupertinoIcons.paragraph,
+                controller: controller.conteudoController,
+                label: 'Instruções',
+                hintText:
+                    'Ex: Resolver os exercícios da página 10 a 20 e anexar a foto do caderno.',
+                minLines: 3, // 👉 MUDANÇA: Nasce com cara de área de texto
+                maxLines: 5,
+              ),
+            ],
+          ),
+        ),
+
+        // --- BLOCO 3: PRAZOS ---
+        BuildSectionCard(
+          
+          title: '3. Prazo de Entrega',
+          child: CustomDatePickerField(
+            isSelecionada: controller.dataSelecionada,
+            onDate: (data) => controller.dataSelecionada = data,
+          ),
+        ),
+      ],
+    );
+  }
 }
