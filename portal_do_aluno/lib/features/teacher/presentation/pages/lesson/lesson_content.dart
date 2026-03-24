@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/build_section_card.dart';
+import 'package:provider/provider.dart';
 import 'package:portal_do_aluno/features/admin/helper/anexo_helper.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
-import 'package:portal_do_aluno/features/student/presentation/widgets/animated_overlay.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/controller/lesson_controller.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/attach_section.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_context_section.dart';
+import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_content_section.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/lesson_info_section.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/lesson/widget/section_title.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/services/snackbar/controller_snack.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
-import 'package:provider/provider.dart';
+
 
 class LessonContent extends StatefulWidget {
   const LessonContent({super.key});
@@ -23,7 +22,8 @@ class LessonContent extends StatefulWidget {
 
 class _LessonContentState extends State<LessonContent> {
   final LessonController controller = LessonController();
-  bool _isLoading = false;
+
+  // O SaveButton agora gerencia o próprio loading!
 
   VoidCallback? _detachSubmitListener;
 
@@ -46,97 +46,22 @@ class _LessonContentState extends State<LessonContent> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final userId = context.read<UserProvider>().userId;
-
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: const CustomAppBar(title: 'Conteúdo ministrado'),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 720),
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SectionTitle('Informações'),
-                        const SizedBox(height: 20),
-                        LessonInfoSection(controller: controller),
-
-                        const SizedBox(height: 32),
-                        const Divider(),
-                        const SizedBox(height: 32),
-
-                        const SectionTitle('Conteúdo ministrado'),
-                        const SizedBox(height: 16),
-                        LessonContentSection(controller: controller),
-
-                        const SizedBox(height: 16),
-                        AttachSection(
-                          attachedCount: controller.imgSelected.length,
-                          onAttach: () => _onAttachPressed(context),
-                        ),
-
-                        const SizedBox(height: 28),
-                        ValueListenableBuilder<SubmitState>(
-                          valueListenable: controller.submitState,
-                          builder: (context, state, _) {
-                            return SizedBox(
-                              width: double.infinity,
-                              child: SaveButton(
-                                onSave: () async {
-                                  if (userId == null) {
-                                    showAppSnackBar(
-                                      context: context,
-                                      mensagem: 'Usuário não identificado.',
-                                      cor: Colors.red,
-                                    );
-                                    return;
-                                  }
-                                  setState(() {
-                                    _isLoading = true;
-                                  });
-                                  await controller.submit(userId);
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (_isLoading == true) const AnimatedOverlay(),
-      ],
-    );
-  }
+  
 
   Future<void> _onAttachPressed(BuildContext context) async {
+    // 1. Esconde o teclado para evitar bugs visuais ao abrir a galeria
+    FocusScope.of(context).unfocus();
+
     final images = await getImage();
     if (!mounted) return;
 
-    if (images.isEmpty) {
+    if (images.isEmpty && mounted) {
       showAppSnackBar(
+        
         context: context,
         mensagem: 'Nenhum arquivo selecionado.',
-        cor: Colors.orange,
+        
+        cor: Theme.of(context).colorScheme.secondary,
       );
       return;
     }
@@ -145,12 +70,100 @@ class _LessonContentState extends State<LessonContent> {
       ..clear()
       ..addAll(images);
 
-    setState(() {});
-
+    setState(() {}); // Atualiza a contagem de anexos na UI
+    
     showAppSnackBar(
       context: context,
       mensagem: '${images.length} arquivo(s) anexado(s) com sucesso!',
-      cor: Colors.green,
+      
+      cor: const Color(0xFF34D399),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userId = context.read<UserProvider>().userId;
+    final theme = Theme.of(context);
+
+    
+    return Scaffold(
+      appBar: const CustomAppBar(title: 'Conteúdo Ministrado'),
+
+      
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          MediaQuery.of(context).padding.bottom + 16,
+        ),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SaveButton(
+          onSave: () async {
+            FocusScope.of(context).unfocus(); // Abaixa o teclado ao salvar
+
+            if (userId == null) {
+              showAppSnackBar(
+                context: context,
+                mensagem: 'Usuário não identificado. Faça login novamente.',
+                cor: theme.colorScheme.error,
+              );
+              return;
+            }
+
+            
+            // ativando o loader do próprio SaveButton. Não precisamos de setState externo!
+            await controller.submit(userId);
+          },
+        ),
+      ),
+
+      body: GestureDetector(
+        onTap: () =>
+            FocusScope.of(context).unfocus(), // UX: Toque fora fecha o teclado
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+          child: Center(
+            child: ConstrainedBox(
+              // Mantém o limite de largura para Web/Tablet, excelente prática!
+              constraints: const BoxConstraints(maxWidth: 720),
+
+              
+              // Agora a tela respira através de Chunking Modular (Cards independentes).
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BuildSectionCard(
+                    title: '1. Informações Básicas',
+                    child: LessonInfoSection(controller: controller),
+                  ),
+                  BuildSectionCard(
+                    
+                    title: '2. Detalhes da Aula',
+                    child: LessonContentSection(controller: controller),
+                  ),
+                  BuildSectionCard(
+                    title: '3. Material de Apoio',
+                    child: AttachSection(
+                      attachedCount: controller.imgSelected.length,
+                      onAttach: () => _onAttachPressed(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
