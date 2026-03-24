@@ -129,7 +129,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.45,
+                childAspectRatio: 1.3,
                 mainAxisSpacing: 16,
                 children: [
                   // NavigationMenuCard: widget personalizado dos botões do menu.
