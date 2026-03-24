@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/app_constants/colors.dart'; // Importando suas cores
 import 'package:portal_do_aluno/features/teacher/data/models/class_attendance.dart';
 import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/widgets/attendance_status_chip.dart';
 
-/// Card responsável por exibir um aluno na lista de chamada.
+/// Card premium responsável por exibir um aluno na lista de chamada.
 ///
-/// O componente mostra:
-/// - Nome do aluno
-/// - Status atual de presença
-/// - Chips interativos para selecionar o status (Presente, Falta, Justificado)
-///
-/// Também possui uma barra lateral colorida que muda dinamicamente
-/// conforme o status selecionado, facilitando a visualização rápida
-/// do professor durante a chamada.
+/// Apresenta uma experiência visual rica com avatar, nome destacado
+/// e seleção rápida de status com feedback tátil e visual.
 class AttendanceAlunoCard extends StatelessWidget {
-  /// Nome do aluno exibido no card
   final String nome;
-
-  /// Status atual de presença do aluno
-  /// Pode ser:
-  /// - presente
-  /// - falta
-  /// - justificativa
-  /// - null (ainda não marcado)
   final Presenca? status;
-
-  /// Callback executado quando o professor seleciona um novo status
   final ValueChanged<Presenca> onSelect;
 
   const AttendanceAlunoCard({
@@ -34,124 +19,218 @@ class AttendanceAlunoCard extends StatelessWidget {
     required this.onSelect,
   });
 
-  /// Retorna a cor que será exibida na barra lateral do card
-  /// de acordo com o status atual da presença.
-  ///
-  /// Isso cria um feedback visual rápido para o professor.
-  Color get corStatus {
+  // --- Helpers Visuais ---
+
+  /// Retorna a cor semântica do status, ajustada para a paleta elegante do app.
+  Color _getCorStatus(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     switch (status) {
       case Presenca.presente:
-        return const Color(0xFF2ECC71); // verde
+        // Usando o AppColors.darkSuccess que você definiu, ou uma variação suave
+        return isDark ? const Color(0xFF4ADE80) : AppColors.lightSuccess;
       case Presenca.falta:
-        return const Color(0xFFE53935); // vermelho
+        return isDark ? AppColors.darkError : AppColors.lightError;
       case Presenca.justificativa:
-        return const Color(0xFF3498DB); // azul
+        // Um azul info que combine com o roxo
+        return isDark ? const Color(0xFF60A5FA) : const Color(0xFF2196F3);
       default:
-        return Colors.grey.shade300; // status ainda não definido
+        // Cinza sutil para não definido
+        return isDark ? AppColors.darkBorder : Colors.grey.shade300;
     }
+  }
+
+  /// Gera as iniciais do nome para o avatar (Ex: "Kraher Silva" -> "KS")
+  String _getIniciais(String nomeCompleto) {
+    if (nomeCompleto.isEmpty) return "?";
+    final nomes = nomeCompleto.trim().split(' ');
+    if (nomes.length <= 1) return nomes.first[0].toUpperCase();
+    return (nomes.first[0] + nomes.last[0]).toUpperCase();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final corStatusAtiva = _getCorStatus(context);
+    final temStatus = status != null;
+
     return AnimatedContainer(
-      /// Anima suavemente mudanças visuais (principalmente a cor lateral)
-      duration: const Duration(milliseconds: 200),
-
-      /// Espaçamento entre os cards da lista
-      margin: const EdgeInsets.only(bottom: 14),
-
-      /// Estilização visual do card
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      margin: const EdgeInsets.only(bottom: 12),
+      // Pequeno feedback visual no card inteiro se selecionado
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          if (temStatus && theme.brightness == Brightness.light)
+            BoxShadow(
+              color: corStatusAtiva.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+        ],
       ),
-
-      /// Estrutura horizontal principal do card
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            /// Barra lateral que indica o status da presença
-            Container(
-              width: 10,
-
-              decoration: BoxDecoration(
-                color: corStatus,
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(14),
+      child: Card(
+        // Usando o cardColor do seu tema (AppColors.darkCard)
+        color: theme.cardColor,
+        elevation: temStatus ? 2 : 0, // Destaca levemente se já foi chamado
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          // Borda sutil para dar definição no modo escuro
+          side: BorderSide(
+            color: temStatus
+                ? corStatusAtiva.withValues(alpha: 0.5)
+                : theme.dividerColor.withValues(alpha: 0.1),
+            width: temStatus ? 1.5 : 1,
+          ),
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              // --- Barra Lateral de Status (Versão Moderna "Pill") ---
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 6, // Mais fina e elegante
+                  margin: const EdgeInsets.only(
+                    left: 12,
+                  ), // Não colada na borda
+                  decoration: BoxDecoration(
+                    color: corStatusAtiva,
+                    // Totalmente arredondada estilo pílula
+                    borderRadius: BorderRadius.circular(100),
+                  ),
                 ),
               ),
-            ),
 
-            /// Área principal do conteúdo
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(14),
+              // --- Conteúdo Principal ---
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header: Avatar + Nome
+                      Row(
+                        children: [
+                          // Avatar com Iniciais (Melhoria de UX/Estética)
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundColor: temStatus
+                                ? corStatusAtiva.withValues(alpha: 0.15)
+                                : theme.brightness == Brightness.dark
+                                ? AppColors.darkInputFill
+                                : AppColors.lightInputFill,
+                            child: Text(
+                              _getIniciais(nome),
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: temStatus
+                                    ? corStatusAtiva
+                                    : theme.textTheme.titleMedium?.color,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 14),
 
-                /// Estrutura vertical com nome + ações
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// Nome do aluno
-                    Text(
-                      nome,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+                          // Nome do Aluno Destacado
+                          Expanded(
+                            child: Text(
+                              nome,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                                // Cor principal do seu tema
+                                color: AppColors.darkBackground,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
 
-                    /// Espaçamento entre nome e os botões
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 20),
+                      Divider(
+                        height: 1,
+                        color: theme.dividerColor.withValues(alpha: 0.05),
+                      ),
+                      const SizedBox(height: 16),
 
-                    /// Linha com os botões de seleção de presença
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-
-                      children: [
-                        Expanded(
-                          child: AttendanceStatusChip(
+                      // --- Área de Ações (Chips) ---
+                      // Usando Wrap para garantir que não quebre em telas menores
+                      Wrap(
+                        spacing: 8, // Espaço horizontal entre chips
+                        runSpacing: 8, // Espaço vertical se quebrar linha
+                        alignment: WrapAlignment.spaceBetween,
+                        children: [
+                          // Nota: Para o 'Expanded' funcionar dentro do Wrap,
+                          // seu AttendanceStatusChip precisa lidar bem com largura.
+                          // Se ele for fixo, remova o FractionallySizedBox.
+                          _buildChipAction(
+                            context,
                             text: 'Presente',
-                            selected: status == Presenca.presente,
-                            color: const Color(0xFF2ECC71),
-                            icon: Icons.check_circle,
-                            onTap: () => onSelect(Presenca.presente),
+                            presenca: Presenca.presente,
+                            icon: Icons.check_circle_rounded,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-
-                        /// Chip para marcar falta
-                        Expanded(
-                          child: AttendanceStatusChip(
+                          _buildChipAction(
+                            context,
                             text: 'Falta',
-                            selected: status == Presenca.falta,
-                            color: const Color(0xFFE53935),
-                            icon: Icons.close,
-                            onTap: () => onSelect(Presenca.falta),
+                            presenca: Presenca.falta,
+                            icon:
+                                Icons.unpublished_rounded, // Ícone mais moderno
                           ),
-                        ),
-                        const SizedBox(width: 8),
-
-                        /// Chip para justificar falta
-                        Expanded(
-                          child: AttendanceStatusChip(
+                          _buildChipAction(
+                            context,
                             text: 'Justificar',
-                            selected: status == Presenca.justificativa,
-                            color: const Color(0xFF3498DB),
-                            icon: Icons.note_alt_outlined,
-                            onTap: () => onSelect(Presenca.justificativa),
+                            presenca: Presenca.justificativa,
+                            icon: Icons.edit_note_rounded,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  /// Helper para construir os chips de ação de forma padronizada.
+  Widget _buildChipAction(
+    BuildContext context, {
+    required String text,
+    required Presenca presenca,
+    required IconData icon,
+  }) {
+    final isSelected = status == presenca;
+    // Pega a cor semântica baseada apenas no tipo de presença deste chip
+    final Color colorBase = _getCorInfo(context, presenca);
+
+    return AttendanceStatusChip(
+      text: text,
+      selected: isSelected,
+      // Passa a cor semântica (Verde, Vermelho, Azul)
+      color: colorBase,
+      icon: icon,
+      onTap: () => onSelect(presenca),
+    );
+  }
+
+  // Helper interno para pegar a cor do chip independente do status atual do card
+  Color _getCorInfo(BuildContext context, Presenca p) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    switch (p) {
+      case Presenca.presente:
+        return isDark ? const Color(0xFF4ADE80) : AppColors.lightSuccess;
+      case Presenca.falta:
+        return isDark ? AppColors.darkError : AppColors.lightError;
+      case Presenca.justificativa:
+        return isDark ? const Color(0xFF60A5FA) : const Color(0xFF2196F3);
+    }
   }
 }

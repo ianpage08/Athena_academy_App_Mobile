@@ -1,40 +1,16 @@
 import 'package:flutter/material.dart';
 
-/// Chip interativo usado para selecionar o status de presença do aluno.
+/// Chip premium interativo para seleção de status de presença.
 ///
-/// Esse widget funciona como um botão visual com três estados possíveis
-/// no contexto da chamada escolar:
-/// - Presente
-/// - Falta
-/// - Justificado
-///
-/// Ele muda dinamicamente:
-/// - cor de fundo
-/// - cor do ícone
-/// - cor do texto
-/// - borda
-///
-/// Tudo isso baseado na propriedade `selected`.
+/// Refatorado para:
+/// - Suportar perfeitamente Dark/Light mode dinamicamente.
+/// - Garantir que o efeito "Ripple" (onda de clique) funcione sobre a cor de fundo.
+/// - Evitar overflow de texto em telas de celulares menores.
 class AttendanceStatusChip extends StatelessWidget {
-  /// Texto exibido dentro do chip
   final String text;
-
-  /// Indica se o chip está selecionado
-  /// Quando true, aplica destaque visual
   final bool selected;
-
-  /// Cor principal do chip
-  /// Usada para:
-  /// - borda
-  /// - ícone
-  /// - texto
-  /// - fundo quando selecionado
   final Color color;
-
-  /// Ícone exibido ao lado do texto
   final IconData icon;
-
-  /// Callback executado quando o chip é pressionado
   final VoidCallback onTap;
 
   const AttendanceStatusChip({
@@ -48,56 +24,86 @@ class AttendanceStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      /// Arredondamento do efeito ripple ao clicar
-      borderRadius: BorderRadius.circular(12),
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-      /// Função executada ao tocar no chip
-      onTap: onTap,
+    // --- Definição Dinâmica de Cores (Dark/Light Safe) ---
+    // Se não estiver selecionado, usamos cores sutis do próprio tema
+    final unselectedBgColor = isDark
+        ? theme.canvasColor.withValues(alpha: 0.3)
+        : theme.cardColor;
 
-      child: AnimatedContainer(
-        /// Duração da animação para transições visuais
-        duration: const Duration(milliseconds: 200),
+    final unselectedBorderColor = isDark
+        ? theme.dividerColor.withValues(alpha: 0.5)
+        : theme.dividerColor.withValues(alpha: 0.8);
 
-        /// Espaçamento interno do chip
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+    final unselectedTextColor = isDark
+        ? theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6)
+        : Colors.black54;
 
-        /// Estilo visual do chip
-        decoration: BoxDecoration(
-          /// Cor de fundo muda quando selecionado
-          color: selected ? color.withValues(alpha: 0.3) : Colors.grey.shade200,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic, // Curva mais suave e natural
+      decoration: BoxDecoration(
+        /// Fundo sutil se desmarcado, fundo com alpha da cor base se marcado
+        color: selected
+            ? color.withValues(alpha: isDark ? 0.15 : 0.1)
+            : unselectedBgColor,
+        borderRadius: BorderRadius.circular(12),
 
-          /// Bordas arredondadas
-          borderRadius: BorderRadius.circular(12),
-
-          /// Borda muda de cor dependendo do estado
-          border: Border.all(color: selected ? color : Colors.grey),
+        /// Borda ganha destaque sutil quando selecionado
+        border: Border.all(
+          color: selected
+              ? color.withValues(alpha: 0.6)
+              : unselectedBorderColor,
+          width: selected ? 1.5 : 1.0,
         ),
+      ),
 
-        /// Estrutura horizontal do chip (ícone + texto)
-        child: Row(
-          mainAxisSize: MainAxisSize.min, // Ocupa espaço mínimo
-          mainAxisAlignment: MainAxisAlignment.center,
+      /// O Material do tipo 'transparency' por fora do InkWell garante que
+      /// o efeito de clique (ripple) não seja engolido pela cor do Container.
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          // Cores do efeito de clique combinando com a cor do botão
+          splashColor: color.withValues(alpha: 0.2),
+          highlightColor: color.withValues(alpha: 0.1),
 
-          children: [
-            /// Ícone representando o status
-            Icon(icon, size: 18, color: selected ? color : Colors.black54),
+          child: Padding(
+            // Aumentei um pouco o padding vertical para melhorar a área de toque (hitbox)
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: selected ? color : unselectedTextColor,
+                ),
+                const SizedBox(width: 6),
 
-            /// Espaçamento entre ícone e texto
-            const SizedBox(width: 6),
-
-            /// Texto do chip
-            Text(
-              text,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-
-                /// Cor muda dependendo do estado selecionado
-                color: selected ? color : Colors.black87,
-              ),
-              textAlign: TextAlign.center,
+                /// Flexible evita o famoso erro de "fita zebrada amarela e preta"
+                /// caso o celular do professor seja muito pequeno e o texto não caiba.
+                Flexible(
+                  child: Text(
+                    text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      // Destaca um pouco mais o peso da fonte se estiver selecionado
+                      fontWeight: selected ? FontWeight.bold : FontWeight.w600,
+                      color: selected ? color : unselectedTextColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
