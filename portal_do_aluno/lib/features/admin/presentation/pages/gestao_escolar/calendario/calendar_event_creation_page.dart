@@ -33,6 +33,13 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
   }
 
   void _abrirModal(BuildContext context, CalendarEventType tipo) {
+    // 👉 MUDANÇA 1 (UX/PERFORMANCE): O "Reset Mestre"
+    // Limpamos a sujeira da memória antes de abrir o modal para evitar o loop infinito (Travamento/ANR)
+    controller.tituloController.clear();
+    controller.descricaoController.clear();
+    // Se você tiver um estado inicial definido no seu core, descomente a linha abaixo:
+    // controller.submitState.value = const InitialSubmitState();
+
     showCreateCalendarEventModal(
       submitState: controller.submitState,
       context: context,
@@ -45,7 +52,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
       onDateSelected: (data) => controller.dataSelecionada = data,
       salvarconteudo: (tipo) async {
         FocusScope.of(context).unfocus();
-        controller.salvar(tipo);
+        await controller.salvar(tipo);
       },
     );
   }
@@ -59,73 +66,160 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ValueListenableBuilder<SubmitState>(
       valueListenable: controller.submitState,
       builder: (context, state, _) {
+        // Feedback visual inteligente
+        final isLoading =
+            state.toString().contains('Loading') || state is SubmitLoading;
+
         return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: const Text('Calendário Escolar'),
-            centerTitle: true,
-          ),
+          backgroundColor: theme.colorScheme.surface,
+
+          // 👉 MUDANÇA 2: AppBar Minimalista (Fim do bloco engessado)
           body: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    CalendarEventCard(
-                      onTap: () =>
-                          _abrirModal(context, CalendarEventType.avaliacao),
-                      title: 'Avaliação',
-                      subtitle: 'Provas, testes e trabalhos avaliativos',
-                      backgroundColor: Colors.redAccent,
-                      icon: CupertinoIcons.doc_text_fill,
-                    ),
-                    const SizedBox(height: 16),
-                    CalendarEventCard(
-                      onTap: () =>
-                          _abrirModal(context, CalendarEventType.reuniao),
-                      title: 'Reunião',
-                      subtitle: 'Reuniões pedagógicas ou com responsáveis',
-                      backgroundColor: Colors.orangeAccent,
-                      icon: CupertinoIcons.person_2_fill,
-                    ),
-                    const SizedBox(height: 16),
-                    CalendarEventCard(
-                      onTap: () =>
-                          _abrirModal(context, CalendarEventType.eventoEscolar),
-                      title: 'Evento Escolar',
-                      subtitle: 'Festas, passeios e eventos institucionais',
-                      backgroundColor: Colors.purpleAccent,
-                      icon: CupertinoIcons.calendar_badge_plus,
-                    ),
-                    const SizedBox(height: 16),
-                    CalendarEventCard(
-                      onTap: () =>
-                          _abrirModal(context, CalendarEventType.outro),
-                      title: 'Outro compromisso',
-                      subtitle: 'Cadastrar um evento personalizado',
-                      backgroundColor: Colors.blueAccent,
-                      icon: CupertinoIcons.square_list_fill,
-                    ),
-                    const SizedBox(height: 16),
-                    CalendarEventCard(
-                      onTap: () => NavigatorService.navigateTo(
-                        RouteNames.studentCalendar,
+              // 👉 MUDANÇA 3: Prevenção de Overflow (Scroll Seguro)
+              SafeArea(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 👉 MUDANÇA 4: Header Tipográfico (Boas-vindas e Contexto)
+                      Text(
+                        'Gestão de Calendário',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -1,
+                        ),
                       ),
-                      title: 'Lista de Eventos',
-                      subtitle: 'Eventos já criados',
-                      backgroundColor: Colors.green[300]!,
-                      icon: CupertinoIcons.list_bullet,
-                    ),
-                  ],
+                      const SizedBox(height: 6),
+                      Text(
+                        'Selecione o tipo de evento que deseja registrar no cronograma oficial da academia.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.hintColor.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // 👉 MUDANÇA 5: Arquitetura de Informação (Categorias em Silos)
+
+                      // BLOCO 1: ACADÊMICO
+                      _buildSectionHeader(context, 'ACADÊMICO'),
+                      CalendarEventCard(
+                        onTap: isLoading
+                            ? null
+                            : () => _abrirModal(
+                                context,
+                                CalendarEventType.avaliacao,
+                              ),
+                        title: 'Avaliação',
+                        subtitle: 'Provas, testes e trabalhos avaliativos',
+                        backgroundColor: Colors.redAccent,
+                        icon: CupertinoIcons.doc_text_fill,
+                      ),
+                      CalendarEventCard(
+                        onTap: isLoading
+                            ? null
+                            : () => _abrirModal(
+                                context,
+                                CalendarEventType.reuniao,
+                              ),
+                        title: 'Reunião',
+                        subtitle: 'Encontros pedagógicos e com responsáveis',
+                        backgroundColor: Colors.orangeAccent,
+                        icon: CupertinoIcons.person_2_fill,
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // BLOCO 2: INSTITUCIONAL
+                      _buildSectionHeader(context, 'EVENTOS E OUTROS'),
+                      CalendarEventCard(
+                        onTap: isLoading
+                            ? null
+                            : () => _abrirModal(
+                                context,
+                                CalendarEventType.eventoEscolar,
+                              ),
+                        title: 'Evento Escolar',
+                        subtitle: 'Festas, passeios e eventos institucionais',
+                        backgroundColor: Colors.purpleAccent,
+                        icon: CupertinoIcons.calendar_badge_plus,
+                      ),
+                      CalendarEventCard(
+                        onTap: isLoading
+                            ? null
+                            : () =>
+                                  _abrirModal(context, CalendarEventType.outro),
+                        title: 'Outro compromisso',
+                        subtitle: 'Cadastrar um evento personalizado',
+                        backgroundColor: Colors.blueAccent,
+                        icon: CupertinoIcons.square_list_fill,
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // BLOCO 3: CONSULTA
+                      _buildSectionHeader(context, 'CONSULTA'),
+                      CalendarEventCard(
+                        onTap: () => NavigatorService.navigateTo(
+                          RouteNames.studentCalendar,
+                        ),
+                        title: 'Cronograma Completo',
+                        subtitle: 'Visualizar lista de eventos já criados',
+                        backgroundColor: const Color(
+                          0xFF2ECC71,
+                        ), // Verde sinalizando "Tudo Certo/Prosseguir"
+                        icon: CupertinoIcons.list_bullet,
+                        // 👉 MUDANÇA 6: Seta lateral avisando que esse card abre uma tela inteira, não um modal
+                        trailing: Icon(
+                          CupertinoIcons.arrow_right_circle_fill,
+                          color: Colors.green.withValues(alpha: 0.5),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
+
+              // 👉 MUDANÇA 7: Escudo Transparente de Loading (Protege o app de cliques duplos)
+              if (isLoading)
+                Positioned.fill(
+                  child: Container(
+                    color: theme.scaffoldBackgroundColor.withValues(alpha: 0.6),
+                    child: const Center(
+                      child: CupertinoActivityIndicator(radius: 16),
+                    ),
+                  ),
+                ),
             ],
           ),
         );
       },
+    );
+  }
+
+  // 🛠️ HELPER VISUAL: Separa e organiza as sessões
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 12),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          letterSpacing: 1.5,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+        ),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/core/submit_state/submit_states.dart';
 import 'package:portal_do_aluno/features/admin/presentation/widgets/calendar_event_type.dart';
@@ -7,6 +8,7 @@ import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 
 void showCreateCalendarEventModal({
+  // 🧠 LÓGICA INTACTA
   required BuildContext context,
   required CalendarEventType tipo,
   required Map<String, TextEditingController> controllers,
@@ -18,67 +20,175 @@ void showCreateCalendarEventModal({
   showModalBottomSheet(
     isScrollControlled: true,
     useSafeArea: true,
+    backgroundColor: Colors.transparent,
+    elevation: 0,
     context: context,
     builder: (_) {
-      return ValueListenableBuilder<SubmitState>(
-        valueListenable: submitState,
-        builder: (context, state, _) {
-          return Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 16,
-                  bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Marcar novo evento no calendário',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+      final theme = Theme.of(context);
+
+      // 👉 MUDANÇA 1: Variáveis de controle para a trava de 3 segundos
+      bool podeFechar = false;
+      bool timerIniciado = false;
+
+      // 👉 MUDANÇA 2: StatefulBuilder permite atualizar a UI (liberar a trava) apenas dentro deste modal
+      return StatefulBuilder(
+        builder: (context, setState) {
+          // 👉 MUDANÇA 3: Inicia o timer de 3 segundos na primeira vez que o modal renderiza
+          if (!timerIniciado) {
+            timerIniciado = true;
+            Future.delayed(const Duration(seconds: 3), () {
+              // Verifica se o modal ainda está aberto antes de atualizar a variável
+              if (context.mounted) {
+                setState(() {
+                  podeFechar = true;
+                });
+              }
+            });
+          }
+
+          // 👉 MUDANÇA 4: PopScope é a API moderna do Flutter para interceptar navegação
+          return PopScope(
+            canPop:
+                podeFechar, // Se for falso, bloqueia o botão de voltar, o arrastar e o clique no fundo
+            // Opcional (UX Premium): Dá um feedback sutil se o usuário tentar fechar antes da hora
+            onPopInvokedWithResult: (didPop, result) {
+              if (!didPop) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Aguarde um instante...'),
+                    duration: const Duration(milliseconds: 800),
+                    backgroundColor: theme.colorScheme.error,
+                  ),
+                );
+              }
+            },
+            child: ValueListenableBuilder<SubmitState>(
+              valueListenable: submitState,
+              builder: (context, state, _) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: theme.scaffoldBackgroundColor,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(28),
                     ),
-
-                    const SizedBox(height: 16),
-
-                    Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          CustomTextFormField(
-                            controller: controllers['titulo']!,
-                            label: 'Título do Evento',
-                            hintText: 'Digite o título do evento',
-                            prefixIcon: Icons.title,
-                          ),
-                          const SizedBox(height: 16),
-                          CustomTextFormField(
-                            controller: controllers['descricao']!,
-                            label: 'Descrição do Evento',
-                            hintText: 'Digite a descrição do evento',
-                            prefixIcon: Icons.description,
-                          ),
-                        ],
-                      ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
                     ),
+                    child: Stack(
+                      children: [
+                        SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Drag Handle
+                                Center(
+                                  child: Container(
+                                    width: 40,
+                                    height: 4,
+                                    margin: const EdgeInsets.only(bottom: 24),
+                                    decoration: BoxDecoration(
+                                      color: theme.dividerColor.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
 
-                    const SizedBox(height: 16),
+                                // Header
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Agendar ${tipo.name}',
+                                      style: theme.textTheme.titleLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w900,
+                                            letterSpacing: -0.5,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      'Insira as informações para o calendário escolar',
+                                      textAlign: TextAlign.center,
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: theme.hintColor.withValues(
+                                              alpha: 0.6,
+                                            ),
+                                          ),
+                                    ),
+                                  ],
+                                ),
 
-                    CustomDatePickerField(onDate: onDateSelected),
+                                const SizedBox(height: 32),
 
-                    const SizedBox(height: 24),
+                                // FORMULÁRIO
+                                Form(
+                                  key: formKey,
+                                  child: Column(
+                                    children: [
+                                      CustomTextFormField(
+                                        controller: controllers['titulo']!,
+                                        label: 'Título do Evento',
+                                        hintText:
+                                            'Ex: Prova Bimestral de Matemática',
+                                        prefixIcon: CupertinoIcons
+                                            .pencil_ellipsis_rectangle,
+                                      ),
+                                      const SizedBox(height: 20),
+                                      CustomTextFormField(
+                                        controller: controllers['descricao']!,
+                                        label: 'Descrição Detalhada',
+                                        hintText:
+                                            'Informe pautas, salas ou observações...',
+                                        prefixIcon:
+                                            CupertinoIcons.text_alignleft,
+                                        maxLines: 3,
+                                      ),
+                                    ],
+                                  ),
+                                ),
 
-                    SaveButton(onSave: () => salvarconteudo(tipo)),
-                  ],
-                ),
-              ),
+                                const SizedBox(height: 20),
 
-              //if (isLoading) const Positioned.fill(child: AnimatedOverlay()),
-            ],
+                                // SELEÇÃO DE DATA
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.03,
+                                    ),
+                                  ),
+                                  child: CustomDatePickerField(
+                                    onDate: (data) => onDateSelected(data),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 32),
+
+                                // AÇÃO
+                                SizedBox(
+                                  height: 56,
+                                  child: SaveButton(
+                                    onSave: () => salvarconteudo(tipo),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           );
         },
       );
