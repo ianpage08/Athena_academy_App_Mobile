@@ -26,14 +26,11 @@ void showCreateCalendarEventModal({
     builder: (_) {
       final theme = Theme.of(context);
 
-      // 👉 MUDANÇA 1: Variáveis de controle para a trava de 3 segundos
       bool podeFechar = false;
       bool timerIniciado = false;
 
-      // 👉 MUDANÇA 2: StatefulBuilder permite atualizar a UI (liberar a trava) apenas dentro deste modal
       return StatefulBuilder(
         builder: (context, setState) {
-          // 👉 MUDANÇA 3: Inicia o timer de 3 segundos na primeira vez que o modal renderiza
           if (!timerIniciado) {
             timerIniciado = true;
             Future.delayed(const Duration(seconds: 3), () {
@@ -46,7 +43,6 @@ void showCreateCalendarEventModal({
             });
           }
 
-          // 👉 MUDANÇA 4: PopScope é a API moderna do Flutter para interceptar navegação
           return PopScope(
             canPop:
                 podeFechar, // Se for falso, bloqueia o botão de voltar, o arrastar e o clique no fundo

@@ -26,7 +26,7 @@ class CalendarEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // 👉 MUDANÇA 1: Reestruturação para o "Ripple Effect" (Feedback tátil) funcionar
+    
     return Container(
       margin: const EdgeInsets.only(
         bottom: 12,
@@ -55,14 +55,14 @@ class CalendarEventCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: onTap,
-          // 👉 MUDANÇA 2: O padding agora abraça o conteúdo por dentro do InkWell
+          
           child: Padding(
             padding: const EdgeInsets.all(18),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment
                   .start, // Alinha ao topo para textos multilinhas
               children: [
-                // 👉 MUDANÇA 3: Avatar "Soft" (Fundo pastel com ícone sólido)
+                
                 Container(
                   width: 52,
                   height: 52,
@@ -88,7 +88,7 @@ class CalendarEventCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight
-                              .bold, // 👉 MUDANÇA 4: Maior contraste hierárquico
+                              .bold, 
                           letterSpacing: -0.3,
                         ),
                       ),
@@ -106,7 +106,7 @@ class CalendarEventCard extends StatelessWidget {
                         ),
                       ),
 
-                      // 👉 MUDANÇA 5: Renderização Condicional Inteligente (Evita "buracos" no layout)
+                     
                       if (date != null && date!.trim().isNotEmpty) ...[
                         const SizedBox(height: 10),
                         Row(

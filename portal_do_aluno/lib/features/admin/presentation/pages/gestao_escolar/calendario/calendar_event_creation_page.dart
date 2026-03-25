@@ -33,8 +33,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
   }
 
   void _abrirModal(BuildContext context, CalendarEventType tipo) {
-    // 👉 MUDANÇA 1 (UX/PERFORMANCE): O "Reset Mestre"
-    // Limpamos a sujeira da memória antes de abrir o modal para evitar o loop infinito (Travamento/ANR)
+    
     controller.tituloController.clear();
     controller.descricaoController.clear();
     // Se você tiver um estado inicial definido no seu core, descomente a linha abaixo:
@@ -71,17 +70,17 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
     return ValueListenableBuilder<SubmitState>(
       valueListenable: controller.submitState,
       builder: (context, state, _) {
-        // Feedback visual inteligente
+        
         final isLoading =
             state.toString().contains('Loading') || state is SubmitLoading;
 
         return Scaffold(
           backgroundColor: theme.colorScheme.surface,
 
-          // 👉 MUDANÇA 2: AppBar Minimalista (Fim do bloco engessado)
+          
           body: Stack(
             children: [
-              // 👉 MUDANÇA 3: Prevenção de Overflow (Scroll Seguro)
+              
               SafeArea(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -92,7 +91,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 👉 MUDANÇA 4: Header Tipográfico (Boas-vindas e Contexto)
+                      
                       Text(
                         'Gestão de Calendário',
                         style: theme.textTheme.headlineMedium?.copyWith(
@@ -109,7 +108,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
                       ),
                       const SizedBox(height: 32),
 
-                      // 👉 MUDANÇA 5: Arquitetura de Informação (Categorias em Silos)
+                      
 
                       // BLOCO 1: ACADÊMICO
                       _buildSectionHeader(context, 'ACADÊMICO'),
@@ -179,7 +178,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
                           0xFF2ECC71,
                         ), // Verde sinalizando "Tudo Certo/Prosseguir"
                         icon: CupertinoIcons.list_bullet,
-                        // 👉 MUDANÇA 6: Seta lateral avisando que esse card abre uma tela inteira, não um modal
+                       
                         trailing: Icon(
                           CupertinoIcons.arrow_right_circle_fill,
                           color: Colors.green.withValues(alpha: 0.5),
@@ -191,7 +190,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
                 ),
               ),
 
-              // 👉 MUDANÇA 7: Escudo Transparente de Loading (Protege o app de cliques duplos)
+              
               if (isLoading)
                 Positioned.fill(
                   child: Container(
@@ -208,7 +207,7 @@ class _CalendarEventCreationPageState extends State<CalendarEventCreationPage> {
     );
   }
 
-  // 🛠️ HELPER VISUAL: Separa e organiza as sessões
+ 
   Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 12),
