@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA 1: Importado para manter o padrão visual dos ícones
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastrar_diciplina_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/disciplinas/widgets/info_chip_disciplinas.dart';
@@ -6,6 +7,7 @@ import 'package:portal_do_aluno/shared/widgets/action_menu_button.dart';
 
 class DisciplinaCard extends StatelessWidget {
   final Map<String, dynamic> data;
+
   final DisciplinaService disciplinaService;
 
   const DisciplinaCard({
@@ -16,23 +18,50 @@ class DisciplinaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    final theme = Theme.of(context);
+
+    final String nome = data['nome'] ?? 'Disciplina Indefinida';
+    final String professor = data['professor'] ?? 'Sem professor alocado';
+    final String aulas = data['aulaPrevistas']?.toString() ?? '--';
+    final String horas = data['cargaHoraria']?.toString() ?? '--';
+
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 16,
+      ), // Dá respiro entre os itens da lista
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20), // Curvatura moderna e orgânica
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(
+            alpha: 0.3,
+          ), // Borda quase invisível
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03), // Sombra hiper suave
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ÍCONE
             Container(
-              width: 44,
-              height: 44,
+              width: 52, // Tamanho equilibrado para leitura de grid
+              height: 52,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(Icons.book, color: Theme.of(context).iconTheme.color),
+              child: Icon(
+                CupertinoIcons.book_fill, // Ícone preenchido (mais peso visual)
+                color: theme.colorScheme.primary,
+                size: 24,
+              ),
             ),
 
             const SizedBox(width: 16),
@@ -44,31 +73,33 @@ class DisciplinaCard extends StatelessWidget {
                 children: [
                   // TÍTULO
                   Text(
-                    data['nome'] ?? 'Disciplina',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    nome,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.3,
                     ),
+                    maxLines:
+                        2, // Previne quebra de layout se o nome for imenso
+                    overflow: TextOverflow.ellipsis,
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
 
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
                       InfoChipDisciplinas(
-                        icon: Icons.person,
-                        title: data['professor'] ?? 'Sem professor',
-                      ),
-
-                      InfoChipDisciplinas(
-                        icon: Icons.event_note,
-                        title: '${data['aulaPrevistas'] ?? '--'} aulas',
+                        icon: CupertinoIcons.person_fill,
+                        title: professor,
                       ),
                       InfoChipDisciplinas(
-                        icon: Icons.schedule,
-                        title: '${data['cargaHoraria'] ?? '--'}h',
+                        icon: CupertinoIcons.calendar_today,
+                        title: '$aulas aulas',
+                      ),
+                      InfoChipDisciplinas(
+                        icon: CupertinoIcons.clock_fill,
+                        title: '${horas}h',
                       ),
                     ],
                   ),
@@ -76,20 +107,23 @@ class DisciplinaCard extends StatelessWidget {
               ),
             ),
 
-            // MENU
+            // MENU DE AÇÕES
             ActionMenuButton(
               id: data['id'],
               items: [
                 MenuItemConfig(
                   value: 'excluir',
-                  label: 'Excluir',
+                  label: 'Excluir Disciplina',
                   onSelected: (id, context, extra) async {
                     if (id == null) return;
 
                     final confirmar = await showAppConfirmationDialog(
                       context: context,
-                      title: 'Excluir disciplina?',
-                      content: 'Essa ação é irreversível.',
+                      title: 'Excluir Disciplina?',
+
+                      content:
+                          'Essa ação apagará permanentemente a matéria do sistema.',
+                      confirmText: 'Excluir',
                     );
 
                     if (confirmar == true) {
