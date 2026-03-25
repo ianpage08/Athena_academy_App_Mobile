@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Importado para consistência de ícones
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/info_chip.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/gestao_escolar/turma/widgets/stream_alunos_contagem.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
@@ -13,32 +13,62 @@ class TurmaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String turno = data['turno'] ?? '';
-    final String professor = data['professorTitular'] ?? '';
-    final String serie = data['serie'] ?? '';
+    final theme = Theme.of(context);
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    // Fallbacks de segurança para evitar quebra de UI se vier nulo
+    final String turno = data['turno'] ?? 'Não definido';
+    final String professor = data['professorTitular'] ?? 'Sem professor';
+    final String serie = data['serie'] ?? 'Série indefinida';
+
+    
+    return Container(
+      margin: const EdgeInsets.only(
+        bottom: 16,
+      ), // Dá respiro entre os cards na lista
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20), // Curvatura orgânica e moderna
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(
+            alpha: 0.3,
+          ), // Borda quase invisível
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(
+              alpha: 0.03,
+            ), // Sombra hiper suave e difusa
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(
+          20,
+        ), 
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // AVATAR
+            
             Container(
-              width: 44,
-              height: 44,
+              width: 52, // Aumentado levemente para dar presença
+              height: 52,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(
+                  16,
+                ), // Acompanha a curvatura do card externo
               ),
               child: Center(
                 child: Text(
-                  serie.isNotEmpty ? serie[0] : '?',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).iconTheme.color,
+                  serie.isNotEmpty
+                      ? serie[0].toUpperCase()
+                      : '?', // Garante letra maiúscula
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w900, // Fonte bold impactante
+                    color:
+                        theme.colorScheme.primary, // Cor atrelada à identidade
                   ),
                 ),
               ),
@@ -51,37 +81,52 @@ class TurmaCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  
                   Text(
                     serie,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5,
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
 
+                  
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      InfoChip(icon: Icons.person, title: professor),
-                      InfoChip(icon: Icons.schedule, title: turno),
+                      InfoChip(
+                        icon: CupertinoIcons.person_fill,
+                        title: professor,
+                      ),
+                      InfoChip(
+                        icon:
+                            CupertinoIcons.sun_max_fill, 
+                        title: turno,
+                      ),
+
+                      
                       StreamBuilder<Map<String, int>>(
                         stream: alunosPorTurma(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return const InfoChip(
-                              icon: Icons.people,
-                              title: '0 alunos',
+                              icon: CupertinoIcons.person_3_fill,
+                              
+                              title: 'Carregando...',
                             );
                           }
                           final mapa = snapshot.data!;
                           final turmaId = data['id'];
                           final quantidade = mapa[turmaId] ?? 0;
+
                           return InfoChip(
-                            icon: Icons.people,
-                            title: '$quantidade alunos',
+                            icon: CupertinoIcons.person_3_fill,
+                            
+                            title:
+                                '$quantidade aluno${quantidade == 1 ? '' : 's'}',
                           );
                         },
                       ),
@@ -97,14 +142,15 @@ class TurmaCard extends StatelessWidget {
               items: [
                 MenuItemConfig(
                   value: 'excluir',
-                  label: 'Excluir',
+                  label: 'Excluir Turma',
                   onSelected: (id, context, extra) async {
                     if (id == null) return;
 
                     final confirmar = await showAppConfirmationDialog(
                       context: context,
                       title: 'Excluir turma?',
-                      content: 'Essa ação é irreversível.',
+                      content:
+                          'Essa ação é irreversível e os dados não poderão ser recuperados.',
                       confirmText: 'Excluir',
                     );
 
