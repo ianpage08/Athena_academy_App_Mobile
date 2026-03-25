@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Iconografia mais premium
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 
 class ComunicadoPrioridadeSelector extends StatelessWidget {
@@ -13,34 +14,73 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasSelection = prioridade != null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Prioridade',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 6),
-
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton.icon(
-            style: Theme.of(context).elevatedButtonTheme.style,
-            onPressed: () => _openBottomSheet(context),
-            icon: Icon(
-              _icon(prioridade),
-              color: prioridade != null ? _color(prioridade!) : Colors.white,
+        // 👉 HIERARQUIA: Label seguindo o padrão do seletor de destinatários
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            'Nível de Urgência',
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
             ),
-            label: Text(
-              prioridade != null
-                  ? _label(prioridade!)
-                  : 'Selecionar prioridade',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+          ),
+        ),
+
+        // 👉 INTERFACE: InkWell para manter o ripple effect com bordas arredondadas
+        InkWell(
+          onTap: () => _openPrioritySheet(context),
+          borderRadius: BorderRadius.circular(16),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              // 👉 DESIGN: Background sutil baseado na cor da prioridade escolhida
+              color: hasSelection
+                  ? _color(prioridade!).withValues(alpha: 0.08)
+                  : theme.cardColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: hasSelection
+                    ? _color(prioridade!)
+                    : theme.dividerColor.withValues(alpha: 0.1),
+                width: 1.5,
               ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _icon(prioridade),
+                  color: hasSelection ? _color(prioridade!) : Colors.grey,
+                  size: 22,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    hasSelection ? _label(prioridade!) : 'Definir prioridade',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: hasSelection
+                          ? theme.textTheme.bodyLarge?.color
+                          : Colors.grey,
+                      fontWeight: hasSelection
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
+                Icon(
+                  CupertinoIcons.chevron_up_chevron_down,
+                  size: 16,
+                  color: theme.colorScheme.primary.withValues(alpha: 0.5),
+                ),
+              ],
             ),
           ),
         ),
@@ -48,85 +88,116 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
     );
   }
 
-  void _openBottomSheet(BuildContext context) {
+  void _openPrioritySheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Column(
+      backgroundColor: Colors.transparent, // 👉 DESIGN: Floating Sheet
+      isScrollControlled: true,
+      builder: (_) => Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).canvasColor,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: PrioridadeComunicado.values.map((nivel) {
-            final bool isSelected = prioridade == nivel;
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? _color(nivel).withOpacity(0.1)
-                      : Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected
-                        ? _color(nivel)
-                        : Theme.of(
-                            context,
-                          ).colorScheme.primary.withOpacity(0.5),
-                    width: 1,
-                  ),
-                ),
-                child: ListTile(
-                  leading: Icon(_icon(nivel), color: _color(nivel)),
-                  title: Text(
-                    _label(nivel),
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  onTap: () {
-                    onSelected(nivel);
-                    Navigator.pop(context);
-                  },
-                ),
+          children: [
+            const SizedBox(height: 12),
+            // 👉 DESIGN: Handle de arraste para feedback visual de interatividade
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
               ),
-            );
-          }).toList(),
-        );
-      },
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Text(
+                'Prioridade do Comunicado',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            // 👉 PERFORMANCE: Uso do map para gerar a lista dinamicamente
+            ...PrioridadeComunicado.values.map((nivel) {
+              final isSelected = prioridade == nivel;
+              return _buildPriorityTile(context, nivel, isSelected);
+            }),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
     );
   }
 
+  Widget _buildPriorityTile(
+    BuildContext context,
+    PrioridadeComunicado nivel,
+    bool isSelected,
+  ) {
+    
+    final color = _color(nivel);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        tileColor: isSelected
+            ? color.withValues(alpha: 0.1)
+            : Colors.transparent,
+        leading: Icon(_icon(nivel), color: color),
+        title: Text(
+          _label(nivel),
+          style: TextStyle(
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: isSelected ? color : null,
+          ),
+        ),
+        trailing: isSelected
+            ? Icon(CupertinoIcons.check_mark_circled_solid, color: color)
+            : null,
+        onTap: () {
+          onSelected(nivel);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  // 👉 LÓGICA: Centralização das definições visuais dos enums
   String _label(PrioridadeComunicado p) {
     switch (p) {
       case PrioridadeComunicado.baixa:
-        return 'Baixa';
+        return 'Baixa Prioridade';
       case PrioridadeComunicado.media:
-        return 'Média';
+        return 'Prioridade Média';
       case PrioridadeComunicado.alta:
-        return 'Alta';
+        return 'Alta Prioridade / Urgente';
     }
   }
 
   IconData _icon(PrioridadeComunicado? p) {
     switch (p) {
       case PrioridadeComunicado.alta:
-        return Icons.arrow_upward;
+        return CupertinoIcons.exclamationmark_triangle_fill;
       case PrioridadeComunicado.media:
-        return Icons.remove;
+        return CupertinoIcons.minus_circle_fill;
       case PrioridadeComunicado.baixa:
-        return Icons.arrow_downward;
+        return CupertinoIcons.arrow_down_circle_fill;
       default:
-        return Icons.flag_outlined;
+        return CupertinoIcons.flag;
     }
   }
 
   Color _color(PrioridadeComunicado p) {
     switch (p) {
       case PrioridadeComunicado.alta:
-        return Colors.red;
+        return CupertinoColors.systemRed;
       case PrioridadeComunicado.media:
-        return Colors.orange;
+        return CupertinoColors.systemOrange;
       case PrioridadeComunicado.baixa:
-        return Colors.green;
+        return CupertinoColors.systemGreen;
     }
   }
 }
