@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:portal_do_aluno/core/app_constants/colors.dart';
 
-
-///
-/// Arquitetura e UX:
-/// - Abandona sombras externas que quebram o layout de erro.
-/// - Adota o padrão "Flat Design" com superfícies (fills) interativas.
-/// - Suporta dinamicamente temas Claro/Escuro nativos do Flutter.
-/// - Trata o estado desabilitado (disabled) com affordance correta.
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String? label;
@@ -26,6 +20,9 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final bool obscureText;
 
+  // 👉 MUDANÇA 1: Propriedade adicionada
+  final TextCapitalization textCapitalization;
+
   const CustomTextFormField({
     super.key,
     required this.controller,
@@ -43,10 +40,12 @@ class CustomTextFormField extends StatelessWidget {
     this.fillColor,
     this.inputFormatters,
     this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 16,
+      horizontal: 20,
+      vertical: 18,
     ),
     this.obscureText = false,
+    // 👉 MUDANÇA 2: Valor padrão como 'none' para não quebrar campos de senha/email
+    this.textCapitalization = TextCapitalization.none,
   });
 
   @override
@@ -54,117 +53,114 @@ class CustomTextFormField extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    // --- Cores Semânticas Dinâmicas ---
-    final primaryColor = theme.colorScheme.primary;
-
+    const primaryColor = AppColors.lightButtonPrimary;
     final errorColor = theme.colorScheme.error;
 
-    final borderColor = primaryColor.withValues(alpha: 0.3);
-    final focusColor = primaryColor;
+    final borderColor = isDark
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.black.withValues(alpha: 0.05);
 
-    // Tratamento de cor de fundo (fill) baseado no estado de 'enable'
-    final activeFill = fillColor ?? theme.cardColor;
-    final disabledFill = isDark
-        ? theme.cardColor.withValues(alpha: 0.2)
-        : theme.disabledColor.withValues(alpha: 0.05);
+    final activeFill =
+        fillColor ??
+        (isDark ? theme.cardColor.withValues(alpha: 0.6) : theme.cardColor);
 
-    // Sombras externas em TextFormFields quebram o visual quando o texto de erro aparece.
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        obscureText: obscureText,
-        controller: controller,
-        maxLength: maxLength,
-        minLines: minLines ?? 1,
-        // Garante que senhas não quebrem o layout tentando ter múltiplas linhas
-        maxLines: obscureText ? 1 : (maxLines ?? 1),
-        enabled: enable,
-        keyboardType: keyboardType,
-        inputFormatters: inputFormatters,
+      padding: const EdgeInsets.only(bottom: 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (label != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 8),
+              child: Text(
+                label!,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.hintColor.withValues(alpha: 0.8),
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
 
-        // Lógica de validação otimizada
-        validator:
-            validator ??
-            (obrigatorio
-                ? (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Campo obrigatório';
-                    }
-                    return null;
-                  }
-                : null),
+          TextFormField(
+            obscureText: obscureText,
+            controller: controller,
+            maxLength: maxLength,
+            minLines: minLines ?? 1,
+            maxLines: obscureText ? 1 : (maxLines ?? 1),
+            enabled: enable,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
 
-        style: TextStyle(
-          color: enable
-              ? theme.textTheme.bodyLarge?.color
-              : theme.hintColor.withValues(alpha: 0.5),
-          fontWeight: FontWeight.w500,
-        ),
+            // 👉 MUDANÇA 3: Repassando a propriedade para o widget nativo
+            textCapitalization: textCapitalization,
 
-        decoration: InputDecoration(
-          counterText:
-              "", // Esconde o contador de caracteres nativo (UX mais limpa)
-          labelText: label,
-          hintText: hintText,
+            validator: validator ?? (obrigatorio ? _defaultValidator : null),
 
-          // Estilização das labels para visual mais clean
-          labelStyle: TextStyle(
-            color: theme.hintColor,
-            fontWeight: FontWeight.w400,
-          ),
-          floatingLabelStyle: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.w600,
-          ),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+              color: enable ? null : theme.disabledColor,
+            ),
 
-          // ---------- ÍCONES ----------
-          prefixIcon: prefixIcon != null
-              ? Icon(
-                  prefixIcon,
-                  color: enable
-                      ? theme.iconTheme.color
-                      : theme.hintColor.withValues(alpha: 0.5),
-                  size: 22,
-                )
-              : null,
-          suffixIcon: suffixIcon,
+            decoration: InputDecoration(
+              counterText: "",
+              hintText: hintText,
+              hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.hintColor.withValues(alpha: 0.4),
+              ),
 
-          // ---------- FILL (Fundo) ----------
-          filled: true,
-          fillColor: enable ? activeFill : disabledFill,
-          contentPadding: contentPadding,
+              prefixIcon: prefixIcon != null
+                  ? Icon(
+                      prefixIcon,
+                      color: enable
+                          ? primaryColor.withValues(alpha: 0.7)
+                          : theme.disabledColor,
+                      size: 20,
+                    )
+                  : null,
+              suffixIcon: suffixIcon,
 
-          // ---------- BORDAS (Design System) ----------
-          // Borda padrão (quando não está focado)
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: borderColor, width: 1),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: borderColor, width: 1),
-          ),
+              filled: true,
+              fillColor: enable
+                  ? activeFill
+                  : theme.disabledColor.withValues(alpha: 0.05),
+              contentPadding: contentPadding,
 
-          // Borda Focada (acende com a cor primária, indicando interação)
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: focusColor, width: 1.5),
-          ),
+              border: _buildBorder(borderColor),
+              enabledBorder: _buildBorder(borderColor),
 
-          // Bordas de Erro (usando a cor semântica do tema)
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: errorColor.withValues(alpha: 0.8),
-              width: 1.5,
+              focusedBorder: _buildBorder(
+                primaryColor.withValues(alpha: 0.5),
+                width: 1.5,
+              ),
+
+              errorBorder: _buildBorder(errorColor.withValues(alpha: 0.5)),
+              focusedErrorBorder: _buildBorder(errorColor, width: 1.5),
+
+              errorStyle: TextStyle(
+                color: errorColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: errorColor, width: 2),
-          ),
-        ),
+        ],
       ),
     );
+  }
+
+  OutlineInputBorder _buildBorder(Color color, {double width = 1.0}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(color: color, width: width),
+    );
+  }
+
+  String? _defaultValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Campo obrigatório';
+    }
+    return null;
   }
 }

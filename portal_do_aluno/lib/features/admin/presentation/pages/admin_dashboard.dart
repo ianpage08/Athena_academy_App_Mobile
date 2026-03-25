@@ -128,7 +128,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.45,
+                childAspectRatio: 1.3,
                 mainAxisSpacing: 16,
                 physics: const BouncingScrollPhysics(),
                 children: [

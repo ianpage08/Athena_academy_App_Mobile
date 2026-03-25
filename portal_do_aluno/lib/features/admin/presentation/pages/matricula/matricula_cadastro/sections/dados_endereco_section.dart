@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portal_do_aluno/core/utils/formatter/cep_formatter.dart';
 
@@ -13,43 +14,92 @@ class DadosEnderecoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardSection(
-      title: 'Endereço',
-      icon: CupertinoIcons.map,
+      title: 'Localização e Endereço',
+      icon: CupertinoIcons.map_fill,
       children: [
+        // CEP
         CustomTextFormField(
           label: 'CEP',
           controller: mapController['cep']!,
-          prefixIcon: CupertinoIcons.map_pin_ellipse,
+          prefixIcon: CupertinoIcons.location_solid,
+          keyboardType: TextInputType.number,
+          hintText: '00000-000',
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(8),
             CepInputFormatter(),
           ],
         ),
-        CustomTextFormField(
-          label: 'Rua',
-          controller: mapController['rua']!,
-          prefixIcon: CupertinoIcons.location,
+
+        // Rua e Número (Grid 70/30)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 7,
+              child: CustomTextFormField(
+                label: 'Logradouro (Rua/Av.)',
+                controller: mapController['rua']!,
+                prefixIcon: CupertinoIcons.building_2_fill,
+                
+                textCapitalization: TextCapitalization.words,
+                hintText: 'Ex: Avenida Paulista...',
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 3,
+              child: CustomTextFormField(
+                label: 'Número',
+                controller: mapController['numero']!,
+                prefixIcon: CupertinoIcons.number_square_fill,
+                keyboardType: TextInputType.number,
+                
+                hintText: 'Ex: 123, S/N',
+              ),
+            ),
+          ],
         ),
-        CustomTextFormField(
-          label: 'Número',
-          controller: mapController['numero']!,
-          prefixIcon: CupertinoIcons.number_square,
-        ),
+
+        // Bairro
         CustomTextFormField(
           label: 'Bairro',
           controller: mapController['bairro']!,
-          prefixIcon: CupertinoIcons.map_pin,
+          prefixIcon: CupertinoIcons.map_pin_ellipse,
+          
+          textCapitalization: TextCapitalization.words,
+          hintText: 'Ex: Centro, Bela Vista...',
         ),
-        CustomTextFormField(
-          label: 'Cidade',
-          controller: mapController['cidade']!,
-          prefixIcon: CupertinoIcons.building_2_fill,
-        ),
-        CustomTextFormField(
-          label: 'Estado',
-          controller: mapController['estado']!,
-          prefixIcon: CupertinoIcons.flag,
+
+        // Cidade e UF (Grid 70/30)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 7,
+              child: CustomTextFormField(
+                label: 'Cidade',
+                controller: mapController['cidade']!,
+                prefixIcon: CupertinoIcons.building_2_fill,
+                
+                textCapitalization: TextCapitalization.words,
+                hintText: 'Ex: São Paulo...',
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 3,
+              child: CustomTextFormField(
+                label: 'UF',
+                controller: mapController['estado']!,
+                prefixIcon: CupertinoIcons.flag_fill,
+                hintText: 'Ex: SP',
+                
+                textCapitalization: TextCapitalization.characters,
+                maxLength: 2,
+              ),
+            ),
+          ],
         ),
       ],
     );

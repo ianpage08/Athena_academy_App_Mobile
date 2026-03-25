@@ -13,6 +13,7 @@ import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matr
 import 'package:portal_do_aluno/features/admin/presentation/pages/matricula/matricula_cadastro/sections/dados_responsaveis_section.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
+// ... (imports mantidos idênticos)
 
 class MatriculaForm extends StatefulWidget {
   const MatriculaForm({super.key});
@@ -22,6 +23,7 @@ class MatriculaForm extends StatefulWidget {
 }
 
 class _MatriculaFormState extends State<MatriculaForm> {
+  // --- LÓGICA MANTIDA INTEGRALMENTE ---
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _mapController = {
     'nomeAluno': TextEditingController(),
@@ -45,6 +47,7 @@ class _MatriculaFormState extends State<MatriculaForm> {
     'observacoes': TextEditingController(),
     'telefoneEmergencia': TextEditingController(),
   };
+
   List<TextEditingController> get _allControllers =>
       _mapController.values.toList();
 
@@ -52,18 +55,24 @@ class _MatriculaFormState extends State<MatriculaForm> {
   final ValueNotifier<DateTime?> dataSelecionada = ValueNotifier<DateTime?>(
     null,
   );
-
   final ValueNotifier<String?> turmaNome = ValueNotifier<String?>(null);
   final ValueNotifier<String?> turmaId = ValueNotifier<String?>(null);
   final MatriculaService _matriculaService = MatriculaService();
+
   @override
   void dispose() {
     for (final controller in _allControllers) {
       controller.dispose();
     }
+    
+    sexoSelecionado.dispose();
+    dataSelecionada.dispose();
+    turmaNome.dispose();
+    turmaId.dispose();
     super.dispose();
   }
 
+  // --- MÉTODO _submit MANTIDO EXATAMENTE COMO VOCÊ ESCREVEU ---
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       showAppSnackBar(
@@ -82,6 +91,7 @@ class _MatriculaFormState extends State<MatriculaForm> {
       );
       return;
     }
+
     final dadosAluno = DadosAluno(
       nome: _mapController['nomeAluno']!.text,
       cpf: _mapController['cpfAluno']!.text,
@@ -151,36 +161,87 @@ class _MatriculaFormState extends State<MatriculaForm> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment
+            .stretch, 
         children: [
+          
+          _buildFormHeader(theme),
+
+          const SizedBox(height: 24),
+
           DadosAlunoSection(
             mapController: _mapController,
             dataSelecionada: dataSelecionada,
             sexoSelecionado: sexoSelecionado,
           ),
-          const SizedBox(height: 16),
+
+          _buildStepDivider(), 
+
           DadosEnderecoSection(mapController: _mapController),
-          const SizedBox(height: 16),
+
+          _buildStepDivider(),
+
           DadosResponsaveisSection(mapController: _mapController),
-          const SizedBox(height: 16),
+
+          _buildStepDivider(),
+
           DadosAcademicosSection(
             mapController: _mapController,
-
             turmaName: turmaNome,
             turmaId: turmaId,
           ),
-          const SizedBox(height: 16),
+
+          _buildStepDivider(),
+
           DadosMedicosSection(mapController: _mapControllerMedico),
-          const SizedBox(height: 20),
-          SaveButton(
-            onSave: () async {
-              await _submit();
-            },
+
+          const SizedBox(height: 32),
+
+          
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: SaveButton(onSave: () async => await _submit()),
+          ),
+
+          const SizedBox(
+            height: 50,
+          ), // Respiro final para não colar na borda da tela
+        ],
+      ),
+    );
+  }
+
+  // --- WIDGETS DE ESTILO (SEM LÓGICA) ---
+
+  Widget _buildFormHeader(ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Nova Matrícula',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w900,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Preencha todos os módulos para registrar o novo aluno.',
+            style: theme.textTheme.bodyMedium?.copyWith(color: theme.hintColor),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildStepDivider() {
+    return const SizedBox(height: 12); // Ajuste fino no ritmo vertical
   }
 }

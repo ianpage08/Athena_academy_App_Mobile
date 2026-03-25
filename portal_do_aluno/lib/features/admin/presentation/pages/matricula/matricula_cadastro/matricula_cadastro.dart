@@ -7,11 +7,23 @@ class MatriculaCadastro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: CustomAppBar(title: 'Formulário de Matrícula'),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(12),
-        child: MatriculaForm(),
+    
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: const Scaffold(
+        
+        appBar: CustomAppBar(title: 'Nova Matrícula'),
+
+        body: SingleChildScrollView(
+          
+          physics: BouncingScrollPhysics(),
+
+          
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+
+          
+          child: SafeArea(bottom: true, child: MatriculaForm()),
+        ),
       ),
     );
   }

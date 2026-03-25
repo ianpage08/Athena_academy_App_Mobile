@@ -5,51 +5,113 @@ class CardSection extends StatelessWidget {
   final IconData icon;
   final List<Widget> children;
 
-  const CardSection({super.key, required this.title, required this.icon, required this.children});
+  const CardSection({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.children,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(
+        bottom: 24,
+      ), 
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.withOpacity(0.12)),
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(
+          24,
+        ), 
+        border: Border.all(
+          
+          color: theme.colorScheme.primary.withValues(
+            alpha: isDark ? 0.1 : 0.05,
+          ),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
+            
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // HEADER DA SEÇÃO
-            Row(
-              children: [
-                Icon(icon, color: Theme.of(context).primaryColor),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Divider(color: Colors.grey.withOpacity(0.2)),
-            const SizedBox(height: 16),
+            _buildHeader(theme),
 
-            // CAMPOS
-            ...children.expand((child) => [child, const SizedBox(height: 14)]),
+            // CONTEÚDO (Children)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                
+                children: _buildChildrenWithSpacing(),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  // --- MÉTODOS DE CONSTRUÇÃO ---
+
+  Widget _buildHeader(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.03),
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.primary.withValues(alpha: 0.08),
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildChildrenWithSpacing() {
+    if (children.isEmpty) return [];
+
+    
+    return List.generate(children.length, (index) {
+      return Padding(
+        padding: EdgeInsets.only(bottom: index == children.length - 1 ? 0 : 16),
+        child: children[index],
+      );
+    });
   }
 }
