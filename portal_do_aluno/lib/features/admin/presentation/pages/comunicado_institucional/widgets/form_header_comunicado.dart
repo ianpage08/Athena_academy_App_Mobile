@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Ícones com linhas mais finas e elegantes
+import 'package:flutter/cupertino.dart'; 
 
 class FormHeaderComunicado extends StatelessWidget {
   const FormHeaderComunicado({super.key});
@@ -9,11 +9,11 @@ class FormHeaderComunicado extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      // 👉 DESIGN: Padding interno para dar respiro ao conteúdo do header
+      
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          // 👉 INTERFACE: Ícone com um background sutil para destaque visual (Glassmorphism feel)
+          
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -22,7 +22,7 @@ class FormHeaderComunicado extends StatelessWidget {
             ),
             child: Icon(
               CupertinoIcons
-                  .speaker_2_fill, // 👉 MUDANÇA: Ícone mais moderno que o 'campaign'
+                  .speaker_2_fill, 
               color: theme.colorScheme.primary,
               size: 20,
             ),
@@ -30,8 +30,7 @@ class FormHeaderComunicado extends StatelessWidget {
 
           const SizedBox(
             width: 14,
-          ), // 👉 ESPAÇAMENTO: Aumentado para melhor respiro
-          // 👉 HIERARQUIA: Títulos com separação clara de peso e cor
+          ), 
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +43,7 @@ class FormHeaderComunicado extends StatelessWidget {
                     color: theme.textTheme.bodyLarge?.color,
                   ),
                 ),
-                // 👉 UX: Adição de uma sub-legenda para contextualizar a ação
+                
                 Text(
                   'Preencha os dados abaixo para disparar o aviso.',
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -55,7 +54,7 @@ class FormHeaderComunicado extends StatelessWidget {
             ),
           ),
 
-          // 👉 DESIGN: Badge decorativo opcional para indicar "Modo de Edição"
+          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(

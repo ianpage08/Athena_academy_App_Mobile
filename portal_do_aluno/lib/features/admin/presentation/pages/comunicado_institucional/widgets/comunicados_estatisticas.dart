@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Ícones mais refinados
+import 'package:flutter/cupertino.dart'; 
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 
 class ComunicadoEstatisticas extends StatefulWidget {
-  // 👉 MUDANÇA: StatefulWidget para gerenciar a instância do serviço
+ 
   final VoidCallback? att;
 
   const ComunicadoEstatisticas({super.key, this.att});
@@ -13,8 +13,7 @@ class ComunicadoEstatisticas extends StatefulWidget {
 }
 
 class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
-  // 👉 ARQUITETURA: Instanciando o serviço uma única vez no initState.
-  // Isso evita que o Flutter crie um novo objeto a cada rebuild da tela.
+  
   late final ComunicadoService _service;
   late final Stream<int> _countStream;
 
@@ -22,7 +21,7 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
   void initState() {
     super.initState();
     _service = ComunicadoService();
-    // 👉 PERFORMANCE: Convertendo o Future em Stream uma única vez.
+    
     _countStream = _service.calcularQuantidadeDeCominicados().asStream();
   }
 
@@ -33,7 +32,7 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
     return StreamBuilder<int>(
       stream: _countStream,
       builder: (context, snapshot) {
-        // 👉 UX: Tratamento de estados (Loading/Error) antes de exibir o dado
+        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
         }
@@ -42,7 +41,7 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
 
         return Row(
           children: [
-            // 👉 DESIGN: Grid de estatísticas com cores dinâmicas e profundidade
+            
             _StatCard(
               icon: CupertinoIcons.paperplane_fill,
               label: 'Comunicados Enviados',
@@ -51,7 +50,7 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
               trend: '+12%', // Sugestão: Adicionar lógica de tendência futura
             ),
             const SizedBox(width: 12),
-            // 👉 ESCALABILIDADE: Espaço reservado para uma segunda métrica (ex: Visualizações)
+            
             const _StatCard(
               icon: CupertinoIcons.eye_fill,
               label: 'Taxa de Leitura',
@@ -86,7 +85,7 @@ class _StatCard extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        // 👉 DESIGN: Container customizado com bordas suaves e Glassmorphism
+        
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.cardColor,
@@ -102,7 +101,7 @@ class _StatCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment
-              .start, // 👉 UX: Alinhamento lateral é mais moderno
+              .start, 
           children: [
             Container(
               padding: const EdgeInsets.all(8),

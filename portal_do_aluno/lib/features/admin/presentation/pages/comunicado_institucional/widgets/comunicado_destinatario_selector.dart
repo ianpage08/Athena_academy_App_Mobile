@@ -19,7 +19,7 @@ class ComunicadoDestinatarioSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 👉 HIERARQUIA: Label refinada com tipografia moderna
+        
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
@@ -32,7 +32,7 @@ class ComunicadoDestinatarioSelector extends StatelessWidget {
           ),
         ),
 
-        // 👉 INTERFACE: Input visualmente rico em vez de um botão simples
+        
         InkWell(
           onTap: () => _openSelectionSheet(context),
           borderRadius: BorderRadius.circular(16),
@@ -86,7 +86,7 @@ class ComunicadoDestinatarioSelector extends StatelessWidget {
   }
 
   void _openSelectionSheet(BuildContext context) {
-    // 👉 ESTRUTURA: Lista de objetos para facilitar expansão futura
+    
     final options = [
       {'title': 'Todos', 'desc': 'Envio geral para toda a instituição'},
       {'title': 'Alunos', 'desc': 'Estudantes matriculados e ativos'},
@@ -97,7 +97,7 @@ class ComunicadoDestinatarioSelector extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor:
-          Colors.transparent, // 👉 DESIGN: Permite o efeito de float
+          Colors.transparent, 
       isScrollControlled: true,
       builder: (_) => Container(
         margin: const EdgeInsets.all(16),
@@ -108,7 +108,7 @@ class ComunicadoDestinatarioSelector extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 👉 DESIGN: Handle de arraste moderno
+            
             const SizedBox(height: 12),
             Container(
               width: 40,

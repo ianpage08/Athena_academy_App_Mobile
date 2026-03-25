@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/shared/helpers/app_confirmation_dialog.dart';
@@ -13,183 +14,254 @@ class HistoryAnnoucement extends StatefulWidget {
 }
 
 class _HistoryAnnoucementState extends State<HistoryAnnoucement> {
-  final ComunicadoService _comunicadoService = ComunicadoService();
+  late final ComunicadoService _comunicadoService;
+
+  @override
+  void initState() {
+    super.initState();
+    _comunicadoService = ComunicadoService();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(
-              Icons.history_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Histórico de Comunicados',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ],
+        
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: _buildSectionHeader(theme),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
 
         StreamBuilder<QuerySnapshot>(
           stream: _comunicadoService.getComunicados(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-
-            if (snapshot.hasError) {
               return const Center(
-                child: Text('Erro ao carregar os comunicados'),
-              );
-            }
-
-            final historicoData = snapshot.data?.docs ?? [];
-
-            if (historicoData.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Center(
-                  child: Text(
-                    'Nenhum comunicado publicado',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: CupertinoActivityIndicator(),
                 ),
               );
             }
 
+            if (snapshot.hasError) return _buildErrorState(theme);
+
+            final historicoData = snapshot.data?.docs ?? [];
+
+            if (historicoData.isEmpty) return _buildEmptyState(theme);
+
             return ListView.separated(
               shrinkWrap: true,
+              padding: const EdgeInsets.only(bottom: 24),
               physics: const NeverScrollableScrollPhysics(),
               itemCount: historicoData.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final item = historicoData[index];
-
-                final dataPublicacao = (item['dataPublicacao'] as Timestamp)
-                    .toDate();
-
-                final dataFormatada = DateFormat(
-                  'dd/MM/yyyy • HH:mm',
-                ).format(dataPublicacao);
-
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromARGB(25, 0, 0, 0),
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Avatar / ícone
-                        Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.campaign_rounded,
-                            size: 22,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-
-                        const SizedBox(width: 12),
-
-                        // Conteúdo
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['titulo'],
-                                style: Theme.of(context).textTheme.titleSmall
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-
-                              const SizedBox(height: 4),
-
-                              Text(
-                                item['mensagem'],
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.schedule,
-                                    size: 14,
-                                    color: Colors.grey,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    dataFormatada,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Menu de ações
-                        ActionMenuButton(
-                          id: item['id'],
-                          items: [
-                            MenuItemConfig(
-                              value: 'Excluir',
-                              label: 'Excluir',
-                              onSelected: (id, context, extra) async {
-                                final excluir = await showAppConfirmationDialog(
-                                  context: context,
-                                  title: 'Excluir comunicado?',
-                                  content: 'Essa ação não poderá ser desfeita.',
-                                  confirmText: 'Excluir',
-                                );
-                                if (excluir == true) {
-                                  _comunicadoService.excluirComunicado(id!);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                return _ComunicadoTile(
+                  item: item,
+                  onDelete: () => _confirmDelete(context, item.id),
                 );
               },
             );
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildSectionHeader(ThemeData theme) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            CupertinoIcons.time,
+            size: 18,
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          'Histórico de Atividade',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState(ThemeData theme) {
+    return Center(
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+          Icon(
+            CupertinoIcons.tray,
+            size: 48,
+            color: theme.hintColor.withValues(alpha: 0.3),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Nenhum comunicado enviado',
+            style: TextStyle(color: theme.hintColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(ThemeData theme) {
+    return Center(
+      child: Text(
+        'Erro ao sincronizar dados.',
+        style: TextStyle(color: theme.colorScheme.error),
+      ),
+    );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, String id) async {
+    final excluir = await showAppConfirmationDialog(
+      context: context,
+      title: 'Remover Comunicado?',
+      content: 'Esta mensagem desaparecerá para todos os alunos e professores.',
+      confirmText: 'Confirmar Exclusão',
+    );
+    if (excluir == true) {
+      _comunicadoService.excluirComunicado(id);
+    }
+  }
+}
+
+class _ComunicadoTile extends StatelessWidget {
+  final QueryDocumentSnapshot item;
+  final VoidCallback onDelete;
+
+  const _ComunicadoTile({required this.item, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final dataPublicacao = (item['dataPublicacao'] as Timestamp).toDate();
+    final dataFormatada = DateFormat(
+      'dd MMM • HH:mm',
+      'pt_BR',
+    ).format(dataPublicacao);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.05)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              
+              Container(
+                width: 6,
+                color: theme.colorScheme.primary.withValues(alpha: 0.5),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(
+                    16,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment
+                              .center, // Centraliza conteúdo verticalmente se houver espaço
+                          children: [
+                            Text(
+                              item['titulo'],
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              item['mensagem'],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.hintColor,
+                                height:
+                                    1.3, // Altura de linha ajustada para simetria visual
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            // Meta-dados alinhados com a base
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  CupertinoIcons.clock,
+                                  size: 14,
+                                  color: theme.hintColor,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  dataFormatada,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: theme.hintColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // para não quebrar o eixo visual do título.
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: ActionMenuButton(
+                          id: item['id'],
+                          items: [
+                            MenuItemConfig(
+                              value: 'Excluir',
+                              label: 'Excluir',
+                              onSelected: (id, context, extra) => onDelete(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

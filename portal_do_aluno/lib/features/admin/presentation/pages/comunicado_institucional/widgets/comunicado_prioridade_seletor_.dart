@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Iconografia mais premium
+import 'package:flutter/cupertino.dart'; 
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 
 class ComunicadoPrioridadeSelector extends StatelessWidget {
@@ -20,7 +20,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 👉 HIERARQUIA: Label seguindo o padrão do seletor de destinatários
+        
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
@@ -33,7 +33,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
           ),
         ),
 
-        // 👉 INTERFACE: InkWell para manter o ripple effect com bordas arredondadas
+        
         InkWell(
           onTap: () => _openPrioritySheet(context),
           borderRadius: BorderRadius.circular(16),
@@ -41,7 +41,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              // 👉 DESIGN: Background sutil baseado na cor da prioridade escolhida
+              
               color: hasSelection
                   ? _color(prioridade!).withValues(alpha: 0.08)
                   : theme.cardColor,
@@ -91,7 +91,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
   void _openPrioritySheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent, // 👉 DESIGN: Floating Sheet
+      backgroundColor: Colors.transparent, 
       isScrollControlled: true,
       builder: (_) => Container(
         margin: const EdgeInsets.all(16),
@@ -103,7 +103,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            // 👉 DESIGN: Handle de arraste para feedback visual de interatividade
+            
             Container(
               width: 40,
               height: 4,
@@ -119,7 +119,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            // 👉 PERFORMANCE: Uso do map para gerar a lista dinamicamente
+            
             ...PrioridadeComunicado.values.map((nivel) {
               final isSelected = prioridade == nivel;
               return _buildPriorityTile(context, nivel, isSelected);
@@ -165,7 +165,7 @@ class ComunicadoPrioridadeSelector extends StatelessWidget {
     );
   }
 
-  // 👉 LÓGICA: Centralização das definições visuais dos enums
+  
   String _label(PrioridadeComunicado p) {
     switch (p) {
       case PrioridadeComunicado.baixa:

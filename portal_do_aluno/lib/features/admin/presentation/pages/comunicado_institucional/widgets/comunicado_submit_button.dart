@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Estética mais clean para loaders
+import 'package:flutter/cupertino.dart'; 
 
 class ComunicadoSubmitButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback?
-  onSubmit; // 👉 MUDANÇA: Permitir nulo para desabilitar logicamente
+  onSubmit; 
 
   const ComunicadoSubmitButton({
     super.key,
@@ -16,12 +16,12 @@ class ComunicadoSubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // 👉 DESIGN: Uso de AnimatedContainer para feedback visual de estado
+    
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: double.infinity,
       height:
-          56, // 👉 UX: Altura levemente maior para melhor área de toque (touch target)
+          56, 
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
         gradient: LinearGradient(
@@ -58,7 +58,7 @@ class ComunicadoSubmitButton extends StatelessWidget {
         onPressed: isLoading ? null : onSubmit,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          // 👉 DESIGN: Troca suave entre o texto e o loader
+          
           child: isLoading
               ? const SizedBox(
                   height: 24,

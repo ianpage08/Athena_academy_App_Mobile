@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Ícones mais refinados
+import 'package:flutter/cupertino.dart';
 import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado_institucional/widgets/comunicado_destinatario_selector.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado_institucional/widgets/comunicado_prioridade_seletor_.dart';
@@ -35,7 +35,6 @@ class ComunicadoForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // 👉 DESIGN: Substituímos o Card por um Container com Glassmorphism leve
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -46,54 +45,47 @@ class ComunicadoForm extends StatelessWidget {
       child: Form(
         key: formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment
-              .stretch, // 👉 UX: Botões ocupam a largura total
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const FormHeaderComunicado(),
 
             const SizedBox(height: 24),
 
-            // 👉 INTERFACE: Título com foco em tipografia
+            // 👉 Campo Assunto
             CustomTextFormField(
               controller: tituloController,
               prefixIcon: CupertinoIcons.pencil_ellipsis_rectangle,
               label: 'Assunto do Comunicado',
-              // Dica: Adicionar uma validação de campo vazio aqui seria ideal
             ),
 
             const SizedBox(height: 20),
 
-            // 👉 LAYOUT: Grid para seletores (mais compacto e moderno)
-            Row(
-              children: [
-                Expanded(
-                  child: ComunicadoPrioridadeSelector(
-                    prioridade: prioridade,
-                    onSelected: onSelectPrioridade,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ComunicadoDestinatarioSelector(
-                    destinatario: destinatario,
-                    onSelected: onSelectDestinatario,
-                  ),
-                ),
-              ],
+            // 👉 MUDANÇA: Seletores agora empilhados verticalmente para maior simetria
+            // Removido o Row e os Expandeds para permitir largura total
+            ComunicadoPrioridadeSelector(
+              prioridade: prioridade,
+              onSelected: onSelectPrioridade,
+            ),
+
+            const SizedBox(
+              height: 20,
+            ), // 👉 Espaçamento simétrico entre os seletores
+
+            ComunicadoDestinatarioSelector(
+              destinatario: destinatario,
+              onSelected: onSelectDestinatario,
             ),
 
             const SizedBox(height: 20),
 
-            // 👉 INTERFACE: Área de mensagem com design expandido
+            // 👉 Área da Mensagem
             _buildMessageArea(theme),
 
             const SizedBox(height: 32),
 
-            // 👉 AÇÃO: Botão de submissão com feedback visual de carregamento
             ComunicadoSubmitButton(
-              onSubmit: () async {
-                onSubmit;
-              },
+              // 👉 CORREÇÃO TÉCNICA: onSubmit agora invoca a função corretamente
+              onSubmit: onSubmit,
               isLoading: isLoading,
             ),
           ],
@@ -102,7 +94,6 @@ class ComunicadoForm extends StatelessWidget {
     );
   }
 
-  // 👉 COMPONENTE INTERNO: Melhora a legibilidade do build principal
   Widget _buildMessageArea(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +112,7 @@ class ComunicadoForm extends StatelessWidget {
         CustomTextFormField(
           controller: mensagemController,
           prefixIcon: CupertinoIcons.chat_bubble_text,
-          maxLines: 6, // 👉 UX: Aumentado para dar mais conforto na escrita
+          maxLines: 6,
           label: 'Escreva sua mensagem aqui...',
         ),
       ],
