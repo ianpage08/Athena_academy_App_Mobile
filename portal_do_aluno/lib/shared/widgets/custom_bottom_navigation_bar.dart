@@ -6,14 +6,13 @@ class CustomBottomItem {
   const CustomBottomItem({required this.label, required this.icon});
 }
 
-class CustomBottomNavigationBar extends StatefulWidget {
+class CustomBottomNavigationBar extends StatelessWidget {
   final int pageIndex;
   final ValueChanged<int> onTap;
   final List<CustomBottomItem> items;
-  final Color activeColor;
-  final Color inactiveColor;
+  final Color? activeColor;
+  final Color? inactiveColor;
   final Color backgroundColor;
-  final double elevation;
   final Duration animationDuration;
 
   const CustomBottomNavigationBar({
@@ -21,83 +20,111 @@ class CustomBottomNavigationBar extends StatefulWidget {
     required this.pageIndex,
     required this.onTap,
     required this.items,
-    this.activeColor = Colors.deepPurple,
-    this.inactiveColor = Colors.grey,
+    this.activeColor,
+    this.inactiveColor,
     this.backgroundColor = Colors.white,
-    this.elevation = 8,
-    this.animationDuration = const Duration(milliseconds: 300),
+    this.animationDuration = const Duration(milliseconds: 400),
   });
 
   @override
-  State<CustomBottomNavigationBar> createState() => _CustomBottomNavigationBarState();
-}
-
-class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final selectedColor = activeColor ?? theme.primaryColor;
+    final unselectedColor = inactiveColor ?? theme.hintColor;
+
     return Container(
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      height: 75,
       decoration: BoxDecoration(
-        color: Theme.of(context).appBarTheme.backgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-        boxShadow: const [
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
           BoxShadow(
-            color: Color.fromARGB(33, 0, 0, 0),
-            blurRadius: 8,
-            offset: Offset(0, -1),
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(widget.items.length, (index) {
-          final item = widget.items[index];
-          final isSelected = index == widget.pageIndex;
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(items.length, (index) {
+          final isSelected = index == pageIndex;
+          final item = items[index];
 
           return GestureDetector(
-            onTap: () => widget.onTap(index),
-            child: AnimatedContainer(
-              duration: widget.animationDuration,
-              curve: Curves.easeInOut,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedOpacity(
-                    opacity: isSelected ? 0.0 : 1,
-                    duration: widget.animationDuration,
-                    child: Text(
-                      item.label,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(),
-                    ),
-                  ),
-                  AnimatedContainer(
-                    duration: widget.animationDuration,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isSelected
-                          ? Theme.of(context).focusColor
-                          : Colors.transparent,
-                      border: Border.all(
-                        color: isSelected
-                            ? widget.activeColor
-                            : widget.inactiveColor.withAlpha(0),
-                      ),
-                    ),
-                    child: Icon(
-                      item.icon,
-                      color: isSelected
-                          ? widget.backgroundColor
-                          : Theme.of(context).iconTheme.color,
-                      size: 30,
-                    ),
-                  ),
-                ],
-              ),
+            onTap: () => onTap(index),
+            behavior: HitTestBehavior.opaque,
+            child: _NavBarItem(
+              item: item,
+              isSelected: isSelected,
+              activeColor: selectedColor,
+              inactiveColor: unselectedColor,
+              duration: animationDuration,
             ),
           );
         }),
+      ),
+    );
+  }
+}
+
+class _NavBarItem extends StatelessWidget {
+  final CustomBottomItem item;
+  final bool isSelected;
+  final Color activeColor;
+  final Color inactiveColor;
+  final Duration duration;
+
+  const _NavBarItem({
+    required this.item,
+    required this.isSelected,
+    required this.activeColor,
+    required this.inactiveColor,
+
+    required this.duration,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: duration,
+      curve: Curves.elasticOut,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? activeColor.withValues(alpha: 0.1)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            item.icon,
+            size: 26,
+            color: isSelected ? activeColor : inactiveColor,
+          ),
+
+          AnimatedSize(
+            duration: duration,
+            curve: Curves.easeInOut,
+            child: SizedBox(
+              width: isSelected ? null : 0,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Text(
+                  isSelected ? item.label : "",
+                  style: TextStyle(
+                    color: activeColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
