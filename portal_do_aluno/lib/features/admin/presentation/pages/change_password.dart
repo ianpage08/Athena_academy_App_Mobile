@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA 1: CupertinoIcons para estética Apple
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
+// 👉 MUDANÇA 2: Importando o componente de dicas que refatoramos na etapa anterior (Ajuste o caminho se necessário)
+import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/password_tips_section.dart';
 import 'package:portal_do_aluno/shared/helpers/app_snackbar.dart';
 import 'package:portal_do_aluno/shared/widgets/save_button.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_text_form_field.dart';
@@ -24,173 +27,259 @@ class _ChangePasswordState extends State<ChangePassword> {
     'novaSenha': TextEditingController(),
     'repetirSenha': TextEditingController(),
   };
+
   List<TextEditingController> get listControllers =>
       _mapTextEditing.values.toList();
 
-  Future<void> _salvarSenha(String usuarioId) async {
+  @override
+  void dispose() {
+    for (var controller in listControllers) {
+      controller.dispose(); // 👉 MUDANÇA 3: Prevenção de Memory Leak
+    }
+    super.dispose();
+  }
+
+  // 👉 MUDANÇA 4: Correção Lógica Crítica.
+  // Agora a função retorna um 'bool' para avisar ao botão se a operação deu certo.
+  Future<bool> _salvarSenha(String usuarioId) async {
     final novaSenha = _mapTextEditing['novaSenha']!.text;
     final repetirSenha = _mapTextEditing['repetirSenha']!.text;
 
-    if (FormHelper.isFormValid(
+    if (!FormHelper.isFormValid(
       formKey: _formaKey,
       listControllers: listControllers,
     )) {
-      if (novaSenha != repetirSenha) {
-        return showAppSnackBar(
+      return false; // Falha na validação do formulário
+    }
+
+    if (novaSenha != repetirSenha) {
+      showAppSnackBar(
+        context: context,
+        mensagem: 'As senhas digitadas não conferem.',
+        cor: Theme.of(context).colorScheme.error,
+      );
+      return false; // Falha de senhas diferentes
+    }
+
+    try {
+      await _cadastroService.atualizarSenha(usuarioId, novaSenha);
+      return true; // Sucesso na API!
+    } catch (e) {
+      if (mounted) {
+        showAppSnackBar(
           context: context,
-          mensagem: 'As senhas não são iguais',
+          mensagem: 'Erro de conexão. Não foi possível atualizar a senha.',
+          cor: Theme.of(context).colorScheme.error,
         );
       }
-      try {
-        await _cadastroService.atualizarSenha(usuarioId, novaSenha);
-      } catch (e) {
-        if (mounted) {
-          showAppSnackBar(
-            context: context,
-            mensagem: 'Erro ao atualizar a senha',
-            cor: Colors.red,
-          );
-        }
-      }
+      return false; // Falha na API
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+
     if (args == null || args['usuarioId'] == null) {
-      return const Scaffold(body: Center(child: Text('Usuário inválido')));
+      return Scaffold(
+        appBar: const CustomAppBar(title: ''),
+        body: Center(
+          child: Text(
+            'Link ou usuário inválido.',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.hintColor,
+            ),
+          ),
+        ),
+      );
     }
 
     final usuarioId = args['usuarioId']!;
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: const CustomAppBar(title: ''),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(18),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Form(
-                  key: _formaKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Atualizar Senha',
-                        style: Theme.of(context).textTheme.headlineSmall!
-                            .copyWith(fontWeight: FontWeight.bold),
+      // 👉 MUDANÇA 5: SafeArea e Scroll fluido para o teclado não quebrar a tela
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 500,
+              ), // Mantém a proporção elegante em tablets
+              child: Form(
+                key: _formaKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // 👉 MUDANÇA 6: Header Tipográfico Premium
+                    Text(
+                      'Redefinir Senha',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1,
                       ),
-                      const SizedBox(height: 20),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Crie uma nova credencial de acesso segura.',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.hintColor.withValues(alpha: 0.7),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
 
-                      /// Nova Senha
-                      Text(
-                        'Nova Senha',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 6),
-                      CustomTextFormField(
-                        obscureText: isObscure,
-                        hintText: 'Digite sua nova senha',
-                        controller: _mapTextEditing['novaSenha']!,
-                        prefixIcon: Icons.lock,
-                        suffixIcon: IconButton(
-                          onPressed: () =>
-                              setState(() => isObscure = !isObscure),
-                          icon: Icon(
-                            isObscure ? Icons.visibility_off : Icons.visibility,
+                    // 👉 MUDANÇA 7: Envelopamento do Formulário (Glassmorphism)
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color:
+                            theme.cardTheme.color ?? theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.05,
                           ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira a senha';
-                          }
-                          if (value.length < 8) {
-                            return 'Senha deve ter no mínimo 8 caracteres';
-                          }
-                          if (!value.contains(RegExp(r'[A-Z]'))) {
-                            return 'Inclua ao menos 1 letra maiúscula';
-                          }
-                          if (!value.contains(RegExp(r'[a-z]'))) {
-                            return 'Inclua ao menos 1 letra minúscula';
-                          }
-                          if (!value.contains(RegExp(r'[0-9]'))) {
-                            return 'Inclua ao menos 1 número';
-                          }
-                          if (!value.contains(
-                            RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
-                          )) {
-                            return 'Inclua ao menos 1 símbolo especial';
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      /// Repetir Senha
-                      Text(
-                        'Confirmar Nova Senha',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 6),
-                      CustomTextFormField(
-                        obscureText: isObscure,
-                        controller: _mapTextEditing['repetirSenha']!,
-                        hintText: 'Confirme sua nova senha',
-                        prefixIcon: Icons.lock_outline,
-                        suffixIcon: IconButton(
-                          onPressed: () =>
-                              setState(() => isObscure = !isObscure),
-                          icon: Icon(
-                            isObscure ? Icons.visibility_off : Icons.visibility,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 16,
+                            offset: const Offset(0, 8),
                           ),
-                        ),
+                        ],
                       ),
-
-                      const SizedBox(height: 20),
-
-                      /// Info Card
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.07),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const ListTile(
-                          leading: Icon(Icons.info, color: Colors.blue),
-                          title: Text('Dicas de Senha Segura'),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('• Mínimo de 8 caracteres'),
-                              Text('• Letras maiúsculas e minúsculas'),
-                              Text('• Números e símbolos especiais'),
-                            ],
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // CAMPO: NOVA SENHA
+                          Text(
+                            'NOVA SENHA',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.6,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 8),
+                          CustomTextFormField(
+                            obscureText: isObscure,
+                            hintText: 'Digite a nova senha',
+                            controller: _mapTextEditing['novaSenha']!,
+                            prefixIcon: CupertinoIcons.lock_fill,
+                            suffixIcon: IconButton(
+                              onPressed: () =>
+                                  setState(() => isObscure = !isObscure),
+                              icon: Icon(
+                                isObscure
+                                    ? CupertinoIcons.eye_slash_fill
+                                    : CupertinoIcons.eye_fill,
+                                color: theme.hintColor.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, insira a senha';
+                              }
+                              if (value.length < 8) {
+                                return 'Mínimo de 8 caracteres';
+                              }
+                              if (!value.contains(RegExp(r'[A-Z]'))) {
+                                return 'Inclua ao menos 1 letra maiúscula';
+                              }
+                              if (!value.contains(RegExp(r'[a-z]'))) {
+                                return 'Inclua ao menos 1 letra minúscula';
+                              }
+                              if (!value.contains(RegExp(r'[0-9]'))) {
+                                return 'Inclua ao menos 1 número';
+                              }
+                              if (!value.contains(
+                                RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
+                              )) {
+                                return 'Inclua ao menos 1 símbolo especial';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // CAMPO: REPETIR SENHA
+                          Text(
+                            'CONFIRMAR SENHA',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.6,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          CustomTextFormField(
+                            obscureText: isObscure,
+                            controller: _mapTextEditing['repetirSenha']!,
+                            hintText: 'Repita a nova senha',
+                            prefixIcon: CupertinoIcons.lock,
+                            suffixIcon: IconButton(
+                              onPressed: () =>
+                                  setState(() => isObscure = !isObscure),
+                              icon: Icon(
+                                isObscure
+                                    ? CupertinoIcons.eye_slash_fill
+                                    : CupertinoIcons.eye_fill,
+                                color: theme.hintColor.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            // 👉 MUDANÇA 8: Validação em tempo real adicionada ao segundo campo
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Confirme a nova senha';
+                              }
+                              if (value != _mapTextEditing['novaSenha']!.text) {
+                                return 'As senhas não conferem';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                       ),
+                    ),
 
-                      const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                      /// Botão Salvar
-                      SaveButton(
+                    // 👉 MUDANÇA 9: Reutilização do Componente de Dicas (Clean Code!)
+                    const PasswordTipsSection(),
+
+                    const SizedBox(height: 32),
+
+                    // 👉 MUDANÇA 10: Botão com controle assíncrono real
+                    SizedBox(
+                      height: 56,
+                      child: SaveButton(
                         onSave: () async {
-                          _salvarSenha(usuarioId);
-                          NavigatorService.navigateReplaceWith(
-                            RouteNames.sucessResetPassword,
-                          );
+                          // Aguarda a resposta da API antes de decidir o que fazer
+                          final sucesso = await _salvarSenha(usuarioId);
+
+                          // Só navega para a tela de sucesso SE a API retornar OK
+                          if (sucesso && mounted) {
+                            NavigatorService.navigateReplaceWith(
+                              RouteNames.sucessResetPassword,
+                            );
+                          }
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
             ),

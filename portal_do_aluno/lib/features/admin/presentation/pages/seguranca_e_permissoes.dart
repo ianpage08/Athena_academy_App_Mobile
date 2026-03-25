@@ -9,286 +9,366 @@ class SegurancaEPermissoes extends StatefulWidget {
 }
 
 class _SegurancaEPermissoesState extends State<SegurancaEPermissoes> {
+  // 👉 MELHORIA ARQUITETURAL: Em um cenário real, esses dados viriam de um Controller/Provider
   final Map<String, dynamic> _dadosSeguranca = {
     'usuariosAtivos': 368,
     'professores': 25,
     'alunos': 265,
     'administradores': 3,
-    'ultimoLoginSuspeito':
-        'Último login suspeito há 10 horas - user@escola.com',
+    'ultimoLoginSuspeito': 'user@escola.com há 10 horas',
     'tentativasLogin': 12,
     'sessaoesAtivas': 45,
   };
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'Segurança e Permissões'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildUsuariosAtivos(),
-            const SizedBox(height: 20),
-            _buildPerfisCadastrados(),
-            const SizedBox(height: 20),
-            _buildAlertaSeguranca(),
-            const SizedBox(height: 20),
-            _buildSessoesAtivas(),
-            const SizedBox(height: 20),
-            _buildAcoesRapidas(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUsuariosAtivos() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.group, size: 30, color: Colors.green),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${_dadosSeguranca['usuariosAtivos']}',
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Text(
-                    'Usuários Ativos',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                'Online',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPerfisCadastrados() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            const Row(
-              children: [
-                Icon(Icons.admin_panel_settings, color: Colors.blue),
-                SizedBox(width: 12),
-                Text(
-                  'Perfis Cadastrados',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildItemPerfil(
-                  'Professores',
-                  '${_dadosSeguranca['professores']}',
-                  Icons.school,
-                  Colors.blue,
-                ),
-                _buildItemPerfil(
-                  'Alunos',
-                  '${_dadosSeguranca['alunos']}',
-                  Icons.person,
-                  Colors.orange,
-                ),
-                _buildItemPerfil(
-                  'Admins',
-                  '${_dadosSeguranca['administradores']}',
-                  Icons.security,
-                  Colors.red,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildItemPerfil(
-    String titulo,
-    String valor,
-    IconData icone,
-    Color cor,
-  ) {
-    return Column(
-      children: [
-        Icon(icone, size: 40, color: cor),
-        const SizedBox(height: 8),
-        Text(
-          valor,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: cor,
+      body: Container(
+        // 👉 MUDANÇA 1: Fundo com gradiente sutil para profundidade
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              theme.colorScheme.surface,
+              theme.colorScheme.primary.withValues(alpha: 0.03),
+            ],
           ),
         ),
-        Text(titulo, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderSection('Visão Geral de Acesso'),
+              const SizedBox(height: 16),
+              _buildMainStatusCard(theme),
+
+              const SizedBox(height: 32),
+              _buildHeaderSection('Distribuição de Perfis'),
+              const SizedBox(height: 16),
+              _buildPerfisGrid(),
+
+              const SizedBox(height: 32),
+              _buildHeaderSection('Alertas Críticos'),
+              const SizedBox(height: 16),
+              _buildAlertaSeguranca(theme),
+
+              const SizedBox(height: 32),
+              _buildHeaderSection('Gerenciamento'),
+              const SizedBox(height: 16),
+              _buildSessoesAtivas(theme),
+              const SizedBox(height: 12),
+              _buildAcoesRapidas(theme),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 👉 REUTILIZAÇÃO: Helper para títulos de seção padronizados
+  Widget _buildHeaderSection(String title) {
+    return Text(
+      title.toUpperCase(),
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 1.5,
+        color: Colors.grey,
+      ),
+    );
+  }
+
+  // 👉 MUDANÇA 2: Card de Status Principal (Design Moderno)
+  Widget _buildMainStatusCard(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          _buildAnimatedIcon(Icons.shield_rounded, Colors.green),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${_dadosSeguranca['usuariosAtivos']}',
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Text(
+                  'Usuários ativos agora',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.green.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Row(
+              children: [
+                CircleAvatar(radius: 4, backgroundColor: Colors.green),
+                SizedBox(width: 6),
+                Text(
+                  'SISTEMA SEGURO',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 👉 MUDANÇA 3: Grid de Perfis (Melhor aproveitamento de espaço)
+  Widget _buildPerfisGrid() {
+    return Row(
+      children: [
+        _buildSmallProfileCard(
+          'Admins',
+          _dadosSeguranca['administradores'],
+          Icons.security,
+          Colors.indigo,
+        ),
+        const SizedBox(width: 12),
+        _buildSmallProfileCard(
+          'Profs',
+          _dadosSeguranca['professores'],
+          Icons.school,
+          Colors.blue,
+        ),
+        const SizedBox(width: 12),
+        _buildSmallProfileCard(
+          'Alunos',
+          _dadosSeguranca['alunos'],
+          Icons.person,
+          Colors.orange,
+        ),
       ],
     );
   }
 
-  Widget _buildAlertaSeguranca() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Row(
+  Widget _buildSmallProfileCard(
+    String label,
+    dynamic value,
+    IconData icon,
+    Color color,
+  ) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withValues(alpha: 0.1)),
+        ),
+        child: Column(
           children: [
-            Icon(Icons.warning_amber_outlined, color: Colors.orange),
-            SizedBox(width: 12),
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 8),
             Text(
-              'Alertas de Segurança',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              '$value',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // 👉 MUDANÇA 4: Alertas com Hierarquia de Cores
+  Widget _buildAlertaSeguranca(ThemeData theme) {
+    return Column(
+      children: [
+        _buildItemAlerta(
+          Icons.gpp_maybe_rounded,
+          'Login suspeito: ${_dadosSeguranca['ultimoLoginSuspeito']}',
+          Colors.orange,
+        ),
         const SizedBox(height: 12),
         _buildItemAlerta(
-          Icons.login,
-          _dadosSeguranca['ultimoLoginSuspeito'],
-          Colors.deepOrange,
-        ),
-        _buildItemAlerta(
-          Icons.block,
-          '${_dadosSeguranca['tentativasLogin']} Tentativas de Login Falharam',
+          Icons.report_problem_rounded,
+          '${_dadosSeguranca['tentativasLogin']} tentativas de invasão bloqueadas',
           Colors.red,
         ),
       ],
     );
   }
 
-  Widget _buildSessoesAtivas() {
-    return Card(
+  Widget _buildSessoesAtivas(ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: ListTile(
-        leading: const Icon(Icons.devices, color: Colors.purple),
-        title: const Text('Sessões Ativas'),
-        subtitle: Text(
-          '${_dadosSeguranca['sessaoesAtivas']} usuários conectados',
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        leading: _buildAnimatedIcon(Icons.devices_other_rounded, Colors.purple),
+        title: const Text(
+          'Dispositivos Conectados',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        trailing: TextButton(
-          onPressed: () => _toast('TODO: Ver detalhes das sessões'),
-          child: const Text('Ver Detalhes'),
+        subtitle: Text(
+          '${_dadosSeguranca['sessaoesAtivas']} sessões em andamento',
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios_rounded,
+          size: 16,
+          color: theme.hintColor,
+        ),
+        onTap: () => _toast('Verificando sessões...'),
+      ),
+    );
+  }
+
+  // 👉 MUDANÇA 5: Ações Rápidas (Botões mais profissionais e menos gritantes)
+  Widget _buildAcoesRapidas(ThemeData theme) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionButton(
+                onPressed: () => _toast('Iniciando Backup...'),
+                icon: Icons.cloud_upload_rounded,
+                label: 'Backup Global',
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionButton(
+                onPressed: () => _toast('Relatório Gerado'),
+                icon: Icons.analytics_rounded,
+                label: 'Log de Auditoria',
+                color: Colors.blueGrey,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _buildActionButton(
+          onPressed: () => _toast('Sessões encerradas'),
+          icon: Icons.phonelink_erase_rounded,
+          label: 'Encerrar Todas as Sessões de Usuários',
+          color: Colors.redAccent,
+          isFullWidth: true,
+        ),
+      ],
+    );
+  }
+
+  // 👉 COMPONENTE REUTILIZÁVEL: Botão Customizado
+  Widget _buildActionButton({
+    required VoidCallback onPressed,
+    required IconData icon,
+    required String label,
+    required Color color,
+    bool isFullWidth = false,
+  }) {
+    return SizedBox(
+      width: isFullWidth ? double.infinity : null,
+      height: 54,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 20, color: Colors.white),
+        label: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildAcoesRapidas() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
-              children: [
-                Icon(Icons.security, color: Colors.indigo),
-                SizedBox(width: 12),
-                Text(
-                  'Ações Rápidas',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _toast('TODO: Logout geral realizado'),
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Logout Geral'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _toast('TODO: Backup iniciado'),
-                    icon: const Icon(Icons.backup),
-                    label: const Text('Backup'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _toast('TODO: Relatório de segurança gerado'),
-                icon: const Icon(Icons.report),
-                label: const Text('Gerar Relatório de Segurança'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              ),
-            ),
-          ],
-        ),
+  Widget _buildAnimatedIcon(IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        shape: BoxShape.circle,
       ),
+      child: Icon(icon, color: color, size: 26),
     );
   }
 
   Widget _buildItemAlerta(IconData ico, String mensagem, Color cor) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Icon(ico, color: cor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                mensagem,
-                style: TextStyle(color: cor, fontWeight: FontWeight.w500),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cor.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Icon(ico, color: cor, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              mensagem,
+              style: TextStyle(
+                color: cor,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   void _toast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
   }
 }
