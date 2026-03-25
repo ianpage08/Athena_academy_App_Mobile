@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA 1: Importado para iconografia premium
 import 'package:flutter/material.dart';
+import 'package:portal_do_aluno/core/app_constants/colors.dart';
 
 class PasswordTipsSection extends StatelessWidget {
   const PasswordTipsSection({super.key});
@@ -9,47 +11,81 @@ class PasswordTipsSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: theme.colorScheme.primary.withOpacity(0.25)),
+        color: theme.colorScheme.primary.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(20), // Curvatura Apple-like
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.15),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // HEADER DA SEÇÃO
           Row(
             children: [
-              Icon(Icons.lock_outline, color: theme.colorScheme.primary),
-              const SizedBox(width: 8),
+              const Icon(CupertinoIcons.lock_shield_fill, size: 24),
+              const SizedBox(width: 10),
               Text(
-                'Dicas para uma senha segura',
+                'Critérios de Segurança',
                 style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
+                  color: theme
+                      .colorScheme
+                      .primary, // Alinhamento com a identidade visual
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
 
-          _item('Mínimo de 8 caracteres'),
-          _item('Pelo menos 1 letra maiúscula'),
-          _item('Pelo menos 1 letra minúscula'),
-          _item('Pelo menos 1 número'),
-          _item('Pelo menos 1 símbolo especial'),
+          const SizedBox(height: 16), // Separação clara entre título e conteúdo
+
+          const _PasswordTipItem(text: 'Mínimo de 8 caracteres'),
+          const _PasswordTipItem(text: 'Pelo menos 1 letra maiúscula'),
+          const _PasswordTipItem(text: 'Pelo menos 1 letra minúscula'),
+          const _PasswordTipItem(text: 'Pelo menos 1 número'),
+          const _PasswordTipItem(text: 'Pelo menos 1 símbolo especial'),
         ],
       ),
     );
   }
+}
 
-  Widget _item(String text) {
+class _PasswordTipItem extends StatelessWidget {
+  final String text;
+
+  const _PasswordTipItem({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.only(
+        bottom: 10,
+      ), // Respiro orgânico entre os itens
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment
+            .start, // Alinhamento correto para textos que podem quebrar linha
         children: [
-          const Icon(Icons.check_circle, size: 18, color: Colors.green),
-          const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
+          Icon(
+            CupertinoIcons.checkmark_seal_fill,
+            size: 18,
+            color: AppColors.darkSuccess.withValues(alpha: 0.8),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.hintColor.withValues(alpha: 0.8),
+                height:
+                    1.2, // Altura de linha (Line Height) para leitura confortável
+              ),
+            ),
+          ),
         ],
       ),
     );

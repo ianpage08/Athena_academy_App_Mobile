@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
 class BuildInput extends StatelessWidget {
   final TextEditingController controller;
   final String label;
@@ -25,43 +26,95 @@ class BuildInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    final theme = Theme.of(context);
+
     return TextFormField(
       controller: controller,
       enabled: enabled,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       validator: validator,
-      style: const TextStyle(fontSize: 15),
+
+      
+      // Agora o texto respeita o tamanho de fonte configurado no sistema operacional do usuário.
+      style: theme.textTheme.bodyLarge?.copyWith(
+        fontWeight: FontWeight.w500,
+        color: enabled ? theme.textTheme.bodyLarge?.color : theme.hintColor,
+      ),
+
+      
+      cursorColor: theme.colorScheme.primary,
+
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        prefixIcon: Icon(icon, size: 22),
+
+        
+        // O Label fica mais sólido, enquanto o hint (placeholder) fica mais apagado para não confundir o usuário.
+        labelStyle: TextStyle(
+          color: theme.hintColor.withValues(alpha: 0.8),
+          fontWeight: FontWeight.w500,
+        ),
+        hintStyle: TextStyle(color: theme.hintColor.withValues(alpha: 0.4)),
+
+        
+        prefixIcon: Icon(
+          icon,
+          size: 22,
+          color: enabled
+              ? theme.colorScheme.primary.withValues(alpha: 0.7)
+              : theme.hintColor.withValues(alpha: 0.3),
+        ),
+
         filled: true,
+
+        
+        // Usar cores fixas quebra o aplicativo se você decidir lançar um Modo Escuro (Dark Mode).
         fillColor: enabled
-            ? Theme.of(context).cardColor
-            : const Color(0xFFF1F1F1),
+            ? theme.colorScheme.surface
+            : theme.disabledColor.withValues(alpha: 0.05),
+
+        
+        // Aumentei o vertical para 18. Facilita o clique com o dedo, padrão exigido pelas diretrizes da Apple/Google.
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 16,
+          vertical: 18,
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
 
+        
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+
+        
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+            color: theme.colorScheme.primary.withValues(alpha: 0.1),
           ),
         ),
+
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
-            width: 1.4,
+            color: theme.colorScheme.primary,
+            width: 1.5, // Destaque claro de onde o usuário está digitando
           ),
         ),
+
+        
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.redAccent),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: theme.colorScheme.error.withValues(alpha: 0.8),
+            width: 1.0,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.colorScheme.error, width: 1.5),
         ),
       ),
     );
