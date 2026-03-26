@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA: Para ícones e feedbacks premium
 import 'package:intl/intl.dart';
 import 'package:portal_do_aluno/features/admin/presentation/pages/report/widgets/attachement_section_report.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
@@ -15,163 +16,257 @@ class SubmissionDetail extends StatefulWidget {
 }
 
 class _SubmissionDetailState extends State<SubmissionDetail> {
-  // BACKEND INTACTO (COMO VOCÊ ENVIOU)
-  Stream<QuerySnapshot> getSubmission(String exerciseId) {
-    return FirebaseFirestore.instance
+  // 👉 ARQUITETURA: Stream memorizada para evitar múltiplas conexões ao Firestore no build
+  Stream<QuerySnapshot>? _submissionStream;
+
+  @override
+  void initState() {
+    super.initState();
+    // 👉 PERFORMANCE: Inicialização única da stream
+    _submissionStream = FirebaseFirestore.instance
         .collection('exercicios')
-        .doc(exerciseId)
+        .doc(widget.exerciseId)
         .collection('entregas')
+        .orderBy(
+          'dataEntrega',
+          descending: true,
+        ) // 👉 UX: Entregas recentes primeiro
         .snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final teacherId = Provider.of<UserProvider>(context).userId;
+
     if (teacherId == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CupertinoActivityIndicator()));
     }
+
     return Scaffold(
+      backgroundColor:
+          theme.scaffoldBackgroundColor, // 👉 DESIGN: Fundo liso e clean
       appBar: AppBar(
-        title: const Text(
-          'Detalhes da Submissão',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          'Entregas dos Alunos', // 👉 UX: Título mais direto ao ponto
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
         centerTitle: true,
         elevation: 0,
+        backgroundColor:
+            Colors.transparent, // 👉 DESIGN: Appbar integrada ao fundo
+        leading: IconButton(
+          icon: const Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(children: [Expanded(child: _buildStreamList(teacherId))]),
+      body: Column(
+        children: [
+          // 👉 DESIGN: Indicador de contexto sutil
+          _buildInfoCounter(theme),
+          Expanded(child: _buildStreamList()),
+        ],
       ),
     );
   }
 
-  Widget _buildStreamList(String teacherId) {
+  // 👉 NOVO COMPONENTE: Badge de resumo no topo
+  Widget _buildInfoCounter(ThemeData theme) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      alignment: Alignment.center,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: theme.primaryColor.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          "ID da Atividade: ${widget.exerciseId.substring(0, 8).toUpperCase()}",
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: theme.primaryColor.withValues(alpha: 0.6),
+            letterSpacing: 1.2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStreamList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: getSubmission(widget.exerciseId),
+      stream: _submissionStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CupertinoActivityIndicator());
         }
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        final docs = snapshot.data?.docs ?? [];
+
+        if (docs.isEmpty) {
           return const EmptyStateWidget(
-            icon: Icons.auto_awesome,
-            title: 'Nenhuma Atividade entregue',
-            description:
-                'Quando alguma atividade for entregue ela irá aparecer aqui',
+            icon: CupertinoIcons.square_stack_3d_up_slash,
+            title: 'Nenhuma entrega',
+            description: 'Aguardando o envio de atividades pelos alunos.',
           );
         }
 
-        final data = snapshot.data?.docs ?? [];
-
         return ListView.separated(
           physics: const BouncingScrollPhysics(),
-          itemCount: data.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+          itemCount: docs.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 16),
           itemBuilder: (context, index) {
-            final doc = data[index];
+            return _SubmissionCard(doc: docs[index]);
+          },
+        );
+      },
+    );
+  }
+}
 
-            // CAMPOS ORIGINAIS
-            final status = doc['status'] ?? 'Pendente';
-            final anexos = List<String>.from(doc['anexos'] ?? []);
-            // Usando o complemento que combinamos
+// 👉 REFATORAÇÃO: Widget extraído para melhorar a performance e legibilidade
+class _SubmissionCard extends StatelessWidget {
+  final QueryDocumentSnapshot doc;
 
-            bool hasAttachments = anexos.isNotEmpty;
-            final theme = Theme.of(context);
-            final studentName = doc['studentName'];
-            final delivery = doc['dataEntrega'];
-            final formatDate = DateFormat(
-              'dd/MM/yyyy',
-            ).format(delivery.toDate());
+  const _SubmissionCard({required this.doc});
 
-            return Container(
-              decoration: BoxDecoration(
-                color: theme.cardTheme.color ?? theme.cardColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.blueAccent.withValues(alpha: 0.2),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final data = doc.data() as Map<String, dynamic>;
+
+    final status = data['status'] ?? 'Pendente';
+    final anexos = List<String>.from(data['anexos'] ?? []);
+    final studentName = data['studentName'] ?? 'Aluno sem nome';
+    final delivery = data['dataEntrega'] as Timestamp?;
+
+    final formatDate = delivery != null
+        ? DateFormat('dd MMM yyyy', 'pt_BR').format(delivery.toDate())
+        : '--/--/----';
+
+    final isDelivered = status.toString().toLowerCase() == 'entregue';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: theme.primaryColor.withValues(alpha: 0.08)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Theme(
+        // 👉 DESIGN: Remove as linhas divisórias do ExpansionTile padrão
+        data: theme.copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: (isDelivered ? Colors.green : Colors.orange).withValues(
+                alpha: 0.1,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: ExpansionTile(
-                  tilePadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
-                  ),
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.blueAccent.withValues(alpha: 0.1),
-                    child: const Icon(
-                      Icons.person_outline,
-                      color: Colors.blueAccent,
-                    ),
-                  ),
-                  title: Text(
-                    studentName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isDelivered
+                  ? CupertinoIcons.check_mark_circled
+                  : CupertinoIcons.clock,
+              color: isDelivered ? Colors.green : Colors.orange,
+              size: 20,
+            ),
+          ),
+          title: Text(
+            studentName,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Row(
+              children: [
+                Text(
+                  formatDate,
+                  style: TextStyle(fontSize: 12, color: theme.hintColor),
+                ),
+                const SizedBox(width: 8),
+                _buildStatusBadge(status, isDelivered),
+              ],
+            ),
+          ),
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: theme.primaryColor.withValues(alpha: 0.02),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(24),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text('Data de Entrega: $formatDate'),
+                      Icon(
+                        CupertinoIcons.paperclip,
+                        size: 14,
+                        color: theme.primaryColor,
+                      ),
+                      const SizedBox(width: 6),
                       Text(
-                        "Status: $status",
-                        style: TextStyle(
-                          color: status.toString().toLowerCase() == 'entregue'
-                              ? Colors.green
-                              : Colors.orange,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                        "ANEXOS ENVIADOS",
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.1,
+                          color: theme.primaryColor.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
                   ),
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor.withValues(alpha: 0.02),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "ANEXOS DA ATIVIDADE",
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          AttachementSectionReport(
-                            hasAttachments: hasAttachments,
-                            attachments: anexos,
-                            theme: theme,
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  const SizedBox(height: 16),
+                  AttachementSectionReport(
+                    hasAttachments: anexos.isNotEmpty,
+                    attachments: anexos,
+                    theme: theme,
+                  ),
+                  const SizedBox(height: 8),
+                ],
               ),
-            );
-          },
-        );
-      },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusBadge(String status, bool isDelivered) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: (isDelivered ? Colors.green : Colors.orange).withValues(
+          alpha: 0.1,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        status.toUpperCase(),
+        style: TextStyle(
+          color: isDelivered ? Colors.green : Colors.orange,
+          fontSize: 9,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
     );
   }
 }

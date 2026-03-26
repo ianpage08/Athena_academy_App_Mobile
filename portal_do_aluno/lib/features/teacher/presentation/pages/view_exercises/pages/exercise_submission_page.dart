@@ -38,19 +38,9 @@ class _ExerciseSubmissionPageState extends State<ExerciseSubmissionPage> {
     }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: const CustomAppBar(title: 'Portal do Professor'),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.scaffoldBackgroundColor,
-              theme.primaryColor.withValues(alpha: 0.03),
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(color: theme.scaffoldBackgroundColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
