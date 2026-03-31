@@ -59,10 +59,11 @@ class ComunicadoService {
     await comunicadosCollection.doc(comunicadoId).delete();
   }
 
-  Future<int> calcularQuantidadeDeCominicados() async {
-    final qtd = await comunicadosCollection.get();
-    return qtd.docs.length;
-  }
+    Stream<int> getcomunicadosCountStream()  {
+      final qtd = comunicadosCollection.snapshots().map((e) => e.docs.length );
+
+      return qtd;
+    }
 
   Future<QuerySnapshot> buscarUsuariosPorTipo(String destinatario) {
     destinatario = destinatario.toLowerCase();

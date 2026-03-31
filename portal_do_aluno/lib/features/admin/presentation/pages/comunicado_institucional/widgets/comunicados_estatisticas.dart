@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart'; 
+import 'package:flutter/cupertino.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 
 class ComunicadoEstatisticas extends StatefulWidget {
- 
   final VoidCallback? att;
 
   const ComunicadoEstatisticas({super.key, this.att});
@@ -13,7 +12,6 @@ class ComunicadoEstatisticas extends StatefulWidget {
 }
 
 class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
-  
   late final ComunicadoService _service;
   late final Stream<int> _countStream;
 
@@ -21,8 +19,8 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
   void initState() {
     super.initState();
     _service = ComunicadoService();
-    
-    _countStream = _service.calcularQuantidadeDeCominicados().asStream();
+
+    _countStream = _service.getcomunicadosCountStream();
   }
 
   @override
@@ -32,7 +30,6 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
     return StreamBuilder<int>(
       stream: _countStream,
       builder: (context, snapshot) {
-        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CupertinoActivityIndicator());
         }
@@ -41,7 +38,6 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
 
         return Row(
           children: [
-            
             _StatCard(
               icon: CupertinoIcons.paperplane_fill,
               label: 'Comunicados Enviados',
@@ -50,7 +46,7 @@ class _ComunicadoEstatisticasState extends State<ComunicadoEstatisticas> {
               trend: '+12%', // Sugestão: Adicionar lógica de tendência futura
             ),
             const SizedBox(width: 12),
-            
+
             const _StatCard(
               icon: CupertinoIcons.eye_fill,
               label: 'Taxa de Leitura',
@@ -85,7 +81,6 @@ class _StatCard extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.cardColor,
@@ -100,8 +95,7 @@ class _StatCard extends StatelessWidget {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment
-              .start, 
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(8),

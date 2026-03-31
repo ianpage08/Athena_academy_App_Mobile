@@ -4,6 +4,7 @@ import 'package:portal_do_aluno/app.dart';
 import 'package:portal_do_aluno/core/app_constants/app_preferences.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/cadastro_comunicado_firestore.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/calendario_firestore.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado_institucional/controller/comunicacao_institucional_controller.dart';
 import 'package:portal_do_aluno/features/teacher/data/datasources/exercicio_firestore.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/selected_provider.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
@@ -14,7 +15,6 @@ import 'package:portal_do_aluno/features/teacher/presentation/providers/attendan
 import 'package:portal_do_aluno/core/notifications/notification_service_local.dart';
 
 import 'package:provider/provider.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +34,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AttendanceProvider()),
         ChangeNotifierProvider(create: (_) => SelectedProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (_) => ComunicacaoInstitucionalController(),
+        ),
       ],
       child: const MyApp(),
     ),

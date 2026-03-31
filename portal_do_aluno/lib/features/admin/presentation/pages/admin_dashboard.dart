@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:portal_do_aluno/features/admin/data/datasources/tokens_firestore.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado_institucional/controller/comunicacao_institucional_controller.dart';
+import 'package:portal_do_aluno/features/admin/presentation/pages/comunicado_institucional/gestao_de_comunicados_e_avisos.dart';
 import 'package:portal_do_aluno/features/admin/presentation/providers/user_provider.dart';
 import 'package:portal_do_aluno/shared/widgets/navigation_menu_card.dart';
 import 'package:portal_do_aluno/shared/widgets/firestore/firestore_document_stream_builder.dart';
@@ -182,8 +184,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     title: 'Comunicação',
                     subtitle: 'Avisos e comunicados',
                     onTap: () {
-                      NavigatorService.navigateTo(
-                        RouteNames.adminComunicacaoInstiticional,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (_) {
+                            return ComunicacaoInstitucionalController();
+                          },
+                          child: const ComunicacaoInstitucionalPage(),
+                        ),
                       );
                     },
                   ),

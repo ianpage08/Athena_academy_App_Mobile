@@ -7,27 +7,43 @@ import 'package:portal_do_aluno/features/admin/data/models/comunicado.dart';
 import 'package:portal_do_aluno/features/admin/data/repositories/statement_repository.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 
-class ComunicacaoInstitucionalController {
+class ComunicacaoInstitucionalController extends ChangeNotifier {
+  ComunicacaoInstitucionalController({StatementRepository? repository})
+    : _repository =
+          repository ??
+          StatementRepository(); //aqui top falando que ele pode receber um repository externo, mas se não receber, ele cria um novo StatementRepository por conta própria. Isso é útil para testes, onde você pode passar um mock ou fake repository.
+
   // Persistência
-  
 
   // Estado de envio
-  final submitState = ValueNotifier<SubmitState>(Initial());
-  final StatementRepository _repository = StatementRepository();
+  final StatementRepository _repository;
 
   // Formulário
   final formKey = GlobalKey<FormState>();
   final tituloController = TextEditingController();
   final mensagemController = TextEditingController();
 
-  // Campos extras
-  PrioridadeComunicado? prioridade;
-  String? destinatario;
+  // Campos observavel
+  SubmitState _submitState = Initial();
+  PrioridadeComunicado? _prioridade;
+  String? _destinatario;
 
   // Validação extra
+  PrioridadeComunicado? get prioridade => _prioridade;
+  String? get destinatario => _destinatario;
+  SubmitState get submitState => _submitState;
+  bool get isLoading => _submitState is SubmitLoading;
   bool get isFormularioValido => prioridade != null && destinatario != null;
 
-  
+  void setPrioridade(PrioridadeComunicado? value) {
+    _prioridade = value;
+    notifyListeners();
+  }
+
+  void setDestinatario(String? value) {
+    _destinatario = value;
+    notifyListeners();
+  }
 
   // Envio principal
   Future<void> enviar() async {
@@ -35,25 +51,16 @@ class ComunicacaoInstitucionalController {
       formKey: formKey,
       listControllers: [tituloController, mensagemController],
     )) {
-      submitState.value = SubmitError(
-        AppError(
-          type: AppErrorType.validation,
-          message: 'Preencha todos os campos',
-        ),
-      );
+      _setError(AppErrorType.validation, 'Preencha todos os campos');
       return;
     }
 
     if (!isFormularioValido) {
-      submitState.value = SubmitError(
-        AppError(
-          type: AppErrorType.validation,
-          message: 'Selecione prioridade e destinatário',
-        ),
-      );
+      _setError(AppErrorType.validation, 'Selecione destinatário e prioridade');
       return;
     }
-    submitState.value = SubmitLoading();
+    _submitState = SubmitLoading();
+    notifyListeners();
 
     try {
       await _repository.newStatement(
@@ -68,39 +75,36 @@ class ComunicacaoInstitucionalController {
         message: mensagemController.text.trim(),
       );
       clear();
-      submitState.value = SubmitSuccess('Comunicado enviado com sucesso!');
+      _submitState = SubmitSuccess('Comunicado enviado com sucesso!');
+      notifyListeners();
     } on FirebaseException {
-      submitState.value = SubmitError(
-        AppError(
-          type: AppErrorType.network,
-          message: 'Sem internet, tente novamente mais tarde.',
-        ),
-      );
+      _setError(AppErrorType.network, 'Erro ao conectar com o servidor');
     } catch (e) {
       debugPrint(e.toString());
 
-      submitState.value = SubmitError(
-        AppError(
-          type: AppErrorType.unknown,
-          message: 'Erro ao enviar comunicado',
-        ),
-      );
+      _setError(AppErrorType.unknown, 'Ocorreu um erro inesperado');
     }
   }
-
 
   // Limpa formulário
   void clear() {
     tituloController.clear();
     mensagemController.clear();
-    prioridade = null;
-    destinatario = null;
+    _prioridade = null;
+    _destinatario = null;
   }
 
   // Liberação de recursos
+  @override
   void dispose() {
-    submitState.dispose();
+    _submitState = Initial();
     tituloController.dispose();
     mensagemController.dispose();
+    super.dispose();
+  }
+
+  void _setError(AppErrorType type, String message) {
+    _submitState = SubmitError(AppError(type: type, message: message));
+    notifyListeners();
   }
 }
