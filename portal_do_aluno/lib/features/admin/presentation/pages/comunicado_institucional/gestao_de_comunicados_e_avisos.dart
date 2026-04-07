@@ -35,10 +35,7 @@ class _ComunicacaoInstitucionalPageState
 
   @override
   void dispose() {
-    context.read<ComunicacaoInstitucionalController>().removeListener(
-      _onStateChange,
-    );
-
+    _onStateChange;
     super.dispose();
   }
 

@@ -184,12 +184,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     title: 'Comunicação',
                     subtitle: 'Avisos e comunicados',
                     onTap: () {
-                      MaterialPageRoute(
-                        builder: (context) => ChangeNotifierProvider(
-                          create: (_) {
-                            return ComunicacaoInstitucionalController();
-                          },
-                          child: const ComunicacaoInstitucionalPage(),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChangeNotifierProvider(
+                            create: (_) => ComunicacaoInstitucionalController(),
+                            child: const ComunicacaoInstitucionalPage(),
+                          ),
                         ),
                       );
                     },
