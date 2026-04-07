@@ -8,7 +8,6 @@ import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/navigation_service.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:portal_do_aluno/shared/widgets/custom_app_bar.dart';
-import 'package:portal_do_aluno/features/teacher/presentation/pages/attendace/attendance_registration_page.dart';
 import 'package:provider/provider.dart';
 
 class TeacherDashboard extends StatefulWidget {
@@ -150,9 +149,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                       title: 'Frequência',
                       subtitle: 'Lista de presença',
                       onTap: () {
-                        NavigatorService.navigateToWithAnimation(
-                          const AttendanceRegistrationPage(),
-                        );
+                        NavigatorService.navigateTo(RouteNames.adminFrequencia);
                       },
                     ),
 

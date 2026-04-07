@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart'; // 👉 MUDANÇA 1: CupertinoIcons para estética Apple
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portal_do_aluno/features/admin/helper/form_helper.dart';
 // 👉 MUDANÇA 2: Importando o componente de dicas que refatoramos na etapa anterior (Ajuste o caminho se necessário)
 import 'package:portal_do_aluno/features/admin/presentation/pages/usuarios/adicao_de_usuarios/widgets/password_tips_section.dart';
@@ -79,10 +80,10 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+    final usuarioId =
+        GoRouterState.of(context).uri.queryParameters['usuarioId'];
 
-    if (args == null || args['usuarioId'] == null) {
+    if (usuarioId == null) {
       return Scaffold(
         appBar: const CustomAppBar(title: ''),
         body: Center(
@@ -95,8 +96,6 @@ class _ChangePasswordState extends State<ChangePassword> {
         ),
       );
     }
-
-    final usuarioId = args['usuarioId']!;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,

@@ -29,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       await SecureAuthStorage().deleteToken();
       await SecureAuthStorage().deleteUser();
       // Navega limpando stack
-      await NavigatorService.navigateAndRemoveUntil(RouteNames.login);
+      NavigatorService.navigateAndRemoveUntil(RouteNames.login);
     }
 
     return AppBar(

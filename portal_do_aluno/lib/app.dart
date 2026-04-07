@@ -3,19 +3,30 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:portal_do_aluno/core/theme/dark_theme.dart';
 import 'package:portal_do_aluno/core/theme/light_theme.dart';
 import 'package:portal_do_aluno/core/theme/theme_provider.dart';
-import 'package:portal_do_aluno/navigation/app_route.dart';
+import 'package:portal_do_aluno/navigation/app_router.dart';
 import 'package:portal_do_aluno/navigation/navigation_service.dart';
-import 'package:portal_do_aluno/navigation/route_names.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    NavigatorService.setRouter(appRouter);
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: appRouter,
       builder: (context, child) => ResponsiveBreakpoints.builder(
         child: child!,
         breakpoints: [
@@ -24,7 +35,6 @@ class MyApp extends StatelessWidget {
           const Breakpoint(start: 800, end: double.infinity, name: DESKTOP),
         ],
       ),
-      navigatorKey: navigatorKey,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -34,13 +44,7 @@ class MyApp extends StatelessWidget {
       title: 'Portal do Aluno',
       themeMode: themeProvider.themeMode,
       theme: lightTheme,
-
       darkTheme: darkTheme,
-
-      initialRoute: RouteNames.slashScreen,
-      routes: routes,
-      onGenerateRoute: onGenerateRoute,
-
       debugShowCheckedModeBanner: false,
     );
   }

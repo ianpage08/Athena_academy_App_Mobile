@@ -29,7 +29,7 @@ class LoginController {
         final usuario = await AuthServico().loginCpfsenha(cpf, senha);
 
         NavigatorService.setCurrentUser(usuario);
-        await NavigatorService.navigateToDashboard();
+        NavigatorService.navigateToDashboard();
       } catch (_) {
         onError();
         _navigationFlag.reset();

@@ -88,8 +88,7 @@ class UsuariosListStream extends StatelessWidget {
   void _handleEdit(String? id) {
     if (id == null) return;
     NavigatorService.navigateTo(
-      RouteNames.changePassword,
-      arguments: {'usuarioId': id},
+      '${RouteNames.changePassword}?usuarioId=$id',
     );
   }
 

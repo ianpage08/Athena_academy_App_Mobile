@@ -112,8 +112,7 @@ class UsuariosListStream extends StatelessWidget {
                           label: 'Mudar senha',
                           onSelected: (id, context, extra) {
                             NavigatorService.navigateTo(
-                              RouteNames.changePassword,
-                              arguments: {'usuarioId': id!},
+                              '${RouteNames.changePassword}?usuarioId=${id!}',
                             );
                           },
                         ),

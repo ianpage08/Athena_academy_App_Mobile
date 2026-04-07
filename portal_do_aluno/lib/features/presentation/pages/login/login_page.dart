@@ -337,7 +337,7 @@ class _LoginPageState extends State<LoginPage> {
         final usuario = await AuthServico().loginCpfsenha(cpf, senha);
         if (!mounted) return;
         NavigatorService.setCurrentUser(usuario);
-        await NavigatorService.navigateToDashboard();
+        NavigatorService.navigateToDashboard();
       } catch (e) {
         if (mounted) {
           showAppSnackBar(

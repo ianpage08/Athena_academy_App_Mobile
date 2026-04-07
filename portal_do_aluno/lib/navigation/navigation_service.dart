@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portal_do_aluno/core/user/user.dart';
 import 'package:portal_do_aluno/navigation/route_names.dart';
 
@@ -22,13 +23,25 @@ class NavigatorService {
     _currentUser = null;
   }
 
-  // ---------- Util helpers ----------
-  static NavigatorState? get _navigatorState => navigatorKey.currentState;
+  // ---------- Acesso ao router ----------
 
-  static bool get isNavigatorReady => _navigatorState != null;
+  // Importado via app_router.dart para evitar dependência circular
+  static GoRouter? _router;
+
+  static void setRouter(GoRouter router) {
+    _router = router;
+  }
+
+  static GoRouter get _go {
+    assert(_router != null, 'NavigatorService: chame setRouter() antes de navegar.');
+    return _router!;
+  }
+
+  // ---------- Util helpers ----------
+
+  static bool get isNavigatorReady => navigatorKey.currentState != null;
 
   /// Tenta esperar o navigator por até [timeout] antes de prosseguir.
-  /// Útil se você quiser garantir navegação logo após init do app.
   static Future<bool> ensureInitializedBeforeNavigation({
     Duration timeout = const Duration(seconds: 3),
     Duration pollInterval = const Duration(milliseconds: 50),
@@ -49,76 +62,43 @@ class NavigatorService {
     return completer.future;
   }
 
-  // ---------- Navegação segura ----------
+  // ---------- Navegação ----------
 
-  /// Navega para rota nomeada de forma segura.
-  /// Retorna null se o navigator ainda não estiver pronto.
-  static Future<T?>? navigateTo<T>(String routeName, {Object? arguments}) {
-    final state = _navigatorState;
-    if (state == null) {
-      debugPrint(
-        'NavigatorService.navigateTo: navigator não pronto para $routeName',
-      );
-      return null;
-    }
-    return state.pushNamed<T>(routeName, arguments: arguments);
+  /// Push de uma nova rota (empilha sobre a atual).
+  static void navigateTo(String routePath) {
+    _go.push(routePath);
   }
 
-  /// Versão que tenta usar navigatorKey, e se não estiver pronta, tenta usar
-  /// o context (se disponível). Não lança.
-  static Future<T?>? tryNavigateTo<T>(String routeName, {Object? arguments}) {
-    final state = _navigatorState;
-    if (state != null) {
-      return state.pushNamed<T>(routeName, arguments: arguments);
-    }
-
-    final ctx = navigatorKey.currentContext;
-    if (ctx != null) {
-      debugPrint(
-        'NavigatorService.tryNavigateTo: fallback para Navigator.of(context) -> $routeName',
-      );
-      return Navigator.of(ctx).pushNamed<T>(routeName, arguments: arguments);
-    }
-
-    debugPrint(
-      'NavigatorService.tryNavigateTo: impossível navegar agora -> $routeName',
-    );
-    return null;
+  /// Substitui a rota atual (sem empilhar).
+  static void navigateReplaceWith(String routePath) {
+    _go.pushReplacement(routePath);
   }
 
-  static Future<T?>? navigateToWithAnimation<T>(
-    Widget page, {
-    RouteTransitionsBuilder transitionsBuilder = _defaultTransition,
-  }) {
-    final state = _navigatorState;
-    if (state == null) {
-      debugPrint('navigateToWithAnimation: navigator não pronto');
-      return null;
-    }
-    return state.push<T>(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => page,
-        transitionsBuilder: transitionsBuilder,
-        transitionDuration: const Duration(milliseconds: 200),
-      ),
-    );
+  /// Navega e limpa toda a pilha (equivalente a pushNamedAndRemoveUntil).
+  static void navigateAndRemoveUntil(String routePath) {
+    _go.go(routePath);
   }
 
-  static Widget _defaultTransition(
-    BuildContext context,
-    Animation<double> a,
-    Animation<double> sa,
-    Widget child,
-  ) => FadeTransition(opacity: a, child: child);
+  /// Volta para a tela anterior.
+  static void goBack<T extends Object?>([T? result]) {
+    if (_go.canPop()) {
+      _go.pop(result);
+    } else {
+      debugPrint('goBack: não era possível dar pop, canPop == false');
+    }
+  }
+
+  static bool canGoBack() => _go.canPop();
+
+  // ---------- Snackbar ----------
 
   static void showSnackBar(String message) {
-    final contextLocal = navigatorKey.currentContext;
-    if (contextLocal == null) {
+    final ctx = navigatorKey.currentContext;
+    if (ctx == null) {
       debugPrint('showSnackBar: context nulo -> $message');
       return;
     }
-
-    ScaffoldMessenger.of(contextLocal).showSnackBar(
+    ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.redAccent,
@@ -127,124 +107,46 @@ class NavigatorService {
     );
   }
 
-  static Future<T?>? navigateReplaceWith<T, TO>(
-    String routeName, {
-    TO? result,
-    Object? arguments,
-  }) {
-    final state = _navigatorState;
-    if (state == null) {
-      debugPrint('navigateReplaceWith: navigator não pronto para $routeName');
-      return null;
-    }
-    return state.pushReplacementNamed<T, TO>(
-      routeName,
-      result: result,
-      arguments: arguments,
-    );
-  }
-
-  static Future<T?>? navigateAndRemoveUntil<T>(
-    String routeName, {
-    Object? arguments,
-  }) {
-    final state = _navigatorState;
-    if (state == null) {
-      debugPrint(
-        'navigateAndRemoveUntil: navigator não pronto para $routeName',
-      );
-      return null;
-    }
-    return state.pushNamedAndRemoveUntil<T>(
-      routeName,
-      (route) => false,
-      arguments: arguments,
-    );
-  }
-
-  static void goBack<T>([T? result]) {
-    final state = _navigatorState;
-    if (state == null) {
-      debugPrint('goBack: navigator não pronto');
-      // fallback para context Navigator (se disponível)
-      final ctx = navigatorKey.currentContext;
-      if (ctx != null && Navigator.of(ctx).canPop()) {
-        Navigator.of(ctx).pop<T>(result);
-      }
-      return;
-    }
-    if (state.canPop()) {
-      state.pop<T>(result);
-    } else {
-      debugPrint('goBack: não era possível dar pop, canPop == false');
-    }
-  }
-
-  static bool canGoBack() {
-    final state = _navigatorState;
-    if (state == null) return false;
-    return state.canPop();
-  }
-
   // ---------- Rotas específicas ----------
 
-  static Future<void> navigateToDashboard([Usuario? user]) async {
-  final userToUse = user ?? _currentUser;
+  static void navigateToDashboard([Usuario? user]) {
+    final userToUse = user ?? _currentUser;
 
-  if (userToUse == null) {
-    await navigateAndRemoveUntil(RouteNames.login);
-    return;
+    if (userToUse == null) {
+      navigateAndRemoveUntil(RouteNames.login);
+      return;
+    }
+
+    final String route;
+    switch (userToUse.type) {
+      case UserType.student:
+        route = RouteNames.studentDashboard;
+        break;
+      case UserType.teacher:
+        route = RouteNames.teacherDashboard;
+        break;
+      case UserType.parent:
+        route = RouteNames.parentDashboard;
+        break;
+      case UserType.admin:
+        route = RouteNames.adminDashboard;
+        break;
+    }
+
+    navigateAndRemoveUntil(route);
   }
 
-  late final String route;
-
-  switch (userToUse.type) {
-    case UserType.student:
-      route = RouteNames.studentDashboard;
-      break;
-    case UserType.teacher:
-      route = RouteNames.teacherDashboard;
-      break;
-    case UserType.parent:
-      route = RouteNames.parentDashboard;
-      break;
-    case UserType.admin:
-      route = RouteNames.adminDashboard;
-      break;
-    
+  static void logout() {
+    clearUser();
+    navigateAndRemoveUntil(RouteNames.login);
   }
-
-  await navigateAndRemoveUntil(
-    route,
-    arguments: {'user': userToUse.toJsonSafe()},
-  );
-}
-
-  static Future<void> logout() async {
-  clearUser();
-  await navigateAndRemoveUntil(RouteNames.login);
-}
-
-
- 
-
-  
-  
 
   // Rotas de erro
-  static Future<void> navigateToNotFound() {
-    return navigateTo(RouteNames.notFound) ?? Future.value();
-  }
+  static void navigateToNotFound() => navigateTo(RouteNames.notFound);
 
-  static Future<void> navigateToInternalServerError() {
-    return navigateTo(RouteNames.internalServerError) ?? Future.value();
-  }
+  static void navigateToInternalServerError() =>
+      navigateTo(RouteNames.internalServerError);
 
-  static Future<void> navigateToError(String errorMessage) {
-    return navigateTo(
-          RouteNames.error,
-          arguments: {'errorMessage': errorMessage},
-        ) ??
-        Future.value();
-  }
+  static void navigateToError(String errorMessage) =>
+      navigateTo(RouteNames.error);
 }

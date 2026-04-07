@@ -172,8 +172,7 @@ class StreamListMatriculas extends StatelessWidget {
                 label: 'Detalhes',
                 onSelected: (id, context, extra) {
                   NavigatorService.navigateTo(
-                    RouteNames.adminDetalhesAlunos,
-                    arguments: id,
+                    '${RouteNames.adminDetalhesAlunos}/$id',
                   );
                 },
               ),

@@ -118,8 +118,7 @@ class _ExerciseSubmissionPageState extends State<ExerciseSubmissionPage> {
               date: formattedDate,
               onTap: () {
                 NavigatorService.navigateTo(
-                  RouteNames.teacherSubimissionDetail,
-                  arguments: exerciceId,
+                  '${RouteNames.teacherSubimissionDetail}/$exerciceId',
                 );
               },
             );
