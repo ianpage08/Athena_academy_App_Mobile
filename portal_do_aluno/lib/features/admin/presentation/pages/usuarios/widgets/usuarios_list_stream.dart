@@ -90,7 +90,7 @@ class UsuariosListStream extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: _tipoCor(tipo).withOpacity(0.1),
+                            color: _tipoCor(tipo).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(

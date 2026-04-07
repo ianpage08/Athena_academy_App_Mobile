@@ -12,7 +12,7 @@ class EmptyAttachmentsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.6)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.6)),
       ),
       child: Row(
         children: [
@@ -22,7 +22,7 @@ class EmptyAttachmentsCard extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              color: Colors.grey.withOpacity(0.12),
+              color: Colors.grey.withValues(alpha: 0.12),
             ),
             child: Icon(Icons.inbox_rounded, color: Colors.grey.shade600),
           ),
